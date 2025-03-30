@@ -1,0 +1,168 @@
+"use client";
+
+import { useState } from "react";
+import Script from "next/script";
+
+const PaymentForm = () => {
+  const [email, setEmail] = useState("");
+  const [amount, setAmount] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (typeof window !== "undefined" && typeof (window as any).BudPayCheckout === "function") {
+      const reference =
+        Math.floor(Math.random() * 100000000000 + 1) +
+        new Date().getSeconds() +
+        new Date().getMilliseconds();
+
+      (window as any).BudPayCheckout({
+        key: "pk_test_xolsnu5dpqpia2a7a8iftygugzyluz2qffkhlid", // Your public key
+        email,
+        amount,
+        first_name: firstName,
+        last_name: lastName,
+        currency: "NGN",
+        reference: reference.toString(),
+        callback: function (response: any) {
+          alert(`Payment complete! Reference: ${response.reference}, Status: ${response.status}`);
+        },
+        onClose: function (response: any) {
+          console.log(response);
+          alert("Transaction was not completed, window closed.");
+        },
+        custom_fields: {
+          tax_pay_transaction: "",
+          tax_pay_type: "",
+          agency_code: "",
+          revenue_code: "",
+          revenue_credit_acc: "",
+          cbn_code: "",
+        },
+      });
+    } else {
+      alert("BudPayCheckout function not available yet.");
+    }
+  };
+
+  return (
+    <div className="max-w-md mx-auto p-4 border rounded-md shadow-md">
+      <Script
+        src="https://inlinepay.budpay.com/budpay-inline-custom.js"
+        strategy="afterInteractive"
+        onLoad={() => console.log("BudPay script loaded!")}
+      />
+
+      <h2 className="text-xl font-semibold mb-4">Make a Payment</h2>
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <input
+          type="email"
+          placeholder="Email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="border px-4 py-2 rounded"
+        />
+        <input
+          type="number"
+          placeholder="Amount"
+          required
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="border px-4 py-2 rounded"
+        />
+        <input
+          type="text"
+          placeholder="First Name"
+          required
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          className="border px-4 py-2 rounded"
+        />
+        <input
+          type="text"
+          placeholder="Last Name"
+          required
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          className="border px-4 py-2 rounded"
+        />
+
+        <button
+          type="submit"
+          className="bg-primary text-white px-6 py-3 rounded hover:bg-primary/80"
+        >
+          Pay Now
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default PaymentForm;
+
+import { useEffect, useState } from "react";
+
+const UserLocation = () => {
+  const [location, setLocation] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocation({ latitude, longitude });
+          console.log("User location:", latitude, longitude);
+        },
+        (error) => {
+          console.error("Error fetching location:", error);
+          setError(error.message);
+        }
+      );
+    } else {
+      setError("Geolocation is not supported by your browser.");
+    }
+  }, []);
+
+  return (
+    <div>
+      {location ? (
+        <p>
+          Latitude: {location.latitude}, Longitude: {location.longitude}
+        </p>
+      ) : (
+        <p>{error ? error : "Fetching location..."}</p>
+      )}
+    </div>
+  );
+};
+
+export default UserLocation;
+
+const reverseGeocode = async (lat, lon) => {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+    );
+
+    const data = await response.json();
+    console.log("Reverse geocode result:", data);
+
+    // Example: get the display name (full address)
+    console.log("Location name:", data.display_name);
+
+    return data;
+  } catch (error) {
+    console.error("Error with reverse geocoding:", error);
+  }
+};
+
+// Example usage:
+const latitude = 6.5244;
+const longitude = 3.3792;
+
+reverseGeocode(latitude, longitude);
