@@ -1,4 +1,4 @@
-# Trust HealthCare - Frontend
+# Trust HealthCare - Frontend (ONGOING)
 
 _A modern and accessible medical appointment scheduling system_
 
@@ -6,14 +6,11 @@ _A modern and accessible medical appointment scheduling system_
 
 - **Framework**: Next.js (React)
 - **Languages**: TypeScript, JavaScript
-- **State Management**: React Context API
+- **State Management**: React Context API, Zustand
 - **Styling**: Tailwind CSS
 - **Authentication**: JWT Authentication
 - **API Client**: Axios
-- **Form Handling**: React Hook Form & Yup
-- **Image Uploads**: Amazon S3 (previously Cloudinary)
-- **Testing**: Jest, React Testing Library
-- **Deployment**: Vercel
+- **Image Uploads**: Cloudinary
 
 ## 📦 Key Features
 
@@ -22,15 +19,15 @@ _A modern and accessible medical appointment scheduling system_
 - Doctor profile management
 - Medical records access
 - Real-time notifications & messaging
-- Secure image and file uploads (Amazon S3)
+- Secure image and file uploads (Cloudinary & MongoDB)
 - Responsive UI/UX with accessibility best practices
 
 ## 🔧 Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Thobbytosin/trust-healthcare-frontend.git
-   cd trust-healthcare-frontend
+   git clone https://github.com/Thobbytosin/trust-healthcare-client.git
+   cd trust-healthcare-client
    ```
 2. **Install dependencies**
    ```bash
@@ -57,14 +54,11 @@ Run unit and integration tests:
 
 ## 🚀 Deployment
 
-The project is deployed on **Vercel**. To deploy:
+Project still in progress
 
-1. Push changes to the repository
-2. Connect the repo to Vercel (if not already linked)
-3. Deploy using Vercel CLI:
-   ```bash
-   vercel --prod
-   ```
+```bash
+vercel --prod
+```
 
 ## 🤝 Contributing
 
@@ -81,4 +75,4 @@ Distributed under the MIT License. See LICENSE for more information.
 ## 📬 Contact
 
 Project Maintainer - **Falode Tobi**  
-Project Link: https://github.com/Thobbytosin/trust-healthcare-frontend
+Project Link: https://github.com/Thobbytosin/trust-healthcare-client
