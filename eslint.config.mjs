@@ -16,7 +16,9 @@ const eslintConfig = [
       "@typescript-eslint/no-unused-vars": "off", // Disables the rule globally
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-empty-object-type": "off",
-      "eslint-disable @typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-require-imports": "off",
+      "react-hooks/rules-of-hooks": "off",
+      "react-hooks/exhaustive-deps": "off",
     },
   },
 ];

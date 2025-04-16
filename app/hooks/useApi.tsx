@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { SERVER_URI } from "../utils/uri";
+import axiosInstance from "../utils/axiosInstance";
 
 interface FetchOptions {
   url: string;
@@ -8,6 +9,7 @@ interface FetchOptions {
   queryKey: (string | number)[];
   enabled?: boolean;
   staleTime?: number;
+  skipAuthRefresh?: boolean;
 }
 
 // for GET requests
@@ -17,6 +19,7 @@ export function useFetchData<T>({
   method,
   enabled = false,
   staleTime = 1000 * 60 * 5, // Default: 5 minutes
+  skipAuthRefresh,
 }: FetchOptions) {
   return useQuery<T, any>({
     queryKey: [queryKey],
@@ -28,7 +31,7 @@ export function useFetchData<T>({
           withCredentials: true,
         };
 
-        const response = await axios(config);
+        const response = await axiosInstance(config);
         if (response) {
           return response.data;
         }
@@ -55,6 +58,7 @@ interface MutationOptions {
   url: string;
   method: "POST" | "PUT" | "DELETE";
   headers?: boolean;
+  skipAuthRefresh?: boolean;
 }
 
 export function useMutateData<T>({
@@ -62,6 +66,7 @@ export function useMutateData<T>({
   method,
   headers = false,
   mutationKey,
+  skipAuthRefresh,
 }: MutationOptions) {
   const queryClient = useQueryClient();
 
@@ -75,7 +80,7 @@ export function useMutateData<T>({
         withCredentials: true,
       };
 
-      const response = await axios(config);
+      const response = await axiosInstance(config);
 
       return response.data;
     },

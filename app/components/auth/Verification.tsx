@@ -84,6 +84,7 @@ const Verification: FC<Props> = ({ setMode }) => {
     method: "POST",
     mutationKey: ["verification"],
     url: "/account-verification",
+    skipAuthRefresh: true,
   });
 
   // handle submit
@@ -115,6 +116,7 @@ const Verification: FC<Props> = ({ setMode }) => {
     method: "POST",
     mutationKey: ["resendCode"],
     url: "/resend-verification-code",
+    skipAuthRefresh: true,
   });
 
   // handle resend code

@@ -16,6 +16,7 @@ const ForgotPassword = ({ setMode }: Props) => {
     method: "POST",
     mutationKey: ["forgotPassword"],
     url: "/forgot-password",
+    skipAuthRefresh: true,
   });
   const [form, setForm] = useState<ForgotForm>({ email: "" });
 

@@ -21,6 +21,7 @@ const Login: FC<Props> = ({ setMode, setOpenModal }) => {
     method: "POST",
     mutationKey: ["loginUser"],
     url: "/login",
+    skipAuthRefresh: true,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

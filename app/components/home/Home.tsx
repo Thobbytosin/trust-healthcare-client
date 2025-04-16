@@ -13,8 +13,10 @@ import Testimonials from "./Testimonials";
 import MeetDoctors from "./MeetDoctors";
 import Services from "./Services";
 import { useFetchDoctors } from "../../../app/hooks/useFetchDoctors";
-import { useDoctorsStore } from "@/app/store/useDoctorsStore";
+import { useDoctorsStore } from "@/store/useDoctorsStore";
 import LandingPageLoader from "./LandingPageLoader";
+import { usePathname, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 type Props = {};
 
@@ -22,15 +24,32 @@ const Home = (props: Props) => {
   const { isLoading, refetchUser } = useAuth();
   const { isLoading: doctorsLoading, refetch: refetchDoctors } =
     useFetchDoctors();
-  const doctors = useDoctorsStore((state) => state.doctors);
+  const doctors = useDoctorsStore((state) => state.doctorsFree);
   const [mounted, setMounted] = useState(false);
+
+  // for protected route nextjs middleware
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (searchParams.get("authError") === "true") {
+      toast.error("You are not logged in", {
+        description: "Sign in to proceed. Thanks",
+        duration: 4000,
+      });
+
+      // Remove the authError param from the URL
+      const newParams = new URLSearchParams(searchParams.toString());
+      newParams.delete("authError");
+
+      // const newUrl = `${pathname}?${newParams.toString()}`;
+      window.history.replaceState({}, "", "/");
+    }
+  }, [searchParams, pathname]);
 
   useEffect(() => {
     setMounted(true);
     refetchDoctors();
-  }, []);
-
-  useEffect(() => {
     refetchUser(); // get latest user data
   }, []);
 
