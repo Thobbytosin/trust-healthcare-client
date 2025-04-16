@@ -6,17 +6,6 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-// routes to skip for refresh logic
-// const skipRefreshRoutes = [
-//   "/signup",
-//   "/account-verification",
-//   "/resend-verification-code",
-//   "/login",
-//   "/get-some-doctors-free",
-//   "/forgot-password",
-//   "/reset-password",
-// ];
-
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
   skipAuthRefresh?: boolean;

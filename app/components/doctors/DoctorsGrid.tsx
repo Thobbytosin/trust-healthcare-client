@@ -9,7 +9,7 @@ import {
   KeyboardDoubleArrowRightOutlinedIcon,
 } from "../../../app/icons/icons";
 import Sidebar from "./Sidebar";
-import { IDoctor } from "@/app/store/useDoctorsStore";
+import { IDoctor } from "@/store/useDoctorsStore";
 import DoctorCardSkeleton from "./DoctorsCardSkeleton";
 
 type Props = {
@@ -19,7 +19,6 @@ type Props = {
   handlePageChange: (value: number) => any;
   doctorsData: IDoctor[];
   location: string | undefined;
-  setActiveSpecialization: (value: string) => void;
   setLocationSearched: (value: boolean) => void;
   locationSearched: boolean;
   handleFilterChange: (value: string) => any;
@@ -32,7 +31,6 @@ const DoctorsGrid: FC<Props> = ({
   handlePageChange,
   doctorsData,
   location,
-  setActiveSpecialization,
   locationSearched,
   setLocationSearched,
   handleFilterChange,
@@ -102,11 +100,9 @@ const DoctorsGrid: FC<Props> = ({
           ? [1, 2, 3, 4].map((doctor: any, index) => (
               <DoctorCardSkeleton key={index} doctor={doctor} />
             ))
-          : doctorsData
-              ?.slice(skip, skip + limit)
-              .map((doctor: any, index) => (
-                <DoctorCard key={index} doctor={doctor} />
-              ))}
+          : doctorsData.map((doctor: any, index) => (
+              <DoctorCard key={index} doctor={doctor} />
+            ))}
 
         {loading ? null : (
           <div className=" my-10 flex justify-center items-center gap-2 mt-8 bg-white w-full py-3 rounded-md mx-auto">

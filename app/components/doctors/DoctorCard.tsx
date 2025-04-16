@@ -48,14 +48,18 @@ type Props = {
 };
 
 const DoctorCard: FC<Props> = ({ doctor }) => {
-  const [showMore, setShowMore] = useState(false);
   const router = useRouter();
+  const [showMoreText, setShowMoreText] = useState(false);
+
+  const toggleShowMore = () => setShowMoreText(!showMoreText);
+
+  console.log(doctor);
   return (
     <div className=" w-full min-h-[fit] bg-white  rounded-xl overflow-clip cursor-pointer transition-all duration-700 hover:scale-95 p-4 flex items-start justify-between gap-2 lg:gap-4 mb-4">
       {/* image */}
       <div className=" lg:w-[30%] w-[100px] h-[100px] md:w-[150px] md:h-[150px] lg:h-[200px]  bg-gray-200 overflow-clip rounded-full">
         <Image
-          src={doctor.thumbnail.url}
+          src={doctor.image}
           alt="doctor_image"
           width={100}
           height={100}
@@ -64,68 +68,52 @@ const DoctorCard: FC<Props> = ({ doctor }) => {
       </div>
 
       {/* details */}
-      <div className="w-[70%] mt-2 px-3 lg:flex gap-4  h-full">
-        <div className=" lg:max-w-[70%]">
+      <div className="w-[70%] mt-2 px-3 lg:flex gap-4  h-full ">
+        <div className=" lg:max-w-[80%]">
           <h4 className=" text-text-primary text-lg md:text-xl font-medium relative">
             {doctor.name}
             <span className="  absolute -top-1 text-sm text-secondary">
-              {doctor.verificationStatus ? (
+              {doctor.verificationStatus === "Verified" ? (
                 <VerifiedIcon fontSize="inherit" color="inherit" />
               ) : null}
             </span>
           </h4>
           <p className=" text-grayey mt-1 text-xs font-light">
-            {doctor.specialization}
+            {doctor.specialization.length > 1
+              ? [...doctor.specialization].join(", ")
+              : doctor.specialization[0]}
           </p>
           <p className=" text-grayey mt-1 text-xs font-light">
-            {doctor.experience} of practice
+            {doctor.yearsOfExperience} years of practice
           </p>
           <p className=" text-text-primary mt-2 text-sm font-medium">
             {doctor.city}, {doctor.state}.
           </p>
           <p className=" text-text-primary mt-1 text-xs">
-            {doctor.about}{" "}
-            {showMore ? (
-              <span
-                onClick={() => setShowMore(false)}
-                className=" underline text-primary cursor-pointer"
-              >
-                less
-              </span>
-            ) : (
-              <span
-                onClick={() => setShowMore(true)}
-                className=" underline text-primary cursor-pointer"
-              >
-                more
-              </span>
-            )}
+            {doctor.about.length <= 50
+              ? doctor.about
+              : showMoreText
+              ? doctor.about
+              : `${doctor.about.slice(0, 50)}...`}
+            <button
+              onClick={toggleShowMore}
+              className=" ml-3 cursor-pointer text-blue-500 underline"
+            >
+              {showMoreText ? "Show less" : "Show more"}
+            </button>
           </p>
-          {showMore ? (
-            <>
-              <p className=" text-grayey text-xs mt-1">
-                {[...doctor.education].join(", ")}
-              </p>
-              <p className="text-grayey text-xs mt-0.5">
-                {[...doctor.certifications].join(", ")}
-              </p>
-            </>
-          ) : null}
 
           {/* hide on laptop */}
-          {showMore ? (
-            <p className=" lg:hidden mt-4">
-              <span className=" text-xs font-semibold text-secondary">
-                FREE
-              </span>
-              <span className=" line-through text-grayey text-xs ml-2">
-                &#8358; 20,000
-              </span>
-              <span className=" text-text-primary text-xs block font-medium">
-                Consultation fee at the clinic.
-              </span>
-            </p>
-          ) : null}
+
+          <p className=" lg:hidden mt-4">
+            <span className=" text-xs font-semibold text-secondary">FREE</span>
+            <span className=" line-through text-grayey text-xs ml-2">
+              &#8358; 20,000
+            </span>
+            <span className=" text-text-primary text-xs block font-medium">
+              Consultation fee at the clinic.
+            </span>
+          </p>
 
           {/* hide on tablet */}
           <p className="hidden lg:block mt-4">
@@ -148,16 +136,14 @@ const DoctorCard: FC<Props> = ({ doctor }) => {
             <Ratings color=" text-secondary" rating={doctor.ratings} />
           </div>
 
-          {showMore ? (
-            <div className=" text-lg md:hidden flex items-center gap-3 mt-4 ">
-              <span className=" bg-secondary text-xs font-medium text-white p-1">
-                {Number.isInteger(doctor.ratings)
-                  ? doctor.ratings.toFixed(1)
-                  : doctor.ratings}
-              </span>
-              <Ratings color=" text-secondary" rating={doctor.ratings} />
-            </div>
-          ) : null}
+          <div className=" text-lg md:hidden flex items-center gap-3 mt-4 ">
+            <span className=" bg-secondary text-xs font-medium text-white p-1">
+              {Number.isInteger(doctor.ratings)
+                ? doctor.ratings.toFixed(1)
+                : doctor.ratings}
+            </span>
+            <Ratings color=" text-secondary" rating={doctor.ratings} />
+          </div>
         </div>
 
         {/* book appointment btn */}

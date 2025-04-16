@@ -13,7 +13,7 @@ import Testimonials from "./Testimonials";
 import MeetDoctors from "./MeetDoctors";
 import Services from "./Services";
 import { useFetchDoctors } from "../../../app/hooks/useFetchDoctors";
-import { useDoctorsStore } from "@/app/store/useDoctorsStore";
+import { useDoctorsStore } from "@/store/useDoctorsStore";
 import LandingPageLoader from "./LandingPageLoader";
 import { usePathname, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
@@ -42,8 +42,8 @@ const Home = (props: Props) => {
       const newParams = new URLSearchParams(searchParams.toString());
       newParams.delete("authError");
 
-      const newUrl = `${pathname}?${newParams.toString()}`;
-      window.history.replaceState({}, "", newUrl);
+      // const newUrl = `${pathname}?${newParams.toString()}`;
+      window.history.replaceState({}, "", "/");
     }
   }, [searchParams, pathname]);
 

@@ -6,8 +6,11 @@ import Ratings from "../global/Ratings";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import RevealWrapper from "../global/RevealWrapper";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import ButtonLoader from "../global/ButtonLoader";
+import { toast } from "sonner";
+import { useFetchData } from "@/app/hooks/useApi";
+import { SERVER_URI } from "@/app/utils/uri";
 
 export interface IDoctorFree {
   id: string;
@@ -28,16 +31,36 @@ const MeetDoctors = ({ doctors }: Props) => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [currentId, setCurrentId] = useState<string | undefined>();
+  const searchParams = useSearchParams();
 
-  const handleBtnNavigate = (id: string) => {
+  const handleBtnNavigate = async (id: string) => {
     setLoading(true);
     setCurrentId(id);
 
-    router.push(`/doctor/${id}`);
+    const refreshes = await fetch(`${SERVER_URI}/refresh-tokens`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        // Cookie: `refresh_token=${refreshToken}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-    setTimeout(() => {
+    if (refreshes.ok) {
+      router.push(`/doctor/${id}`);
+
+      setTimeout(() => {
+        setLoading(false);
+        setCurrentId(undefined);
+      }, 3000);
+    } else {
       setLoading(false);
-    }, 7000);
+      setCurrentId(undefined);
+      toast.error("You are not logged in", {
+        description: "Sign in to proceed. Thanks",
+        duration: 4000,
+      });
+    }
   };
   return (
     <RevealWrapper>

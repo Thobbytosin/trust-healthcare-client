@@ -2,6 +2,8 @@ import React from "react";
 import Header from "../components/global/Header";
 import { Metadata } from "next";
 import FindDoctors from "../components/doctors/FindDoctors";
+import { SERVER_URI } from "@/utils/uri";
+import { cookies } from "next/headers";
 
 // SE0
 export const metadata: Metadata = {
@@ -45,12 +47,6 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://trusthealthcare.com"),
 };
 
-export default function Doctors() {
-  return (
-    <>
-      <Header activeIndex={2} />
-
-      <FindDoctors />
-    </>
-  );
+export default async function FindDoctorsPage() {
+  return <FindDoctors />;
 }

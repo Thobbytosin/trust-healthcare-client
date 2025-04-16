@@ -30,16 +30,13 @@ export const useFetchDoctors = () => {
     });
 
   useEffect(() => {
-    // console.log("DATA CHANGED");
     if (data) {
-      // console.log("DATA REFETCHED");
       setDoctors(data.doctors);
       queryClient.invalidateQueries(); // refresh after success
     }
   }, [data]);
 
   useEffect(() => {
-    // console.log("ERORR CHANGED");
     if (error) {
       toast.error("Something went wrong!", {
         description: error.message,
