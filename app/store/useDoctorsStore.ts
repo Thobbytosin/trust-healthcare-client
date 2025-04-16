@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { IDoctorFree } from "../components/home/MeetDoctors";
 
 export interface IDoctor {
   name?: string;
@@ -35,10 +36,14 @@ export interface IDoctor {
 
 interface DoctorsState {
   doctors: IDoctor[];
+  doctorsFree: IDoctorFree[];
   setDoctors: (doctors: IDoctor[]) => void;
+  setDoctorsFree: (doctors: IDoctorFree[]) => void;
 }
 
 export const useDoctorsStore = create<DoctorsState>((set) => ({
   doctors: [],
+  doctorsFree: [],
   setDoctors: (doctors) => set({ doctors }),
+  setDoctorsFree: (doctorsFree) => set({ doctorsFree }),
 }));

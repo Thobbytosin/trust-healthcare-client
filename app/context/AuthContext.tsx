@@ -39,45 +39,13 @@ const AuthContext = createContext<AuthContextType>({
 // provider
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(false);
 
-  const {
-    data,
-    isLoading: fetchLoading,
-    isError: fetchError,
-    refetch,
-  } = useFetchData<BackendResponse>({
+  const { data, isLoading, isError, refetch } = useFetchData<BackendResponse>({
     method: "GET",
     url: "/me",
     queryKey: ["user"],
     enabled: false, // avoid auto-fetching
   });
-
-  useEffect(() => {
-    refetch(); // refetch when the components mount
-  });
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        setIsLoading(true);
-        const res = await refetch();
-        if (res) {
-          setUser(res.data?.user);
-        }
-        // console.log("USER:", user);
-      } catch (error: any) {
-        // console.log("Error fetching User:", error);
-        setIsError(true);
-        setIsLoading(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   return (
     <AuthContext.Provider

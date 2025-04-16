@@ -18,7 +18,7 @@ const filterOptions = [{ option: "All" }, { option: "Available" }];
 // sort options
 const sortOptions = [
   { option: "Latest" },
-  { option: "Highest Rated" },
+  { option: "Ratings" },
   { option: "Oldest" },
 ];
 

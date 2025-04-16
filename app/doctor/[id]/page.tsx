@@ -60,6 +60,8 @@ type Props = {
 // }
 
 const Page = async ({ params }: Props) => {
+  console.log(params.id);
+
   return (
     <>
       <Header activeIndex={-1} />

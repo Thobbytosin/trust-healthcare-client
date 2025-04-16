@@ -43,6 +43,7 @@ const ResetPassword = ({ setMode }: Props) => {
     method: "POST",
     mutationKey: ["resetPassword"],
     url: "/reset-password",
+    skipAuthRefresh: true,
   });
 
   const handleReset = (e: React.FormEvent) => {

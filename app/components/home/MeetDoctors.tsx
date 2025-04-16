@@ -1,20 +1,44 @@
 "use client";
 import { styles } from "../../../app/styles/styles";
-import React from "react";
+import React, { useState } from "react";
 import SectionHeading from "../global/SectionHeading";
 import Ratings from "../global/Ratings";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import RevealWrapper from "../global/RevealWrapper";
 import { useRouter } from "next/navigation";
-import { IDoctor } from "../../../app/store/useDoctorsStore";
+import ButtonLoader from "../global/ButtonLoader";
 
+export interface IDoctorFree {
+  id: string;
+  name: string;
+  about: string;
+  ratings: number;
+  available: boolean;
+  image: string;
+  specialization: string[];
+  yearsOfExperience: number;
+  verificationStatus: string;
+}
 type Props = {
-  doctors: IDoctor[];
+  doctors: IDoctorFree[];
 };
 
 const MeetDoctors = ({ doctors }: Props) => {
   const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [currentId, setCurrentId] = useState<string | undefined>();
+
+  const handleBtnNavigate = (id: string) => {
+    setLoading(true);
+    setCurrentId(id);
+
+    router.push(`/doctor/${id}`);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 7000);
+  };
   return (
     <RevealWrapper>
       <section className={styles.newSection}>
@@ -43,24 +67,32 @@ const MeetDoctors = ({ doctors }: Props) => {
           className=" flex justify-center items-center mt-10"
         >
           <div className=" grid grid-cols-1 md:grid-cols-2 gap-10">
-            {doctors.slice(4, 8).map((doctor, index) => (
+            {doctors.map((doctor, index) => (
               <div
                 key={index}
-                className=" bg-white w-[302px] lg:w-[394px] h-[447px] shadow shadow-black/20 rounded-md flex flex-col justify-center items-center"
+                className={`bg-white w-[302px] lg:w-[394px] h-[447px] shadow shadow-black/20 rounded-md flex flex-col justify-center items-center ${
+                  doctor.available ? "" : "opacity-50 cursor-not-allowed"
+                }`}
               >
                 <div className=" w-[80%] h-[90%]  flex flex-col lg:justify-between ">
                   <div>
                     {/* available indicator */}
                     <div className="w-fit flex justify-center items-center px-2 py-0.5 bg-[#EDEDED] rounded-full gap-2 ">
-                      <div className=" w-[8px] h-[8px] rounded-full bg-primary " />
-                      <h4 className=" text-xs text-text-primary">Available</h4>
+                      <div
+                        className={`w-[8px] h-[8px] rounded-full ${
+                          doctor.available ? "bg-primary" : "bg-red-500"
+                        } `}
+                      />
+                      <h4 className=" text-xs text-text-primary">
+                        {doctor.available ? "Available" : "Not Available"}
+                      </h4>
                     </div>
 
                     {/* image card */}
                     <div className="relative w-full flex justify-center items-center bg-primary rounded-3xl h-[140px] lg:h-[198px] mt-6 lg:mt-2">
                       <div className=" absolute bottom-0 bg-blue-300/20 w-40 md:w-50 h-[60%] rounded-t-3xl">
                         <Image
-                          src={doctor?.thumbnail?.url || ""}
+                          src={doctor.image || ""}
                           alt="doctor_image"
                           width={100}
                           height={100}
@@ -75,8 +107,10 @@ const MeetDoctors = ({ doctors }: Props) => {
                     <h3 className=" text-text-primary text-center text-lg">
                       {doctor.name}
                     </h3>
-                    <p className=" text-text-light-gray mt-1 text-center">
-                      {doctor.specialization}
+                    <p className=" text-red-500 mt-1 text-center">
+                      {doctor.specialization.length > 1
+                        ? doctor.specialization.join(", ")
+                        : doctor.specialization[0]}
                     </p>
                     <div className=" mt-6 text-2xl">
                       <Ratings
@@ -86,14 +120,31 @@ const MeetDoctors = ({ doctors }: Props) => {
                     </div>
 
                     {/* button */}
-                    <button
-                      type="button"
-                      title="Book Appointment"
-                      aria-label="Book Appointment"
-                      className=" text-sm lg:text-base w-full text-center py-2 transition-all duration-700 border border-primary text-primary mt-3 cursor-pointer hover:bg-primary hover:text-white rounded-xl hover:border-0"
-                    >
-                      Book Appointment
-                    </button>
+                    {doctor.available ? (
+                      <div className=" w-full">
+                        {loading && currentId === doctor.id && <ButtonLoader />}
+                        {!loading && currentId !== doctor.id && (
+                          <button
+                            type="button"
+                            title="Book Appointment"
+                            aria-label="Book Appointment"
+                            onClick={() => handleBtnNavigate(doctor.id)}
+                            className=" text-sm lg:text-base w-full text-center py-2 transition-all duration-700 border border-primary text-primary mt-3 cursor-pointer hover:bg-primary hover:text-white rounded-full hover:border-0"
+                          >
+                            Book Appointment
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        title="Book Appointment"
+                        aria-label="Book Appointment"
+                        className=" text-sm lg:text-base w-full text-center py-2  bg-gray-300 mt-3 cursor-not-allowed  text-white rounded-xl "
+                      >
+                        Not Available
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

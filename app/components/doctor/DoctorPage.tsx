@@ -22,7 +22,7 @@ const DoctorPage = (props: Props) => {
         {/* blue header */}
         <div className=" bg-primary h-[80px] md:h-[100px] w-full mt-20 rounded-b-xl" />
         {/* SEARCH HEADER */}
-        <SearchHeader
+        {/* <SearchHeader
           key={"search-header"}
           filterValue={filterValue}
           searchForm={searchForm}
@@ -34,7 +34,8 @@ const DoctorPage = (props: Props) => {
           showOptions={showOptions}
           showSortOptions={showSortOptions}
           sortValue={sortValue}
-        />
+        /> */}
+        <h1>Doctor Page</h1>
       </RevealWrapper>
     </section>
   );

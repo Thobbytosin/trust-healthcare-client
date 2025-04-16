@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const protectedPaths = ["/profile", "/admin"];
+const protectedPaths = ["/profile", "/admin", "/doctor"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
   if (!accessToken) {
     // redirect to home page if there is no token
     const homeUrl = new URL("/", request.url);
-    homeUrl.searchParams.set("message", "You are not logged in");
+    homeUrl.searchParams.set("authError", "true");
 
     return NextResponse.redirect(homeUrl);
   }

@@ -17,25 +17,22 @@ interface BackendFailureResponse {
 }
 
 export const useFetchDoctors = () => {
-  const setDoctors = useDoctorsStore((state) => state.setDoctors);
+  const setDoctors = useDoctorsStore((state) => state.setDoctorsFree);
   const queryClient = useQueryClient();
 
   const { data, isLoading, error, refetch } =
     useFetchData<BackendSuccessResponse>({
       method: "GET",
       queryKey: ["getDoctors"],
-      url: `/get-doctors`,
+      url: `/get-some-doctors-free`,
       enabled: false,
+      skipAuthRefresh: true,
     });
-
-  // useEffect(() => {
-  //   refetch(); // Manually trigger fetching only on mount
-  // }, []);
 
   useEffect(() => {
     // console.log("DATA CHANGED");
     if (data) {
-      console.log("DATA REFETCHED");
+      // console.log("DATA REFETCHED");
       setDoctors(data.doctors);
       queryClient.invalidateQueries(); // refresh after success
     }

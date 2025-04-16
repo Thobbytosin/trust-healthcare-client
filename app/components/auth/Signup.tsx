@@ -24,6 +24,7 @@ const Signup: FC<Props> = ({ setMode }) => {
     mutationKey: ["registerUser"],
     method: "POST",
     url: "/signup",
+    skipAuthRefresh: true,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
