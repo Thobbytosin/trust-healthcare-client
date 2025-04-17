@@ -1,4 +1,4 @@
-import { useMutateData } from "@/app/hooks/useApi";
+import { useMutateData } from "@/hooks/useApi";
 import {
   CloseOutlinedIcon,
   DoneOutlinedIcon,

@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { FC, useEffect, useRef } from "react";
+import React, { FC, FormEvent, useEffect, useRef } from "react";
 import {
   Select,
   SelectContent,
@@ -11,6 +10,8 @@ import {
   ExpandMoreOutlinedIcon,
   SearchOutlinedIcon,
 } from "../../../../app/icons/icons";
+import { SearchDoctorForm } from "@/components/doctors/Doctors";
+import { useSearchParams } from "next/navigation";
 
 // filter options
 const filterOptions = [{ option: "All" }, { option: "Available" }];
@@ -24,15 +25,18 @@ const sortOptions = [
 
 type Props = {
   setSearchForm: (value: object) => void;
-  searchForm: object;
+  searchForm: SearchDoctorForm;
   setShowFilterOptions: React.Dispatch<React.SetStateAction<boolean>>;
   setShowSortOptions: React.Dispatch<React.SetStateAction<boolean>>;
   filterValue: string;
   showFilterOptions: boolean;
   setFilterValue: (value: string) => void;
-  sortValue: string;
+  setSearchTrigger: (value: number) => void;
+  setPage: (value: number) => void;
+  sortBy: string;
   showSortOptions: boolean;
-  setSortValue: (value: string) => void;
+  setSortBy: (value: string) => void;
+  handleSearchChange: (value: string) => any;
 };
 
 const SearchHeader: FC<Props> = ({
@@ -41,14 +45,18 @@ const SearchHeader: FC<Props> = ({
   filterValue,
   setShowFilterOptions,
   showFilterOptions,
+  setSearchTrigger,
   setFilterValue,
-  sortValue,
+  setPage,
+  sortBy,
   showSortOptions,
-  setSortValue,
+  setSortBy,
   setShowSortOptions,
+  handleSearchChange,
 }) => {
   const optionsRef = useRef<HTMLUListElement>(null);
   const sortRef = useRef<HTMLUListElement>(null);
+  const params = useSearchParams();
 
   //   close the drop down when clicking anywhere
   useEffect(() => {
@@ -76,9 +84,16 @@ const SearchHeader: FC<Props> = ({
           {/* location */}
           <div className=" relative w-full md:w-[190px] lg:w-[270px] h-fit  bg-gray-100  rounded-md">
             <Select
-              onValueChange={(value: string) =>
-                setSearchForm({ ...searchForm, location: value })
-              }
+              value={searchForm.location}
+              onValueChange={(value: string) => {
+                setSearchForm({ ...searchForm, location: value });
+
+                setPage(1); // always set page to 1
+
+                handleSearchChange(value);
+
+                setSearchTrigger(Date.now()); // to always trigger the useeffect
+              }}
             >
               <SelectTrigger className="w-full border border-gray-200 py-5 outline-none text-text-primary focus:outline-none ring-0 focus:ring-0  ">
                 <SelectValue placeholder="Select Your Location" />
@@ -91,10 +106,10 @@ const SearchHeader: FC<Props> = ({
                   Lagos
                 </SelectItem>
                 <SelectItem
-                  value="Ogun"
+                  value="Berlin"
                   className=" transition-all duration-700 hover:bg-gray-200"
                 >
-                  Ogun
+                  Berlin
                 </SelectItem>
                 <SelectItem
                   value="Abuja"
@@ -106,11 +121,11 @@ const SearchHeader: FC<Props> = ({
             </Select>
           </div>
 
-          {/* doctor, hospital */}
+          {/* specialization */}
           <div className="md:ml-4 mt-3 md:mt-0 relative w-full md:w-[250px] lg:w-[400px] bg-gray-100  border border-gray-200 rounded-md">
             <input
               type="text"
-              placeholder="Search by Doctor, Hospital..."
+              placeholder="Search by Specialization..."
               className=" outline-none bg-transparent h-[41.33px] py-5 px-3 text-text-primary w-full text-sm"
               onChange={(e) =>
                 setSearchForm({ ...searchForm, parameter: e.target.value })
@@ -119,14 +134,6 @@ const SearchHeader: FC<Props> = ({
             <SearchOutlinedIcon className="text-text-primary absolute right-2 top-2 " />
           </div>
         </div>
-
-        {/* button */}
-        <button
-          type="submit"
-          className=" bg-primary mt-4 md:mt-0 h-[41.33px] w-[150px] lg:w-[231px] text-sm cursor-pointer rounded-md text-center text-white"
-        >
-          Search
-        </button>
       </form>
 
       {/* SORT/FILTER */}
@@ -171,7 +178,7 @@ const SearchHeader: FC<Props> = ({
             onClick={() => setShowSortOptions((prev) => !prev)}
           >
             <span className="text-text-primary md:text-base text-xs">
-              {sortValue}
+              {sortBy}
             </span>
             <ExpandMoreOutlinedIcon color="primary" />
 
@@ -184,11 +191,11 @@ const SearchHeader: FC<Props> = ({
                   <li
                     key={index}
                     className={`p-2 hover:bg-gray-100 ${
-                      sortValue === item.option
+                      sortBy === item.option
                         ? "text-primary bg-gray-100"
                         : " text-text-primary"
                     }`}
-                    onClick={() => setSortValue(item.option)}
+                    onClick={() => setSortBy(item.option)}
                   >
                     {item.option}
                   </li>

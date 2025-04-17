@@ -9,8 +9,7 @@ import RevealWrapper from "../global/RevealWrapper";
 import { useRouter, useSearchParams } from "next/navigation";
 import ButtonLoader from "../global/ButtonLoader";
 import { toast } from "sonner";
-import { useFetchData } from "@/app/hooks/useApi";
-import { SERVER_URI } from "@/app/utils/uri";
+import { SERVER_URI } from "@/utils/uri";
 
 export interface IDoctorFree {
   id: string;
@@ -41,7 +40,6 @@ const MeetDoctors = ({ doctors }: Props) => {
       method: "GET",
       credentials: "include",
       headers: {
-        // Cookie: `refresh_token=${refreshToken}`,
         "Content-Type": "application/json",
       },
     });
