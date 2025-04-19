@@ -1,4 +1,4 @@
-import { useMutateData } from "@/app/hooks/useApi";
+import { useMutateData } from "@/hooks/useApi";
 import {
   CloseOutlinedIcon,
   DoneOutlinedIcon,
@@ -42,7 +42,7 @@ const ResetPassword = ({ setMode }: Props) => {
   const { mutate: resetPassword, isPending } = useMutateData({
     method: "POST",
     mutationKey: ["resetPassword"],
-    url: "/reset-password",
+    url: "/user/reset-password",
     skipAuthRefresh: true,
   });
 

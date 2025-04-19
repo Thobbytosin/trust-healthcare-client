@@ -15,7 +15,7 @@ const ForgotPassword = ({ setMode }: Props) => {
   const { mutate: forgotPassword, isPending } = useMutateData({
     method: "POST",
     mutationKey: ["forgotPassword"],
-    url: "/forgot-password",
+    url: "/user/forgot-password",
     skipAuthRefresh: true,
   });
   const [form, setForm] = useState<ForgotForm>({ email: "" });

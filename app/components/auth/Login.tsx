@@ -1,4 +1,4 @@
-import { useMutateData } from "@/app/hooks/useApi";
+import { useMutateData } from "@/hooks/useApi";
 import {
   VisibilityOffOutlinedIcon,
   VisibilityOutlinedIcon,
@@ -6,7 +6,7 @@ import {
 import React, { FC, FormEvent, useState } from "react";
 import { toast } from "sonner";
 import Loader from "../global/Loader";
-import { useAuth } from "@/app/context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 type Props = {
   setMode: (value: string) => void;
@@ -20,7 +20,7 @@ const Login: FC<Props> = ({ setMode, setOpenModal }) => {
   const { mutate: loginUser, isPending } = useMutateData({
     method: "POST",
     mutationKey: ["loginUser"],
-    url: "/login",
+    url: "/auth/login",
     skipAuthRefresh: true,
   });
 

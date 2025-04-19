@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { FC, useEffect, useRef } from "react";
+import React, { FC, FormEvent, useEffect, useRef, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -11,6 +10,10 @@ import {
   ExpandMoreOutlinedIcon,
   SearchOutlinedIcon,
 } from "../../../../app/icons/icons";
+import { SearchDoctorForm } from "@/components/doctors/Doctors";
+import { useSearchParams } from "next/navigation";
+import useTooltip from "@/hooks/useTooltip";
+import ToolTip from "@/components/helpers/Tooltip";
 
 // filter options
 const filterOptions = [{ option: "All" }, { option: "Available" }];
@@ -24,15 +27,22 @@ const sortOptions = [
 
 type Props = {
   setSearchForm: (value: object) => void;
-  searchForm: object;
+  searchForm: SearchDoctorForm;
   setShowFilterOptions: React.Dispatch<React.SetStateAction<boolean>>;
   setShowSortOptions: React.Dispatch<React.SetStateAction<boolean>>;
   filterValue: string;
   showFilterOptions: boolean;
   setFilterValue: (value: string) => void;
-  sortValue: string;
+  setSearchTrigger: (value: number) => void;
+  setPage: (value: number) => void;
+  sortBy: string;
   showSortOptions: boolean;
-  setSortValue: (value: string) => void;
+  setSortBy: (value: string) => void;
+  handleSearchChange: (
+    type: string,
+    parameter: any,
+    defaultPageNum?: number
+  ) => any;
 };
 
 const SearchHeader: FC<Props> = ({
@@ -41,14 +51,20 @@ const SearchHeader: FC<Props> = ({
   filterValue,
   setShowFilterOptions,
   showFilterOptions,
+  setSearchTrigger,
   setFilterValue,
-  sortValue,
+  setPage,
+  sortBy,
   showSortOptions,
-  setSortValue,
+  setSortBy,
   setShowSortOptions,
+  handleSearchChange,
 }) => {
   const optionsRef = useRef<HTMLUListElement>(null);
   const sortRef = useRef<HTMLUListElement>(null);
+  const params = useSearchParams();
+  const showLocationTooltip = useTooltip("location-select");
+  const showSpecializationTooltip = useTooltip("specialization");
 
   //   close the drop down when clicking anywhere
   useEffect(() => {
@@ -68,66 +84,133 @@ const SearchHeader: FC<Props> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // search by specialization
+  const handleSubmitSpecializationSearchForm = (e: FormEvent) => {
+    e.preventDefault();
+
+    const currentSpecialization = params.get("specialization") || "";
+    if (searchForm.specialization === "") return;
+
+    if (
+      searchForm.specialization.toLowerCase() ===
+      currentSpecialization.toLowerCase()
+    )
+      return; // to avoid searching same location again
+
+    setPage(1); // always set page to 1
+
+    handleSearchChange("specialization", searchForm.specialization);
+
+    setSearchTrigger(Date.now()); // to always trigger the useeffect
+  };
+
+  const currentSpecialization = params.get("specialization") || "";
+
   return (
     <div className=" bg-white w-[90%] lg:w-[80%] mx-auto -mt-[50px] shadow-md shadow-black/10 rounded-xl min-h-fit p-6">
       {/* SEARCH FORM */}
-      <form className=" w-full md:flex justify-between ">
-        <div className=" md:flex">
-          {/* location */}
-          <div className=" relative w-full md:w-[190px] lg:w-[270px] h-fit  bg-gray-100  rounded-md">
-            <Select
-              onValueChange={(value: string) =>
-                setSearchForm({ ...searchForm, location: value })
-              }
-            >
-              <SelectTrigger className="w-full border border-gray-200 py-5 outline-none text-text-primary focus:outline-none ring-0 focus:ring-0  ">
-                <SelectValue placeholder="Select Your Location" />
-              </SelectTrigger>
-              <SelectContent className=" mt-3 bg-white border-none text-text-primary">
-                <SelectItem
-                  value="Lagos"
-                  className=" transition-all duration-700 hover:bg-gray-200"
-                >
-                  Lagos
-                </SelectItem>
-                <SelectItem
-                  value="Ogun"
-                  className=" transition-all duration-700 hover:bg-gray-200"
-                >
-                  Ogun
-                </SelectItem>
-                <SelectItem
-                  value="Abuja"
-                  className=" transition-all duration-700 hover:bg-gray-200"
-                >
-                  Abuja
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      <div className=" w-full md:flex justify-between  ">
+        {/* location */}
+        <div className=" relative w-full md:w-[190px] lg:w-[270px] h-fit  bg-gray-100  rounded-md">
+          <Select
+            value={searchForm.location}
+            onValueChange={(value: string) => {
+              setSearchForm({ ...searchForm, location: value });
 
-          {/* doctor, hospital */}
+              setPage(1); // always set page to 1
+
+              handleSearchChange("search", value);
+
+              setSearchTrigger(Date.now()); // to always trigger the useeffect
+            }}
+          >
+            <SelectTrigger
+              id="location-select"
+              name="location"
+              aria-label="Location"
+              data-testid="location-select"
+              disabled={searchForm.specialization !== ""}
+              className="w-full border border-gray-200 py-5 outline-none text-text-primary focus:outline-none ring-0 focus:ring-0  "
+            >
+              <SelectValue placeholder="Select Your Location" />
+            </SelectTrigger>
+            <SelectContent className=" mt-3 bg-white border-none text-text-primary">
+              <SelectItem
+                value="Lagos"
+                className=" transition-all duration-700 hover:bg-gray-200"
+              >
+                Lagos
+              </SelectItem>
+              <SelectItem
+                value="Berlin"
+                className=" transition-all duration-700 hover:bg-gray-200"
+              >
+                Berlin
+              </SelectItem>
+              <SelectItem
+                value="Abuja"
+                className=" transition-all duration-700 hover:bg-gray-200"
+              >
+                Abuja
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <ToolTip
+            message="Select your preferred location"
+            show={showLocationTooltip}
+          />
+        </div>
+
+        <form
+          onSubmit={handleSubmitSpecializationSearchForm}
+          className="md:w-fit md:flex"
+          autoComplete="off"
+        >
+          {/* specialization */}
           <div className="md:ml-4 mt-3 md:mt-0 relative w-full md:w-[250px] lg:w-[400px] bg-gray-100  border border-gray-200 rounded-md">
             <input
+              id="specialization"
+              name="specialization"
+              aria-label="Specialization"
+              data-testid="specialization-input"
               type="text"
-              placeholder="Search by Doctor, Hospital..."
+              placeholder="Search by Specialization..."
               className=" outline-none bg-transparent h-[41.33px] py-5 px-3 text-text-primary w-full text-sm"
+              value={searchForm.specialization || ""}
               onChange={(e) =>
-                setSearchForm({ ...searchForm, parameter: e.target.value })
+                setSearchForm({ ...searchForm, specialization: e.target.value })
               }
             />
             <SearchOutlinedIcon className="text-text-primary absolute right-2 top-2 " />
-          </div>
-        </div>
 
-        {/* button */}
-        <button
-          type="submit"
-          className=" bg-primary mt-4 md:mt-0 h-[41.33px] w-[150px] lg:w-[231px] text-sm cursor-pointer rounded-md text-center text-white"
-        >
-          Search
-        </button>
-      </form>
+            <ToolTip
+              message="Enter a specialization"
+              show={showSpecializationTooltip}
+            />
+          </div>
+
+          {/* button */}
+          <button
+            name="search-form-submit"
+            title="search-form-submit"
+            type="submit"
+            disabled={
+              searchForm.specialization === "" ||
+              searchForm.specialization.toLowerCase() ===
+                currentSpecialization.toLowerCase()
+            }
+            className={`mt-4 md:mt-0 md:ml-4 h-[41.33px] w-[150px] lg:w-[231px] text-sm ${
+              searchForm.specialization === "" ||
+              searchForm.specialization.toLowerCase() ===
+                currentSpecialization.toLowerCase()
+                ? "cursor-not-allowed bg-gray-300"
+                : "cursor-pointer bg-primary "
+            } rounded-md text-center text-white`}
+          >
+            Search
+          </button>
+        </form>
+      </div>
 
       {/* SORT/FILTER */}
       <div className=" mt-8 flex items-center">
@@ -171,7 +254,7 @@ const SearchHeader: FC<Props> = ({
             onClick={() => setShowSortOptions((prev) => !prev)}
           >
             <span className="text-text-primary md:text-base text-xs">
-              {sortValue}
+              {sortBy}
             </span>
             <ExpandMoreOutlinedIcon color="primary" />
 
@@ -184,11 +267,11 @@ const SearchHeader: FC<Props> = ({
                   <li
                     key={index}
                     className={`p-2 hover:bg-gray-100 ${
-                      sortValue === item.option
+                      sortBy === item.option
                         ? "text-primary bg-gray-100"
                         : " text-text-primary"
                     }`}
-                    onClick={() => setSortValue(item.option)}
+                    onClick={() => setSortBy(item.option)}
                   >
                     {item.option}
                   </li>

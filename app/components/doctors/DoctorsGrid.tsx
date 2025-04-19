@@ -11,6 +11,7 @@ import {
 import Sidebar from "./Sidebar";
 import { IDoctor } from "@/store/useDoctorsStore";
 import DoctorCardSkeleton from "./DoctorsCardSkeleton";
+import { usePathname, useRouter } from "next/navigation";
 
 type Props = {
   loading: boolean;
@@ -22,6 +23,10 @@ type Props = {
   setLocationSearched: (value: boolean) => void;
   locationSearched: boolean;
   handleFilterChange: (value: string) => any;
+  totalDoctors: number;
+  limit: number;
+  dispatch: any;
+  setSearchTrigger: (value: number) => void;
 };
 
 const DoctorsGrid: FC<Props> = ({
@@ -34,13 +39,21 @@ const DoctorsGrid: FC<Props> = ({
   locationSearched,
   setLocationSearched,
   handleFilterChange,
+  totalDoctors,
+  limit,
+  dispatch,
+  setSearchTrigger,
 }) => {
-  const limit = 4;
-  const skip = (page - 1) * limit;
-  const totalPages = Math.ceil(doctorsData?.length / limit);
+  // const limit = 4;
+  // const skip = (page - 1) * limit;
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const totalPages = Math.ceil(totalDoctors / limit);
   const pagesArray = [];
 
-  const windowSize = 4;
+  const windowSize = limit;
   const [windowStart, setWindowStart] = useState(0);
   const windowEnd = windowStart + windowSize;
 
@@ -91,7 +104,16 @@ const DoctorsGrid: FC<Props> = ({
     }
   };
 
-  // console.log(loading);
+  const clearAllQueryParams = () => {
+    router.push(pathname); // removes all search/query params
+  };
+
+  const handleReset = () => {
+    dispatch({ type: "RESET_ALL" });
+    clearAllQueryParams();
+
+    setSearchTrigger(0); // to trigger the useffect
+  };
 
   return (
     <section className=" w-[90%] lg:w-[80%] mx-auto flex flex-col md:flex-row gap-4 lg:gap-8 justify-between">
@@ -104,7 +126,7 @@ const DoctorsGrid: FC<Props> = ({
               <DoctorCard key={index} doctor={doctor} />
             ))}
 
-        {loading ? null : (
+        {!loading && doctorsData.length >= 1 ? (
           <div className=" my-10 flex justify-center items-center gap-2 mt-8 bg-white w-full py-3 rounded-md mx-auto">
             <button
               onClick={() => handlePrev(page)}
@@ -164,6 +186,13 @@ const DoctorsGrid: FC<Props> = ({
               )}
             </button>
           </div>
+        ) : (
+          <button
+            onClick={handleReset}
+            className=" underline text-primary cursor-pointer"
+          >
+            See other doctors
+          </button>
         )}
       </div>
 

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { useDoctorsStore } from "../store/useDoctorsStore";
 import { useFetchData } from "./useApi";
@@ -11,10 +10,6 @@ interface BackendSuccessResponse {
   doctors: any;
   totalPages: number;
 }
-interface BackendFailureResponse {
-  success: boolean;
-  message: string;
-}
 
 export const useFetchDoctors = () => {
   const setDoctors = useDoctorsStore((state) => state.setDoctorsFree);
@@ -24,7 +19,7 @@ export const useFetchDoctors = () => {
     useFetchData<BackendSuccessResponse>({
       method: "GET",
       queryKey: ["getDoctors"],
-      url: `/get-some-doctors-free`,
+      url: `/doctor/get-some-doctors-free`,
       enabled: false,
       skipAuthRefresh: true,
     });

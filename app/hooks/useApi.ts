@@ -43,7 +43,7 @@ export function useFetchData<T>({
           // );
           throw new Error(error.response.data?.message || "API request failed");
         }
-        throw new Error("Something went wrong");
+        throw new Error("Something went wrong"); // generic error message
       }
     },
     staleTime,

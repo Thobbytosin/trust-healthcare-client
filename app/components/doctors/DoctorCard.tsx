@@ -4,44 +4,8 @@ import Image from "next/image";
 import { VerifiedIcon } from "../../../app/icons/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
-interface Review {
-  reviewerName: string;
-  comment: string;
-  rating: number;
-  date: string; // ISO date string
-}
-
-export interface Doctor {
-  name: string;
-  email: string;
-  securityAnswer: string;
-  hospital: string;
-  specialization: string;
-  experience: string;
-  education: string[];
-  licenseNumber: string;
-  certifications: string[];
-  availableDays: string[];
-  timeSlots: string[];
-  holidays: string[]; // ISO date strings
-  clinicAddress: string;
-  city: string;
-  state: string;
-  zipCode: number;
-  phone: number;
-  altPhone: string;
-  ratings: number;
-  reviews: Review[]; // You'll need to define the Review interface/type
-  appointments: string[]; // Assuming these are appointment IDs
-  maxPatientsPerDay: number;
-  about: string;
-  thumbnail: {
-    id: string;
-    url: string;
-  };
-  verificationStatus: "Verified" | "Unverified" | "Pending"; // Example of possible values
-}
+import { SERVER_URI } from "@/utils/uri";
+import { toast } from "sonner";
 
 type Props = {
   doctor: any;
@@ -53,7 +17,27 @@ const DoctorCard: FC<Props> = ({ doctor }) => {
 
   const toggleShowMore = () => setShowMoreText(!showMoreText);
 
-  console.log(doctor);
+  const handleNavigate = async (doctorId: string) => {
+    // refresh token first
+    const refreshes = await fetch(`${SERVER_URI}/refresh-tokens`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        // Cookie: `refresh_token=${refreshToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (refreshes.ok) {
+      router.push(`/doctor/${doctorId}`);
+    } else {
+      toast.error("You are not logged in", {
+        description: "Sign in to proceed. Thanks",
+        duration: 4000,
+      });
+    }
+  };
+
   return (
     <div className=" w-full min-h-[fit] bg-white  rounded-xl overflow-clip cursor-pointer transition-all duration-700 hover:scale-95 p-4 flex items-start justify-between gap-2 lg:gap-4 mb-4">
       {/* image */}
@@ -86,7 +70,7 @@ const DoctorCard: FC<Props> = ({ doctor }) => {
           <p className=" text-grayey mt-1 text-xs font-light">
             {doctor.yearsOfExperience} years of practice
           </p>
-          <p className=" text-text-primary mt-2 text-sm font-medium">
+          <p className=" text-text-primary mt-2 text-sm font-medium capitalize">
             {doctor.city}, {doctor.state}.
           </p>
           <p className=" text-text-primary mt-1 text-xs">
@@ -111,7 +95,7 @@ const DoctorCard: FC<Props> = ({ doctor }) => {
               &#8358; 20,000
             </span>
             <span className=" text-text-primary text-xs block font-medium">
-              Consultation fee at the clinic.
+              FREE Consultation for first appointment!
             </span>
           </p>
 
@@ -148,14 +132,27 @@ const DoctorCard: FC<Props> = ({ doctor }) => {
 
         {/* book appointment btn */}
         <div className="mt-4 lg:mt-0 flex flex-col  lg:items-center justify-end">
-          <p className=" text-secondary text-sm ">Available Today!</p>
+          {doctor.available ? (
+            <p className=" text-secondary text-sm ">Available Today!</p>
+          ) : (
+            <p className=" text-red-500 text-sm ">Not Available Today!</p>
+          )}
 
-          <button
-            onClick={() => router.push(`/doctor/${doctor._id}`)}
-            className=" cursor-pointer transition-all hover:bg-gray-200 hover:text-text-primary rounded-lg text-center bg-primary text-white py-3 mt-4 px-8 text-xs"
-          >
-            Book a FREE Appointment!
-          </button>
+          {doctor.available ? (
+            <button
+              onClick={() => handleNavigate(doctor.id)}
+              className=" cursor-pointer transition-all hover:bg-gray-200 hover:text-text-primary rounded-lg text-center bg-primary text-white py-3 mt-4 px-8 text-xs"
+            >
+              Book an Appointment!
+            </button>
+          ) : (
+            <button
+              disabled
+              className=" opacity-50 cursor-not-allowed  rounded-lg text-center  bg-gray-400 text-white py-3 mt-4 px-8 text-xs"
+            >
+              Unavailable
+            </button>
+          )}
         </div>
       </div>
     </div>

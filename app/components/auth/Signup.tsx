@@ -1,13 +1,12 @@
-import { useMutateData } from "@/app/hooks/useApi";
+import { useMutateData } from "@/hooks/useApi";
 import {
   CloseOutlinedIcon,
   DoneOutlinedIcon,
   VisibilityOffOutlinedIcon,
   VisibilityOutlinedIcon,
 } from "../../../app/icons/icons";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import { toast } from "sonner";
-import Image from "next/image";
 import Loader from "../global/Loader";
 
 type Props = {
@@ -23,7 +22,7 @@ const Signup: FC<Props> = ({ setMode }) => {
   const { mutate: registerUser, isPending } = useMutateData<any>({
     mutationKey: ["registerUser"],
     method: "POST",
-    url: "/signup",
+    url: "/auth/signup",
     skipAuthRefresh: true,
   });
 
