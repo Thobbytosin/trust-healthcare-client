@@ -22,7 +22,7 @@ const Signup: FC<Props> = ({ setMode }) => {
   const { mutate: registerUser, isPending } = useMutateData<any>({
     mutationKey: ["registerUser"],
     method: "POST",
-    url: "/signup",
+    url: "/auth/signup",
     skipAuthRefresh: true,
   });
 

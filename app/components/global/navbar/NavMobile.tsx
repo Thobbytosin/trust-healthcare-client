@@ -8,7 +8,7 @@ import {
   MenuIcon,
 } from "../../../icons/icons";
 import { useAuth } from "../../../../app/context/AuthContext";
-import { getInitials } from "@/app/utils/helpers";
+import { getInitials } from "@/utils/helpers";
 
 type Props = {
   setOpenModal: (value: boolean) => void;

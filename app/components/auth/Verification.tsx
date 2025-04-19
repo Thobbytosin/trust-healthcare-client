@@ -83,7 +83,7 @@ const Verification: FC<Props> = ({ setMode }) => {
   const { mutate: verifyAccount, isPending } = useMutateData({
     method: "POST",
     mutationKey: ["verification"],
-    url: "/account-verification",
+    url: "/auth/account-verification",
     skipAuthRefresh: true,
   });
 
@@ -115,7 +115,7 @@ const Verification: FC<Props> = ({ setMode }) => {
   const { mutate: resendCode, isPending: resendPending } = useMutateData({
     method: "POST",
     mutationKey: ["resendCode"],
-    url: "/resend-verification-code",
+    url: "/auth/resend-verification-code",
     skipAuthRefresh: true,
   });
 

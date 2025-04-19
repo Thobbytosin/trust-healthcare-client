@@ -42,7 +42,7 @@ const ResetPassword = ({ setMode }: Props) => {
   const { mutate: resetPassword, isPending } = useMutateData({
     method: "POST",
     mutationKey: ["resetPassword"],
-    url: "/reset-password",
+    url: "/user/reset-password",
     skipAuthRefresh: true,
   });
 

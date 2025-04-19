@@ -20,7 +20,7 @@ const Login: FC<Props> = ({ setMode, setOpenModal }) => {
   const { mutate: loginUser, isPending } = useMutateData({
     method: "POST",
     mutationKey: ["loginUser"],
-    url: "/login",
+    url: "/auth/login",
     skipAuthRefresh: true,
   });
 

@@ -10,6 +10,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import ButtonLoader from "../global/ButtonLoader";
 import { toast } from "sonner";
 import { SERVER_URI } from "@/utils/uri";
+import { error } from "console";
 
 export interface IDoctorFree {
   id: string;
@@ -30,19 +31,24 @@ const MeetDoctors = ({ doctors }: Props) => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [currentId, setCurrentId] = useState<string | undefined>();
-  const searchParams = useSearchParams();
 
   const handleBtnNavigate = async (id: string) => {
+    const cookieConsent =
+      localStorage.getItem("cookie_consent") || "wrong_value";
+
     setLoading(true);
     setCurrentId(id);
 
-    const refreshes = await fetch(`${SERVER_URI}/refresh-tokens`, {
+    const refreshes = await fetch(`${SERVER_URI}/auth/refresh-tokens`, {
       method: "GET",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        "x-cookie-consent": cookieConsent,
       },
     });
+
+    const res = await refreshes.json();
 
     if (refreshes.ok) {
       router.push(`/doctor/${id}`);
@@ -50,12 +56,12 @@ const MeetDoctors = ({ doctors }: Props) => {
       setTimeout(() => {
         setLoading(false);
         setCurrentId(undefined);
-      }, 3000);
+      }, 10000);
     } else {
       setLoading(false);
       setCurrentId(undefined);
-      toast.error("You are not logged in", {
-        description: "Sign in to proceed. Thanks",
+      toast.error(res.message, {
+        description: "Something went wrong",
         duration: 4000,
       });
     }

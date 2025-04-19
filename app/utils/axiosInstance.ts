@@ -1,4 +1,8 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, {
+  AxiosHeaders,
+  AxiosRequestConfig,
+  InternalAxiosRequestConfig,
+} from "axios";
 import { SERVER_URI } from "./uri";
 
 const axiosInstance = axios.create({
@@ -10,6 +14,21 @@ interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
   skipAuthRefresh?: boolean;
 }
+
+axiosInstance.interceptors.request.use((config) => {
+  const consent = localStorage.getItem("cookie_consent");
+
+  if (consent) {
+    if (config.headers instanceof AxiosHeaders) {
+      config.headers.set("x-cookie-consent", consent);
+    } else {
+      config.headers = new AxiosHeaders(config.headers);
+      config.headers.set("x-cookie-consent", consent);
+    }
+  }
+
+  return config;
+});
 
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -25,7 +44,7 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await axiosInstance.get("/refresh-tokens");
+        await axiosInstance.get("/auth/refresh-tokens");
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         return Promise.reject(refreshError);

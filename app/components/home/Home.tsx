@@ -1,11 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useAuth } from "../../../app/context/AuthContext";
 import React, { useEffect, useState } from "react";
 import Header from "../global/Header";
 import Hero from "./Hero";
 import Search from "../global/search/Search";
-import CookiesConsent from "../global/CookiesConsent";
+import CookiesConsent from "../cookieconsent/CookiesConsent";
 import Footer from "../global/Footer";
 import NewsLetter from "./NewsLetter";
 import VideoSection from "./VideoSection";
@@ -21,10 +20,11 @@ import { toast } from "sonner";
 type Props = {};
 
 const Home = (props: Props) => {
-  const { isLoading, refetchUser } = useAuth();
+  const { isLoading, refetchUser, user } = useAuth();
   const { isLoading: doctorsLoading, refetch: refetchDoctors } =
     useFetchDoctors();
   const doctors = useDoctorsStore((state) => state.doctorsFree);
+
   const [mounted, setMounted] = useState(false);
 
   // for protected route nextjs middleware
@@ -32,6 +32,28 @@ const Home = (props: Props) => {
   const pathname = usePathname();
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    if (typeof window === "undefined") return;
+
+    const consent = localStorage.getItem("cookie_consent");
+
+    if (!consent) return;
+
+    const timeout = setTimeout(() => {
+      refetchDoctors();
+      refetchUser();
+    }, 100);
+
+    return () => clearTimeout(timeout);
+  }, [mounted]);
+
+  useEffect(() => {
+    if (!mounted) return;
     if (searchParams.get("authError") === "true") {
       toast.error("You are not logged in", {
         description: "Sign in to proceed. Thanks",
@@ -46,12 +68,6 @@ const Home = (props: Props) => {
       window.history.replaceState({}, "", "/");
     }
   }, [searchParams, pathname]);
-
-  useEffect(() => {
-    setMounted(true);
-    refetchDoctors();
-    refetchUser(); // get latest user data
-  }, []);
 
   if (mounted) {
     if (isLoading || doctorsLoading) {
