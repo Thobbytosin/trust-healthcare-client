@@ -1,9 +1,9 @@
 import React from "react";
-import SectionHeading from "../global/SectionHeading";
+import SectionHeading from "../ui/SectionHeading";
 import { styles } from "../../../app/styles/styles";
 import Image from "next/image";
-import Ratings from "../global/Ratings";
-import RevealWrapper from "../global/RevealWrapper";
+import Ratings from "../ui/Ratings";
+import RevealWrapper from "../ui/RevealWrapper";
 
 type Props = {};
 

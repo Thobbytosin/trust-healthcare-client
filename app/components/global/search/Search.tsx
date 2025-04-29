@@ -1,7 +1,7 @@
 "use client";
 import { styles } from "../../../styles/styles";
 import React, { useState } from "react";
-import RevealWrapper from "../RevealWrapper";
+import RevealWrapper from "../../ui/RevealWrapper";
 
 type Props = {};
 

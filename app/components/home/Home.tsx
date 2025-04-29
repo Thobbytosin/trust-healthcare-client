@@ -1,11 +1,11 @@
 "use client";
 import { useAuth } from "../../../app/context/AuthContext";
 import React, { useEffect, useState } from "react";
-import Header from "../global/Header";
+import Header from "../global/header/Header";
 import Hero from "./Hero";
 import Search from "../global/search/Search";
 import CookiesConsent from "../cookieconsent/CookiesConsent";
-import Footer from "../global/Footer";
+import Footer from "../global/footer/Footer";
 import NewsLetter from "./NewsLetter";
 import VideoSection from "./VideoSection";
 import Testimonials from "./Testimonials";

@@ -2,12 +2,12 @@ import {
   EmailOutlinedIcon,
   LocalPhoneOutlinedIcon,
   LocationOnOutlinedIcon,
-} from "../../../app/icons/icons";
-import { styles } from "@/app/styles/styles";
+} from "../../../icons/icons";
+import { styles } from "@/styles/styles";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import RevealWrapper from "./RevealWrapper";
+import RevealWrapper from "../../ui/RevealWrapper";
 
 type Props = {};
 

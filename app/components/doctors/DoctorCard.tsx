@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import Ratings from "../global/Ratings";
+import Ratings from "../ui/Ratings";
 import Image from "next/image";
 import { VerifiedIcon } from "../../../app/icons/icons";
 import Link from "next/link";

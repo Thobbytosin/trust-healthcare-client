@@ -37,10 +37,6 @@ export function useFetchData<T>({
         }
       } catch (error: any) {
         if (axios.isAxiosError(error) && error.response) {
-          // console.log(
-          //   "Backend Error Message:",
-          //   error.response.data?.message || "No error message from server"
-          // );
           throw new Error(error.response.data?.message || "API request failed");
         }
         throw new Error("Something went wrong"); // generic error message

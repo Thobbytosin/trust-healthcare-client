@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Header from "../global/Header";
+import Header from "../global/header/Header";
 import Doctors from "./Doctors";
 import { useAuth } from "@/context/AuthContext";
 import LandingPageLoader from "../home/LandingPageLoader";

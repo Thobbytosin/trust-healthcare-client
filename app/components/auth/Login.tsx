@@ -5,7 +5,7 @@ import {
 } from "../../../app/icons/icons";
 import React, { FC, FormEvent, useState } from "react";
 import { toast } from "sonner";
-import Loader from "../global/Loader";
+import Loader from "../global/loaders/Loader";
 import { useAuth } from "@/context/AuthContext";
 
 type Props = {

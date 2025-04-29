@@ -25,7 +25,7 @@ type Props = {
   handleFilterChange: (value: string) => any;
   totalDoctors: number;
   limit: number;
-  dispatch: any;
+  resetAll: () => void;
   setSearchTrigger: (value: number) => void;
 };
 
@@ -41,7 +41,7 @@ const DoctorsGrid: FC<Props> = ({
   handleFilterChange,
   totalDoctors,
   limit,
-  dispatch,
+  resetAll,
   setSearchTrigger,
 }) => {
   // const limit = 4;
@@ -109,7 +109,7 @@ const DoctorsGrid: FC<Props> = ({
   };
 
   const handleReset = () => {
-    dispatch({ type: "RESET_ALL" });
+    resetAll();
     clearAllQueryParams();
 
     setSearchTrigger(0); // to trigger the useffect

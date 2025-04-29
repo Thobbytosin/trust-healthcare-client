@@ -1,7 +1,7 @@
-import { styles } from "@/app/styles/styles";
+import { styles } from "@/styles/styles";
 import React from "react";
-import SectionHeading from "../global/SectionHeading";
-import RevealWrapper from "../global/RevealWrapper";
+import SectionHeading from "../ui/SectionHeading";
+import RevealWrapper from "../ui/RevealWrapper";
 
 type Props = {};
 
