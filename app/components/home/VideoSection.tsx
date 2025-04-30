@@ -3,7 +3,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import backdrop from "../../../public/assets/video-backdrop.jpg";
 import { PlayArrowOutlinedIcon } from "../../../app/icons/icons";
-import RevealWrapper from "../global/RevealWrapper";
+import RevealWrapper from "../ui/RevealWrapper";
 
 type Props = {};
 

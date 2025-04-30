@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import SectionHeading from "../global/SectionHeading";
+import SectionHeading from "../ui/SectionHeading";
 import { styles } from "../../styles/styles";
 import {
   BookOnlineOutlinedIcon,
@@ -9,7 +9,7 @@ import {
   ScienceOutlinedIcon,
 } from "../../../app/icons/icons";
 import { motion } from "framer-motion";
-import RevealWrapper from "../global/RevealWrapper";
+import RevealWrapper from "../ui/RevealWrapper";
 
 type Props = {};
 

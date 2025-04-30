@@ -1,16 +1,15 @@
 "use client";
 import { styles } from "../../../app/styles/styles";
 import React, { useState } from "react";
-import SectionHeading from "../global/SectionHeading";
-import Ratings from "../global/Ratings";
+import SectionHeading from "../ui/SectionHeading";
+import Ratings from "../ui/Ratings";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import RevealWrapper from "../global/RevealWrapper";
-import { useRouter, useSearchParams } from "next/navigation";
-import ButtonLoader from "../global/ButtonLoader";
+import RevealWrapper from "../ui/RevealWrapper";
+import { useRouter } from "next/navigation";
+import ButtonLoader from "../global/loaders/ButtonLoader";
 import { toast } from "sonner";
 import { SERVER_URI } from "@/utils/uri";
-import { error } from "console";
 
 export interface IDoctorFree {
   id: string;

@@ -7,15 +7,12 @@ import {
   PlayArrowOutlinedIcon,
 } from "../../../app/icons/icons";
 import { motion } from "framer-motion";
-import { styles } from "@/app/styles/styles";
-import RevealWrapper from "../global/RevealWrapper";
+import { styles } from "../../styles/styles";
+import RevealWrapper from "../ui/RevealWrapper";
 
 type Props = {};
 
 const Hero = (props: Props) => {
-  // const searchParams = useSearchParams();
-  // console.log(searchParams.get("message"));
-
   return (
     <RevealWrapper animate>
       <section

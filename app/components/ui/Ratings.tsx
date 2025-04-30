@@ -1,8 +1,4 @@
-import {
-  StarHalfIcon,
-  StarOutlineIcon,
-  StarRateIcon,
-} from "../../../app/icons/icons";
+import { StarHalfIcon, StarOutlineIcon, StarRateIcon } from "../../icons/icons";
 import React, { FC } from "react";
 
 type Props = {

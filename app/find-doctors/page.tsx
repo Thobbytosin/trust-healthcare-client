@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "../components/global/Header";
+import Header from "../components/global/header/Header";
 import { Metadata } from "next";
 import FindDoctors from "../components/doctors/FindDoctors";
 import { SERVER_URI } from "@/utils/uri";

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const protectedPaths = ["/profile", "/admin", "/doctor"];
+const protectedPaths = ["/profile", "/admin", "/doctor", "/find-doctors"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

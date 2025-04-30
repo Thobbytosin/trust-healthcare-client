@@ -1,6 +1,6 @@
 import { useMutateData } from "../../../app/hooks/useApi";
 import React, { FormEvent, useState } from "react";
-import Loader from "../global/Loader";
+import Loader from "../global/loaders/Loader";
 import { toast } from "sonner";
 
 type Props = {

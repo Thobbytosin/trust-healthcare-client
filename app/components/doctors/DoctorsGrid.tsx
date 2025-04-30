@@ -22,10 +22,9 @@ type Props = {
   location: string | undefined;
   setLocationSearched: (value: boolean) => void;
   locationSearched: boolean;
-  handleFilterChange: (value: string) => any;
   totalDoctors: number;
   limit: number;
-  dispatch: any;
+  resetAll: () => void;
   setSearchTrigger: (value: number) => void;
 };
 
@@ -38,10 +37,9 @@ const DoctorsGrid: FC<Props> = ({
   location,
   locationSearched,
   setLocationSearched,
-  handleFilterChange,
   totalDoctors,
   limit,
-  dispatch,
+  resetAll,
   setSearchTrigger,
 }) => {
   // const limit = 4;
@@ -109,7 +107,7 @@ const DoctorsGrid: FC<Props> = ({
   };
 
   const handleReset = () => {
-    dispatch({ type: "RESET_ALL" });
+    resetAll();
     clearAllQueryParams();
 
     setSearchTrigger(0); // to trigger the useffect

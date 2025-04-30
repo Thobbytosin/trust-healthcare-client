@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import RevealWrapper, { fadeInDown } from "../global/RevealWrapper";
+import RevealWrapper, { fadeInDown } from "../ui/RevealWrapper";
 
-import Header from "../global/Header";
+import Header from "../global/header/Header";
 
 import { useFetchData } from "../../../app/hooks/useApi";
 import { useAuth } from "../../../app/context/AuthContext";

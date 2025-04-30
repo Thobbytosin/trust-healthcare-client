@@ -1,125 +1,45 @@
 "use client";
 
-import React, { useEffect, useMemo, useReducer, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import DoctorsGrid from "./DoctorsGrid";
-import RevealWrapper, { fadeInDown } from "../global/RevealWrapper";
+import RevealWrapper, { fadeInDown } from "../ui/RevealWrapper";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { DoneOutlinedIcon } from "../../icons/icons";
 
 import SearchHeader from "../global/search/SearchHeader";
-import Loader from "../global/Loader";
-import { fetchLocation } from "../../utils/helpers";
-import { useDoctorsStore } from "../../store/useDoctorsStore";
-import { useFetchDoctors } from "../../hooks/useFetchDoctors";
-import { useFetchData } from "@/hooks/useApi";
+import { useFetchData } from "../../hooks/useApi";
+import SearchBanner from "../global/search/SearchBanner";
+import { DoctorsBackendResponse } from "../../types/all.types";
+import { useSearchReducer } from "../../hooks/useSearchReducer";
 
 type Props = {};
 
-// backend response type
-interface DoctorsBackendResponse {
-  success: boolean;
-  message: string;
-  doctors: any[];
-  resultsPerPage: number;
-  totalPages: number;
-  page: number;
-  grandTotalDoctors: number;
-  limit: number;
-}
-
-export interface SearchDoctorForm {
-  location: string;
-  specialization: string;
-}
-
-// for search/fiter/sort
-const initialState = {
-  searchForm: { location: "", specialization: "" },
-  locationSearched: false,
-  showFilterOptions: false,
-  showSortOptions: false,
-  filterValue: "All",
-  sortBy: "Latest",
-  searchQuery: "",
-  pageQuery: 1,
-  availableQuery: null,
-  searchTrigger: 0,
-  allSpecializations: [],
-};
-
-const reducer = (state: any, action: any) => {
-  switch (action.type) {
-    case "SET_SEARCH_FORM":
-      return {
-        ...state,
-        searchForm: { ...state.searchForm, ...action.payload },
-      };
-
-    case "SET_LOCATION_SEARCHED":
-      return { ...state, locationSearched: action.payload };
-
-    case "TOOGLE_FILTER_OPTIONS":
-      return { ...state, showFilterOptions: !state.showFilterOptions };
-
-    case "TOOGLE_SORT_OPTIONS":
-      return { ...state, showSortOptions: !state.showSortOptions };
-
-    case "SET_FILTER_VALUE":
-      return { ...state, filterValue: action.payload };
-
-    case "SET_SORT_BY":
-      return { ...state, sortBy: action.payload };
-
-    case "SET_SEARCH_QUERY":
-      return { ...state, searchQuery: action.payload };
-    case "SET_PAGE_QUERY":
-      return { ...state, pageQuery: action.payload };
-    case "SET_AVAILABLE_QUERY":
-      return { ...state, availableQuery: action.payload };
-    case "SET_SEARCH_TRIGGER":
-      return { ...state, searchTrigger: action.payload };
-
-    case "RESET_SEARCH_FORM":
-      return { ...state, searchForm: { location: "", specialization: "" } };
-
-    case "SET_ALL_SPECIALIZATIONS":
-      return { ...state, allSpecializations: action.payload };
-
-    case "ADD_SPECIALIZATION":
-      if (state.allSpecializations.includes(action.payload)) {
-        return state; // return if category exists in the array
-      }
-      const updatedList = [...state.allSpecializations, action.payload];
-    // localStorage.setItem('specializations')
-
-    case "RESET_ALL":
-      return initialState;
-
-    default:
-      return state;
-  }
-};
-
 const Doctors = (props: Props) => {
+  // search states
+  const { searchState, actions } = useSearchReducer();
   // page states
   const router = useRouter();
   const params = useSearchParams();
   const pathname = usePathname();
-  const [state, dispatch] = useReducer(reducer, initialState);
+
   const [location, setLocation] = useState<string | undefined>(undefined);
   const [doctorsLoading, setDoctorsLoading] = useState<boolean>(false);
 
-  const {
-    data,
-    // isLoading: doctorsLoading,
-    error,
-    refetch: refetchDoctors,
-  } = useFetchData<DoctorsBackendResponse>({
-    method: "GET",
-    url: `/doctor/get-all-doctors?page=${state.pageQuery}&search=${state.searchForm.location}&specialization=${state.searchForm.specialization}`,
-    queryKey: ["doctors"],
-    enabled: false,
+  // query params for backend route
+  const queryParams = new URLSearchParams({
+    page: String(searchState.pageQuery),
+    search: searchState.searchForm.location,
+    specialization: searchState.searchForm.specialization,
+    available: String(searchState.availableQuery),
+    sortBy: searchState.sortBy,
   });
+
+  const { data, refetch: refetchDoctors } =
+    useFetchData<DoctorsBackendResponse>({
+      method: "GET",
+      url: `/doctor/get-all-doctors?${queryParams.toString()}`,
+      queryKey: ["doctors"],
+      enabled: false,
+    });
 
   useEffect(() => {
     setDoctorsLoading(true);
@@ -132,13 +52,13 @@ const Doctors = (props: Props) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [state.pageQuery, state.searchTrigger]); // refetch doctors every time the page changes
+  }, [searchState.pageQuery, searchState.searchTrigger]); // refetch doctors every time the page changes
 
   // memoized doctors data
   const doctorsDataMemo = useMemo(() => data?.doctors || [], [data?.doctors]); // updates only when the doctors change
 
   const handlePageParamsChange = (
-    type: string,
+    type: "filter" | "search" | "specialization" | "sortBy",
     parameter: any,
     defaultPageNum = 1
   ) => {
@@ -156,44 +76,22 @@ const Doctors = (props: Props) => {
       newParams = new URLSearchParams();
       newParams.set("page", defaultPageNum.toString());
       newParams.set("specialization", parameter.toLowerCase());
+    } else if (type === "sortBy") {
+      newParams = new URLSearchParams();
+      newParams.set("page", defaultPageNum.toString());
+      newParams.set("sortBy", parameter.toLowerCase());
     }
 
     router.push(`${pathname}?${newParams}`);
   };
 
-  const handleFilterChange = (newFilter: string) => {
-    const newParams = new URLSearchParams(params.toString());
-    newParams.set("filter", newFilter.toLowerCase());
-    router.push(`${pathname}?${newParams}`);
-  };
-
-  // const handleSearchChange = (newFilter: string, defaultPageNum = 1) => {
-  //   const newParams = new URLSearchParams(params.toString());
-  //   newParams.set("search", newFilter.toLowerCase());
-  //   newParams.set("page", defaultPageNum.toString());
-
-  //   router.push(`${pathname}?${newParams}`);
-  // };
-
-  // for page chnage
+  // for page chnage (PAGINATION)
   const handlePageChange = (newPage: number) => {
     const newParams = new URLSearchParams(params.toString());
     newParams.set("page", newPage.toString());
 
     router.push(`${pathname}?${newParams.toString()}`);
   };
-
-  // page params
-  const fetchtotalDoctors = () => {
-    if (params.has("search") || params.has("specialization")) {
-      return doctorsDataMemo.length;
-    } else {
-      return data?.grandTotalDoctors || 0;
-    }
-  };
-
-  const currentLocation = params.get("search") || "";
-  const currentSpecialization = params.get("specialization") || "";
 
   // location effect
   // useEffect(() => {
@@ -206,9 +104,6 @@ const Doctors = (props: Props) => {
   //     });
   // }, []);
 
-  // console.log(state);
-  // console.log(state.searchTrigger);
-
   return (
     <section className="min-h-screen bg-gray-200">
       <RevealWrapper key={"find-doctors"} variants={fadeInDown} animate>
@@ -217,173 +112,51 @@ const Doctors = (props: Props) => {
         {/* SEARCH HEADER */}
         <SearchHeader
           key={"search-header"}
-          filterValue={state.filterValue}
-          handleSearchChange={handlePageParamsChange}
-          searchForm={state.searchForm}
-          setFilterValue={(value: any) =>
-            dispatch({ type: "SET_FILTER_VALUE", payload: value })
-          }
-          setSearchForm={(value: any) =>
-            dispatch({ type: "SET_SEARCH_FORM", payload: value })
-          }
-          setSearchTrigger={(value: number) =>
-            dispatch({ type: "SET_SEARCH_TRIGGER", payload: value })
-          }
-          setShowFilterOptions={() =>
-            dispatch({ type: "TOOGLE_FILTER_OPTIONS" })
-          }
-          setShowSortOptions={() => dispatch({ type: "TOOGLE_SORT_OPTIONS" })}
-          setSortBy={(value: any) =>
-            dispatch({ type: "SET_SORT_BY", payload: value })
-          }
-          setPage={(value: number) => {
-            dispatch({ type: "SET_PAGE_QUERY", payload: value });
-          }}
-          showFilterOptions={state.showFilterOptions}
-          showSortOptions={state.showSortOptions}
-          sortBy={state.sortBy}
+          filterValue={searchState.filterValue}
+          handlePageParamsChange={handlePageParamsChange}
+          searchForm={searchState.searchForm}
+          allSuggestions={searchState.allSuggestions}
+          setFilterValue={actions.setFilterValue}
+          setSearchForm={actions.setSearchForm}
+          setSearchTrigger={actions.setSearchTrigger}
+          setShowSortOptions={actions.toogleSortOptions}
+          setSortBy={actions.setSortOption}
+          setPage={actions.setPageQuery}
+          setAllSuggestions={actions.setAllSuggestions}
+          setShowSuggestionsList={actions.setShowSuggestionsList}
+          showSuggestionList={searchState.showSuggestionList}
+          showSortOptions={searchState.showSortOptions}
+          sortBy={searchState.sortBy}
+          setAvailableQuery={actions.setAvailable}
+          resetAll={actions.resetAll}
         />
 
         {/* display search info */}
-
-        <div className=" my-8 w-[90%] lg:w-[80%] mx-auto">
-          {/* for search results */}
-          {state.searchTrigger &&
-          state.searchForm.location !== "" &&
-          state.searchForm.location.toLowerCase() ===
-            currentLocation.toLowerCase() ? (
-            doctorsDataMemo.length >= 1 ? (
-              <>
-                <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-                  Great!{" "}
-                  <span className=" text-primary">
-                    {doctorsDataMemo.length}
-                  </span>{" "}
-                  <span className=" text-primary">
-                    {doctorsDataMemo.length > 1 ? "doctors" : "doctor"}
-                  </span>{" "}
-                  found in{" "}
-                  <span className=" text-primary capitalize">
-                    {state.searchForm.location}
-                  </span>{" "}
-                  available for you.
-                </h2>
-                <p className="text-[#787887] max-w-[80%] md:min-w-full mx-auto  md:text-left text-center font-light mt-1 text-xs md:text-sm flex items-center gap-2">
-                  <span className="hidden md:w-[18px] md:h-[18px] rounded-full border border-[#787887] text-xs md:text-sm md:flex justify-center items-center">
-                    <DoneOutlinedIcon fontSize="inherit" />
-                  </span>
-                  <span>
-                    Book appointments with minimum wait-time & verified doctor
-                    details
-                  </span>
-                </p>
-              </>
-            ) : (
-              state.searchForm.location.toLowerCase() ===
-                currentLocation.toLowerCase() && (
-                <>
-                  <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-                    Sorry! No doctor found in{" "}
-                    <span className=" text-red-500 capitalize">
-                      {state.searchForm.location}
-                    </span>{" "}
-                    at this time.
-                  </h2>
-                </>
-              )
-            )
-          ) : null}
-
-          {/* for specialization results */}
-          {state.searchTrigger &&
-          state.searchForm.specialization !== "" &&
-          state.searchForm.specialization.toLowerCase() ===
-            currentSpecialization.toLowerCase() ? (
-            doctorsDataMemo.length >= 1 ? (
-              <>
-                <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-                  Great!{" "}
-                  <span className=" text-primary">
-                    {doctorsDataMemo.length}
-                  </span>{" "}
-                  <span className=" text-primary">
-                    {doctorsDataMemo.length > 1 ? "doctors" : "doctor"}
-                  </span>{" "}
-                  specialized in{" "}
-                  <span className=" text-primary capitalize">
-                    {state.searchForm.specialization}
-                  </span>{" "}
-                  available for you.
-                </h2>
-                <p className="text-[#787887] max-w-[80%] md:min-w-full mx-auto  md:text-left text-center font-light mt-1 text-xs md:text-sm flex items-center gap-2">
-                  <span className="hidden md:w-[18px] md:h-[18px] rounded-full border border-[#787887] text-xs md:text-sm md:flex justify-center items-center">
-                    <DoneOutlinedIcon fontSize="inherit" />
-                  </span>
-                  <span>
-                    Book appointments with minimum wait-time & verified doctor
-                    details
-                  </span>
-                </p>
-              </>
-            ) : (
-              state.searchForm.specialization.toLowerCase() ===
-                currentSpecialization.toLowerCase() && (
-                <>
-                  <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-                    Sorry! No registered doctor specialized in{" "}
-                    <span className=" text-red-500 capitalize">
-                      {state.searchForm.specialization}
-                    </span>{" "}
-                    yet at this time.
-                  </h2>
-                </>
-              )
-            )
-          ) : null}
-
-          {/* default text */}
-          {state.searchTrigger === 0 ? (
-            <>
-              <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-                Over {(data?.grandTotalDoctors || 30) - 1} doctors available for
-                you.
-              </h2>
-              <p className="text-[#787887] max-w-[80%] md:min-w-full mx-auto  md:text-left text-center font-light mt-1 text-xs md:text-sm flex items-center gap-2">
-                <span className="hidden md:w-[18px] md:h-[18px] rounded-full border border-[#787887] text-xs md:text-sm md:flex justify-center items-center">
-                  <DoneOutlinedIcon fontSize="inherit" />
-                </span>
-                <span>
-                  Book appointments with minimum wait-time & verified doctor
-                  details
-                </span>
-              </p>
-            </>
-          ) : null}
-        </div>
+        <SearchBanner
+          key={"search-bannner"}
+          defaultData={data}
+          location={searchState.searchForm.location}
+          resultsLength={doctorsDataMemo.length}
+          specialization={searchState.searchForm.specialization}
+          trigger={searchState.searchTrigger}
+          filterValue={searchState.filterValue}
+        />
 
         {/* doctors data */}
         <div>
-          {/* {doctorsLoading && <Loader />} */}
           <DoctorsGrid
             loading={doctorsLoading}
-            page={state.pageQuery}
-            setPage={(value: number) => {
-              dispatch({ type: "SET_PAGE_QUERY", payload: value });
-            }}
+            page={searchState.pageQuery}
+            setPage={actions.setPageQuery}
             doctorsData={doctorsDataMemo}
             handlePageChange={handlePageChange}
             location={location}
-            locationSearched={state.locationSearched}
-            setLocationSearched={(value: any) => {
-              dispatch({ type: "SET_LOCATION_SEARCHED", payload: value });
-            }}
-            handleFilterChange={handleFilterChange}
-            totalDoctors={fetchtotalDoctors()}
+            locationSearched={searchState.locationSearched}
+            setLocationSearched={actions.setLocationSearched}
+            totalDoctors={data?.results || 0}
             limit={data?.limit || 4}
-            dispatch={dispatch}
-            setSearchTrigger={(value: number) =>
-              dispatch({ type: "SET_SEARCH_TRIGGER", payload: value })
-            }
+            resetAll={actions.resetAll}
+            setSearchTrigger={actions.setSearchTrigger}
           />
         </div>
       </RevealWrapper>
