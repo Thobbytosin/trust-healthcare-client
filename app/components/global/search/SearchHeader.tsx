@@ -25,10 +25,8 @@ const sortOptions = [
 type Props = {
   setSearchForm: (value: SearchDoctorForm) => void;
   searchForm: SearchDoctorForm;
-  setShowFilterOptions: React.Dispatch<React.SetStateAction<boolean>>;
   setShowSortOptions: React.Dispatch<React.SetStateAction<boolean>>;
   filterValue: string;
-  showFilterOptions: boolean;
   setFilterValue: (value: string) => void;
   setSearchTrigger: (value: number) => void;
   setPage: (value: number) => void;
@@ -36,7 +34,7 @@ type Props = {
   showSortOptions: boolean;
   setSortBy: (value: string) => void;
   handlePageParamsChange: (
-    type: string,
+    type: "filter" | "search" | "specialization" | "sortBy",
     parameter: any,
     defaultPageNum?: number
   ) => any;
@@ -44,14 +42,14 @@ type Props = {
   setShowSuggestionsList: (value: boolean) => void;
   allSuggestions: string[];
   showSuggestionList: boolean;
+  setAvailableQuery: (value: boolean) => void;
+  resetAll: () => void;
 };
 
 const SearchHeader: FC<Props> = ({
   setSearchForm,
   searchForm,
   filterValue,
-  setShowFilterOptions,
-  showFilterOptions,
   setSearchTrigger,
   setFilterValue,
   setPage,
@@ -64,9 +62,10 @@ const SearchHeader: FC<Props> = ({
   setShowSuggestionsList,
   allSuggestions,
   showSuggestionList,
+  setAvailableQuery,
+  resetAll,
 }) => {
   const suggestionListRef = useRef<HTMLUListElement>(null);
-  const filterRef = useRef<HTMLUListElement>(null);
   const sortRef = useRef<HTMLUListElement>(null);
   const params = useSearchParams();
   const showLocationTooltip = useTooltip("location-select");
@@ -75,15 +74,7 @@ const SearchHeader: FC<Props> = ({
   //   close suggestionlist, or sort or filter the drop down when clicking anywhere
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        filterRef.current &&
-        !filterRef.current.contains(event.target as Node)
-      ) {
-        setShowFilterOptions(false);
-      } else if (
-        sortRef.current &&
-        !sortRef.current.contains(event.target as Node)
-      ) {
+      if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
         setShowSortOptions(false);
       } else if (
         suggestionListRef.current &&
@@ -197,25 +188,29 @@ const SearchHeader: FC<Props> = ({
       </div>
 
       {/* SORT/FILTER */}
-      <div className=" mt-8 flex items-center">
+      <div className=" mt-8 md:flex gap-20 items-center">
         {/* filter */}
-
-        <div className=" flex items-center gap-4 ">
+        <div className=" flex items-center gap-2 ">
           <span className=" text-primary md:text-sm text-xs">Filter:</span>
-          <div
-            className=" w-[90px] md:w-[156px] h-[36px] bg-gray-100 border border-gray-200 rounded-md  flex justify-between items-center text-sm cursor-pointer relative"
-            onClick={() => setShowFilterOptions((prev) => !prev)}
-          >
+          <div className=" w-fit h-[36px] bg-gray-100 border border-gray-200 rounded-md  flex justify-between items-center text-sm cursor-pointer relative">
             <Select
-              // value={filterValue}
+              value={filterValue}
               onValueChange={(value: string) => {
-                setFilterValue(value);
+                if (value === "Available") {
+                  setFilterValue(value);
 
-                setPage(1); // always set page to 1
+                  setPage(1); // always set page to 1
 
-                handlePageParamsChange("search", value);
+                  handlePageParamsChange("filter", value);
 
-                setSearchTrigger(Date.now()); // to always trigger the useeffect
+                  setSearchTrigger(Date.now()); // to always trigger the useeffect
+                  setAvailableQuery(true);
+                } else {
+                  // clear all params
+                  const newUrl = window.location.pathname;
+                  window.history.replaceState({}, "", newUrl);
+                  resetAll();
+                }
               }}
             >
               <SelectTrigger
@@ -223,12 +218,12 @@ const SearchHeader: FC<Props> = ({
                 name="filter"
                 aria-label="filter"
                 data-testid="filter-doctors"
-                disabled={filterValue.trim() !== ""}
-                className="w-full h-full border-none py-5 focus:outline-0 focus:border-0 outline-none text-text-primary focus:outline-none ring-0 focus:ring-0  "
+                disabled={filterValue.trim() === ""}
+                className="w-fit h-full border-none py-5 focus:outline-0 focus:border-0 outline-none text-text-primary focus:outline-none ring-0 focus:ring-0 text-xs "
               >
                 <SelectValue placeholder="Choose option" />
               </SelectTrigger>
-              <SelectContent className=" mt-3 bg-white border-none text-text-primary">
+              <SelectContent className=" mt-3 bg-white border-none text-text-primary ">
                 <SelectItem
                   value="All"
                   className=" transition-all duration-700 hover:bg-gray-200"
@@ -247,37 +242,52 @@ const SearchHeader: FC<Props> = ({
         </div>
 
         {/* sort */}
-        <div className=" ml-8 md:ml-16 flex items-center gap-4">
-          <p className=" text-primary md:text-sm text-xs">Sort By:</p>
-          <div
-            className=" w-[130px] md:w-[156px] h-[36px] bg-gray-100 border border-gray-200 rounded-md p-2 flex justify-between items-center text-sm cursor-pointer relative"
-            onClick={() => setShowSortOptions((prev) => !prev)}
-          >
-            <span className="text-text-primary md:text-base text-xs">
-              {sortBy}
-            </span>
-            <ExpandMoreOutlinedIcon color="primary" />
+        <div className=" flex items-center gap-2 ">
+          <span className=" text-primary md:text-sm text-xs">Sort By:</span>
+          <div className=" w-fit h-[36px] bg-gray-100 border border-gray-200 rounded-md  flex justify-between items-center text-sm cursor-pointer relative">
+            <Select
+              value={sortBy}
+              onValueChange={(value: string) => {
+                setSortBy(value);
 
-            {showSortOptions ? (
-              <ul
-                ref={sortRef}
-                className=" ml-10 absolute left-0 -bottom-[80px] h-fit w-full bg-white shadow shadow-black/10"
+                setPage(1); // always set page to 1
+
+                handlePageParamsChange("sortBy", value);
+
+                setSearchTrigger(Date.now()); // to always trigger the useeffect
+              }}
+            >
+              <SelectTrigger
+                id="sort"
+                name="sort"
+                aria-label="sort"
+                data-testid="sort-doctors"
+                disabled={sortBy.trim() === ""}
+                className="w-fit h-full border-none py-5 focus:outline-0 focus:border-0 outline-none text-text-primary focus:outline-none ring-0 focus:ring-0 text-xs "
               >
-                {sortOptions.map((item, index) => (
-                  <li
-                    key={index}
-                    className={`p-2 hover:bg-gray-100 ${
-                      sortBy === item.option
-                        ? "text-primary bg-gray-100"
-                        : " text-text-primary"
-                    }`}
-                    onClick={() => setSortBy(item.option)}
-                  >
-                    {item.option}
-                  </li>
-                ))}
-              </ul>
-            ) : null}
+                <SelectValue placeholder="Choose option" />
+              </SelectTrigger>
+              <SelectContent className=" mt-3 bg-white border-none text-text-primary ">
+                <SelectItem
+                  value="Latest"
+                  className=" transition-all duration-700 hover:bg-gray-200"
+                >
+                  Latest
+                </SelectItem>
+                <SelectItem
+                  value="Oldest"
+                  className=" transition-all duration-700 hover:bg-gray-200"
+                >
+                  Oldest
+                </SelectItem>
+                <SelectItem
+                  value="Ratings"
+                  className=" transition-all duration-700 hover:bg-gray-200"
+                >
+                  Ratings
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>

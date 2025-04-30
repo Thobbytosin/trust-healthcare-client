@@ -26,6 +26,18 @@ const SpecializationForm: FC<Props> = ({
   suggestionListRef,
   setShowSuggestionsList,
 }) => {
+  const handleSuggestionClick = async (suggestion: string) => {
+    setSearchForm({ ...searchForm, specialization: suggestion });
+    setShowSuggestionsList(false);
+
+    // Create a fake form submit event
+    const form = document.createElement("form");
+    const fakeEvent = new Event("submit", { bubbles: true, cancelable: true });
+    form.dispatchEvent(fakeEvent);
+
+    await handleSubmit(fakeEvent as unknown as FormEvent);
+  };
+
   return (
     <>
       <form
@@ -58,18 +70,12 @@ const SpecializationForm: FC<Props> = ({
           {showSuggestionList && allSuggestions.length > 0 && (
             <ul
               ref={suggestionListRef}
-              className="absolute bg-white border mt-1 w-full rounded shadow z-10"
+              className="absolute bg-[#e8f4fc] mt-1 w-full shadow z-10"
             >
               {allSuggestions.map((suggestion, i) => (
                 <li
                   key={i}
-                  onClick={() => {
-                    setSearchForm({
-                      ...searchForm,
-                      specialization: suggestion,
-                    });
-                    setShowSuggestionsList(false);
-                  }}
+                  onClick={() => handleSuggestionClick(suggestion)}
                   className="p-2 cursor-pointer hover:bg-gray-100"
                 >
                   {suggestion}

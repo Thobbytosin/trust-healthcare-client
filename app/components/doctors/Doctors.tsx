@@ -24,10 +24,19 @@ const Doctors = (props: Props) => {
   const [location, setLocation] = useState<string | undefined>(undefined);
   const [doctorsLoading, setDoctorsLoading] = useState<boolean>(false);
 
+  // query params for backend route
+  const queryParams = new URLSearchParams({
+    page: String(searchState.pageQuery),
+    search: searchState.searchForm.location,
+    specialization: searchState.searchForm.specialization,
+    available: String(searchState.availableQuery),
+    sortBy: searchState.sortBy,
+  });
+
   const { data, refetch: refetchDoctors } =
     useFetchData<DoctorsBackendResponse>({
       method: "GET",
-      url: `/doctor/get-all-doctors?page=${searchState.pageQuery}&search=${searchState.searchForm.location}&specialization=${searchState.searchForm.specialization}`,
+      url: `/doctor/get-all-doctors?${queryParams.toString()}`,
       queryKey: ["doctors"],
       enabled: false,
     });
@@ -49,7 +58,7 @@ const Doctors = (props: Props) => {
   const doctorsDataMemo = useMemo(() => data?.doctors || [], [data?.doctors]); // updates only when the doctors change
 
   const handlePageParamsChange = (
-    type: string,
+    type: "filter" | "search" | "specialization" | "sortBy",
     parameter: any,
     defaultPageNum = 1
   ) => {
@@ -67,36 +76,22 @@ const Doctors = (props: Props) => {
       newParams = new URLSearchParams();
       newParams.set("page", defaultPageNum.toString());
       newParams.set("specialization", parameter.toLowerCase());
+    } else if (type === "sortBy") {
+      newParams = new URLSearchParams();
+      newParams.set("page", defaultPageNum.toString());
+      newParams.set("sortBy", parameter.toLowerCase());
     }
 
     router.push(`${pathname}?${newParams}`);
   };
 
-  const handleFilterChange = (newFilter: string) => {
-    const newParams = new URLSearchParams(params.toString());
-    newParams.set("filter", newFilter.toLowerCase());
-    router.push(`${pathname}?${newParams}`);
-  };
-
-  // for page chnage
+  // for page chnage (PAGINATION)
   const handlePageChange = (newPage: number) => {
     const newParams = new URLSearchParams(params.toString());
     newParams.set("page", newPage.toString());
 
     router.push(`${pathname}?${newParams.toString()}`);
   };
-
-  // page params
-  const fetchtotalDoctors = () => {
-    if (params.has("search") || params.has("specialization")) {
-      return doctorsDataMemo.length;
-    } else {
-      return data?.grandTotalDoctors || 0;
-    }
-  };
-
-  const currentLocation = params.get("search") || "";
-  const currentSpecialization = params.get("specialization") || "";
 
   // location effect
   // useEffect(() => {
@@ -124,28 +119,27 @@ const Doctors = (props: Props) => {
           setFilterValue={actions.setFilterValue}
           setSearchForm={actions.setSearchForm}
           setSearchTrigger={actions.setSearchTrigger}
-          setShowFilterOptions={actions.toogleFilterOptions}
           setShowSortOptions={actions.toogleSortOptions}
           setSortBy={actions.setSortOption}
           setPage={actions.setPageQuery}
           setAllSuggestions={actions.setAllSuggestions}
           setShowSuggestionsList={actions.setShowSuggestionsList}
           showSuggestionList={searchState.showSuggestionList}
-          showFilterOptions={searchState.showFilterOptions}
           showSortOptions={searchState.showSortOptions}
           sortBy={searchState.sortBy}
+          setAvailableQuery={actions.setAvailable}
+          resetAll={actions.resetAll}
         />
 
         {/* display search info */}
         <SearchBanner
           key={"search-bannner"}
-          currentLocation={currentLocation}
-          currentSpecialization={currentSpecialization}
           defaultData={data}
           location={searchState.searchForm.location}
           resultsLength={doctorsDataMemo.length}
           specialization={searchState.searchForm.specialization}
           trigger={searchState.searchTrigger}
+          filterValue={searchState.filterValue}
         />
 
         {/* doctors data */}
@@ -159,8 +153,7 @@ const Doctors = (props: Props) => {
             location={location}
             locationSearched={searchState.locationSearched}
             setLocationSearched={actions.setLocationSearched}
-            handleFilterChange={handleFilterChange}
-            totalDoctors={fetchtotalDoctors()}
+            totalDoctors={data?.results || 0}
             limit={data?.limit || 4}
             resetAll={actions.resetAll}
             setSearchTrigger={actions.setSearchTrigger}

@@ -22,7 +22,6 @@ type Props = {
   location: string | undefined;
   setLocationSearched: (value: boolean) => void;
   locationSearched: boolean;
-  handleFilterChange: (value: string) => any;
   totalDoctors: number;
   limit: number;
   resetAll: () => void;
@@ -38,7 +37,6 @@ const DoctorsGrid: FC<Props> = ({
   location,
   locationSearched,
   setLocationSearched,
-  handleFilterChange,
   totalDoctors,
   limit,
   resetAll,

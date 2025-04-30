@@ -1,25 +1,29 @@
 import { DoneOutlinedIcon } from "@/icons/icons";
+import { useSearchParams } from "next/navigation";
 import React from "react";
 
 type Props = {
   trigger: number;
   location: string;
-  currentLocation: string;
   resultsLength: number;
   specialization: string;
-  currentSpecialization: string;
   defaultData: any;
+  filterValue: string;
 };
 
 const SearchBanner = ({
-  currentLocation,
   location,
   resultsLength,
   trigger,
   specialization,
-  currentSpecialization,
   defaultData,
+  filterValue,
 }: Props) => {
+  const params = useSearchParams();
+
+  const currentLocation = params.get("search") || "";
+  const currentSpecialization = params.get("specialization") || "";
+  const currentFilterValue = params.get("filter") || "";
   return (
     <div className=" my-8 w-[90%] lg:w-[80%] mx-auto">
       {/* for search results */}
@@ -95,6 +99,43 @@ const SearchBanner = ({
                   {specialization}
                 </span>{" "}
                 yet at this time.
+              </h2>
+            </>
+          )
+        )
+      ) : null}
+
+      {/* for filter results */}
+      {trigger &&
+      filterValue !== "" &&
+      filterValue.toLowerCase() === currentFilterValue.toLowerCase() ? (
+        resultsLength >= 1 ? (
+          <>
+            <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
+              Great! <span className=" text-primary">{resultsLength}</span>{" "}
+              <span className=" text-primary">
+                {resultsLength > 1 ? "doctors" : "doctor"}
+              </span>{" "}
+              are <span className=" text-primary capitalize">available</span>{" "}
+              right now.
+            </h2>
+            <p className="text-[#787887] max-w-[80%] md:min-w-full mx-auto  md:text-left text-center font-light mt-1 text-xs md:text-sm flex items-center gap-2">
+              <span className="hidden md:w-[18px] md:h-[18px] rounded-full border border-[#787887] text-xs md:text-sm md:flex justify-center items-center">
+                <DoneOutlinedIcon fontSize="inherit" />
+              </span>
+              <span>
+                Book appointments with minimum wait-time & verified doctor
+                details
+              </span>
+            </p>
+          </>
+        ) : (
+          filterValue.toLowerCase() === currentFilterValue.toLowerCase() && (
+            <>
+              <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
+                Sorry! No doctor is{" "}
+                <span className=" text-red-500 capitalize">available</span> at
+                this time.
               </h2>
             </>
           )

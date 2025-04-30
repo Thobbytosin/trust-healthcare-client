@@ -17,10 +17,6 @@ export function useSearchReducer() {
     dispatch({ type: "SET_SEARCH_TRIGGER", payload: value });
   };
 
-  const toogleFilterOptions = () => {
-    dispatch({ type: "TOOGLE_FILTER_OPTIONS" });
-  };
-
   const toogleSortOptions = () => {
     dispatch({ type: "TOOGLE_SORT_OPTIONS" });
   };
@@ -45,6 +41,10 @@ export function useSearchReducer() {
     dispatch({ type: "SET_LOCATION_SEARCHED", payload: value });
   };
 
+  const setAvailable = (value: boolean) => {
+    dispatch({ type: "SET_AVAILABLE_QUERY", payload: value });
+  };
+
   const resetAll = () => {
     dispatch({ type: "RESET_ALL" });
   };
@@ -55,13 +55,13 @@ export function useSearchReducer() {
       setSearchForm,
       setFilterValue,
       setSearchTrigger,
-      toogleFilterOptions,
       toogleSortOptions,
       setSortOption,
       setPageQuery,
       setAllSuggestions,
       setShowSuggestionsList,
       setLocationSearched,
+      setAvailable,
       resetAll,
     },
   };

@@ -14,7 +14,7 @@ type Props = {
   setSearchForm: (value: SearchDoctorForm) => void;
   setPage: (value: number) => void;
   handlePageParamsChange: (
-    type: string,
+    type: "filter" | "search" | "specialization",
     parameter: any,
     defaultPageNum?: number
   ) => any;

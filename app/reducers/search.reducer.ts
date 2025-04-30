@@ -9,7 +9,7 @@ export const initialState: SearchState = {
   sortBy: "Latest",
   searchQuery: "",
   pageQuery: 1,
-  availableQuery: null,
+  availableQuery: false,
   searchTrigger: 0,
   allSuggestions: [],
   showSuggestionList: false,

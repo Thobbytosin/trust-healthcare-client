@@ -6,8 +6,8 @@ export interface DoctorsBackendResponse {
   resultsPerPage: number;
   totalPages: number;
   page: number;
-  grandTotalDoctors: number;
   limit: number;
+  results: number;
 }
 
 export interface SearchDoctorForm {
@@ -24,7 +24,7 @@ export type SearchAction =
   | { type: "SET_SORT_BY"; payload: string }
   | { type: "SET_SEARCH_QUERY"; payload: string }
   | { type: "SET_PAGE_QUERY"; payload: number }
-  | { type: "SET_AVAILABLE_QUERY"; payload: string | null }
+  | { type: "SET_AVAILABLE_QUERY"; payload: boolean }
   | { type: "SET_SEARCH_TRIGGER"; payload: number }
   | { type: "RESET_SEARCH_FORM" }
   | { type: "SET_ALL_SUGGESTIONS"; payload: any[] }
@@ -40,7 +40,7 @@ export interface SearchState {
   sortBy: string;
   searchQuery: string;
   pageQuery: number;
-  availableQuery: null | string;
+  availableQuery: boolean;
   searchTrigger: number;
   allSuggestions: string[];
   showSuggestionList: boolean;
