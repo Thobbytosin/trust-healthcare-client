@@ -11,20 +11,17 @@ export interface DoctorsBackendResponse {
 }
 
 export interface SearchDoctorForm {
-  location: string;
-  specialization: string;
+  location: string | undefined;
+  specialization: string | undefined;
 }
 
 export type SearchAction =
-  | { type: "SET_SEARCH_FORM"; payload: Partial<SearchDoctorForm> }
+  | { type: "SET_SEARCH_FORM"; payload: Partial<SearchDoctorForm | undefined> }
   | { type: "SET_LOCATION_SEARCHED"; payload: boolean }
-  | { type: "TOOGLE_FILTER_OPTIONS" }
-  | { type: "TOOGLE_SORT_OPTIONS" }
-  | { type: "SET_FILTER_VALUE"; payload: string }
-  | { type: "SET_SORT_BY"; payload: string }
-  | { type: "SET_SEARCH_QUERY"; payload: string }
-  | { type: "SET_PAGE_QUERY"; payload: number }
-  | { type: "SET_AVAILABLE_QUERY"; payload: boolean }
+  | { type: "SET_FILTER_VALUE"; payload: string | undefined }
+  | { type: "SET_SORT_BY"; payload: string | undefined }
+  | { type: "SET_SEARCH_QUERY"; payload: string | undefined }
+  | { type: "SET_PAGE_QUERY"; payload: number | undefined }
   | { type: "SET_SEARCH_TRIGGER"; payload: number }
   | { type: "RESET_SEARCH_FORM" }
   | { type: "SET_ALL_SUGGESTIONS"; payload: any[] }
@@ -34,13 +31,10 @@ export type SearchAction =
 export interface SearchState {
   searchForm: SearchDoctorForm;
   locationSearched: boolean;
-  showFilterOptions: boolean;
-  showSortOptions: boolean;
-  filterValue: string;
-  sortBy: string;
-  searchQuery: string;
-  pageQuery: number;
-  availableQuery: boolean;
+  filterValue: string | undefined;
+  sortBy: string | undefined;
+  searchQuery: string | undefined;
+  pageQuery: number | undefined;
   searchTrigger: number;
   allSuggestions: string[];
   showSuggestionList: boolean;

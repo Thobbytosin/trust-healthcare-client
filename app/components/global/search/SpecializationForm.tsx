@@ -92,12 +92,12 @@ const SpecializationForm: FC<Props> = ({
           type="submit"
           disabled={
             searchForm.specialization === "" ||
-            searchForm.specialization.toLowerCase() ===
+            searchForm.specialization?.toLowerCase() ===
               currentSpecialization.toLowerCase()
           }
           className={`mt-4 md:mt-0 md:ml-4 h-[41.33px] w-[150px] lg:w-[231px] text-sm ${
             searchForm.specialization === "" ||
-            searchForm.specialization.toLowerCase() ===
+            searchForm.specialization?.toLowerCase() ===
               currentSpecialization.toLowerCase()
               ? "cursor-not-allowed bg-gray-300"
               : "cursor-pointer bg-primary "

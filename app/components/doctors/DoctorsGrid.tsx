@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-// import { dummyDoctors } from "../../../app/constants/doctors";
 import React, { FC, useState } from "react";
 import DoctorCard from "./DoctorCard";
 import {
@@ -15,7 +13,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 type Props = {
   loading: boolean;
-  page: number;
+  page: number | undefined;
   setPage: (value: number) => void;
   handlePageChange: (value: number) => any;
   doctorsData: IDoctor[];
@@ -60,32 +58,36 @@ const DoctorsGrid: FC<Props> = ({
   }
 
   const handleNext = (pageNum: number) => {
-    if (page < totalPages) {
-      // check if page is not 1st page and last page
-      const newPage = page + 1; // increase page by 1
+    if (page) {
+      if (page < totalPages) {
+        // check if page is not 1st page and last page
+        const newPage = page + 1; // increase page by 1
 
-      if (newPage > windowEnd) {
-        // if page his greater than the window, update window start to the window end
-        setWindowStart(windowEnd);
+        if (newPage > windowEnd) {
+          // if page his greater than the window, update window start to the window end
+          setWindowStart(windowEnd);
+        }
+
+        setPage(newPage);
+
+        handlePageChange(Math.min(totalPages, pageNum + 1));
       }
-
-      setPage(newPage);
-
-      handlePageChange(Math.min(totalPages, pageNum + 1));
     }
   };
 
   const handlePrev = (pageNum: number) => {
-    if (page > 1) {
-      const newPage = page - 1;
+    if (page) {
+      if (page > 1) {
+        const newPage = page - 1;
 
-      if (newPage <= windowStart) {
-        setWindowStart(Math.max(0, windowStart - windowSize));
+        if (newPage <= windowStart) {
+          setWindowStart(Math.max(0, windowStart - windowSize));
+        }
+
+        setPage(newPage);
+
+        handlePageChange(Math.max(1, pageNum - 1));
       }
-
-      setPage(newPage);
-
-      handlePageChange(Math.max(1, pageNum - 1));
     }
   };
 
@@ -124,7 +126,7 @@ const DoctorsGrid: FC<Props> = ({
               <DoctorCard key={index} doctor={doctor} />
             ))}
 
-        {!loading && doctorsData.length >= 1 ? (
+        {!loading && page && doctorsData.length >= 1 ? (
           <div className=" my-10 flex justify-center items-center gap-2 mt-8 bg-white w-full py-3 rounded-md mx-auto">
             <button
               onClick={() => handlePrev(page)}
@@ -146,7 +148,7 @@ const DoctorsGrid: FC<Props> = ({
               )}
             </button>
 
-            {page > windowSize && (
+            {page && page > windowSize && (
               <div className=" text-primary text-xl">...</div>
             )}
 
@@ -164,7 +166,7 @@ const DoctorsGrid: FC<Props> = ({
               </button>
             ))}
 
-            {totalPages > windowSize && page < totalPages && (
+            {totalPages > windowSize && page && page < totalPages && (
               <div className=" text-primary text-xl">...</div>
             )}
 

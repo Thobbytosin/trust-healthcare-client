@@ -38,7 +38,7 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 // provider
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { data, isLoading, isError, error, refetch } =
     useFetchData<BackendResponse>({
       method: "GET",
@@ -62,4 +62,4 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+const useAuth = () => useContext(AuthContext);

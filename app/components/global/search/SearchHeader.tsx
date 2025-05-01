@@ -1,5 +1,4 @@
 import React, { FC, FormEvent, useCallback, useEffect, useRef } from "react";
-import { ExpandMoreOutlinedIcon } from "../../../../app/icons/icons";
 import { useSearchParams } from "next/navigation";
 import useTooltip from "../../../hooks/useTooltip";
 import debounce from "lodash.debounce";
@@ -7,31 +6,17 @@ import { SERVER_URI } from "../../../utils/uri";
 import { SearchDoctorForm } from "../../../types/all.types";
 import SelectLocation from "./SelectLocation";
 import SpecializationForm from "./SpecializationForm";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../../components/ui/select";
-
-// sort options
-const sortOptions = [
-  { option: "Latest" },
-  { option: "Ratings" },
-  { option: "Oldest" },
-];
+import FilterSearch from "./FilterSearch";
+import SortSearch from "./SortSearch";
 
 type Props = {
   setSearchForm: (value: SearchDoctorForm) => void;
   searchForm: SearchDoctorForm;
-  setShowSortOptions: React.Dispatch<React.SetStateAction<boolean>>;
-  filterValue: string;
+  filterValue: string | undefined;
   setFilterValue: (value: string) => void;
   setSearchTrigger: (value: number) => void;
   setPage: (value: number) => void;
-  sortBy: string;
-  showSortOptions: boolean;
+  sortBy: string | undefined;
   setSortBy: (value: string) => void;
   handlePageParamsChange: (
     type: "filter" | "search" | "specialization" | "sortBy",
@@ -42,7 +27,6 @@ type Props = {
   setShowSuggestionsList: (value: boolean) => void;
   allSuggestions: string[];
   showSuggestionList: boolean;
-  setAvailableQuery: (value: boolean) => void;
   resetAll: () => void;
 };
 
@@ -54,19 +38,15 @@ const SearchHeader: FC<Props> = ({
   setFilterValue,
   setPage,
   sortBy,
-  showSortOptions,
   setSortBy,
-  setShowSortOptions,
   handlePageParamsChange,
   setAllSuggestions,
   setShowSuggestionsList,
   allSuggestions,
   showSuggestionList,
-  setAvailableQuery,
   resetAll,
 }) => {
   const suggestionListRef = useRef<HTMLUListElement>(null);
-  const sortRef = useRef<HTMLUListElement>(null);
   const params = useSearchParams();
   const showLocationTooltip = useTooltip("location-select");
   const showSpecializationTooltip = useTooltip("specialization");
@@ -74,9 +54,7 @@ const SearchHeader: FC<Props> = ({
   //   close suggestionlist, or sort or filter the drop down when clicking anywhere
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
-        setShowSortOptions(false);
-      } else if (
+      if (
         suggestionListRef.current &&
         !suggestionListRef.current.contains(event.target as Node)
       ) {
@@ -110,8 +88,8 @@ const SearchHeader: FC<Props> = ({
   // to fetchSuggestions
   useEffect(() => {
     if (
-      searchForm.specialization.length &&
-      searchForm.specialization.length > 2
+      searchForm.specialization?.length &&
+      searchForm.specialization?.length > 2
     ) {
       fetchSuggestions(searchForm.specialization);
     } else {
@@ -125,10 +103,10 @@ const SearchHeader: FC<Props> = ({
     e.preventDefault();
 
     const currentSpecialization = params.get("specialization") || "";
-    if (searchForm.specialization.trim() === "") return;
+    if (searchForm.specialization?.trim() === "") return;
 
     if (
-      searchForm.specialization.toLowerCase() ===
+      searchForm.specialization?.toLowerCase() ===
       currentSpecialization.toLowerCase()
     )
       return; // to avoid searching same location again
@@ -188,108 +166,27 @@ const SearchHeader: FC<Props> = ({
       </div>
 
       {/* SORT/FILTER */}
-      <div className=" mt-8 md:flex gap-20 items-center">
+      <div className=" mt-8 flex gap-10 md:gap-20 items-center">
         {/* filter */}
-        <div className=" flex items-center gap-2 ">
-          <span className=" text-primary md:text-sm text-xs">Filter:</span>
-          <div className=" w-fit h-[36px] bg-gray-100 border border-gray-200 rounded-md  flex justify-between items-center text-sm cursor-pointer relative">
-            <Select
-              value={filterValue}
-              onValueChange={(value: string) => {
-                if (value === "Available") {
-                  setFilterValue(value);
-
-                  setPage(1); // always set page to 1
-
-                  handlePageParamsChange("filter", value);
-
-                  setSearchTrigger(Date.now()); // to always trigger the useeffect
-                  setAvailableQuery(true);
-                } else {
-                  // clear all params
-                  const newUrl = window.location.pathname;
-                  window.history.replaceState({}, "", newUrl);
-                  resetAll();
-                }
-              }}
-            >
-              <SelectTrigger
-                id="filter"
-                name="filter"
-                aria-label="filter"
-                data-testid="filter-doctors"
-                disabled={filterValue.trim() === ""}
-                className="w-fit h-full border-none py-5 focus:outline-0 focus:border-0 outline-none text-text-primary focus:outline-none ring-0 focus:ring-0 text-xs "
-              >
-                <SelectValue placeholder="Choose option" />
-              </SelectTrigger>
-              <SelectContent className=" mt-3 bg-white border-none text-text-primary ">
-                <SelectItem
-                  value="All"
-                  className=" transition-all duration-700 hover:bg-gray-200"
-                >
-                  All
-                </SelectItem>
-                <SelectItem
-                  value="Available"
-                  className=" transition-all duration-700 hover:bg-gray-200"
-                >
-                  Available
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
+        <FilterSearch
+          key={"filter-search"}
+          filterValue={filterValue}
+          handlePageParamsChange={handlePageParamsChange}
+          resetAll={resetAll}
+          setFilterValue={setFilterValue}
+          setPage={setPage}
+          setSearchTrigger={setSearchTrigger}
+        />
 
         {/* sort */}
-        <div className=" flex items-center gap-2 ">
-          <span className=" text-primary md:text-sm text-xs">Sort By:</span>
-          <div className=" w-fit h-[36px] bg-gray-100 border border-gray-200 rounded-md  flex justify-between items-center text-sm cursor-pointer relative">
-            <Select
-              value={sortBy}
-              onValueChange={(value: string) => {
-                setSortBy(value);
-
-                setPage(1); // always set page to 1
-
-                handlePageParamsChange("sortBy", value);
-
-                setSearchTrigger(Date.now()); // to always trigger the useeffect
-              }}
-            >
-              <SelectTrigger
-                id="sort"
-                name="sort"
-                aria-label="sort"
-                data-testid="sort-doctors"
-                disabled={sortBy.trim() === ""}
-                className="w-fit h-full border-none py-5 focus:outline-0 focus:border-0 outline-none text-text-primary focus:outline-none ring-0 focus:ring-0 text-xs "
-              >
-                <SelectValue placeholder="Choose option" />
-              </SelectTrigger>
-              <SelectContent className=" mt-3 bg-white border-none text-text-primary ">
-                <SelectItem
-                  value="Latest"
-                  className=" transition-all duration-700 hover:bg-gray-200"
-                >
-                  Latest
-                </SelectItem>
-                <SelectItem
-                  value="Oldest"
-                  className=" transition-all duration-700 hover:bg-gray-200"
-                >
-                  Oldest
-                </SelectItem>
-                <SelectItem
-                  value="Ratings"
-                  className=" transition-all duration-700 hover:bg-gray-200"
-                >
-                  Ratings
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
+        <SortSearch
+          key={"sort-search"}
+          setPage={setPage}
+          setSearchTrigger={setSearchTrigger}
+          handlePageParamsChange={handlePageParamsChange}
+          setSortBy={setSortBy}
+          sortBy={sortBy}
+        />
       </div>
     </div>
   );

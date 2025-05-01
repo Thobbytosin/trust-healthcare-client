@@ -18,20 +18,34 @@ const Doctors = (props: Props) => {
   const { searchState, actions } = useSearchReducer();
   // page states
   const router = useRouter();
-  const params = useSearchParams();
+  const queryParams = useSearchParams();
   const pathname = usePathname();
 
   const [location, setLocation] = useState<string | undefined>(undefined);
   const [doctorsLoading, setDoctorsLoading] = useState<boolean>(false);
 
   // query params for backend route
-  const queryParams = new URLSearchParams({
-    page: String(searchState.pageQuery),
-    search: searchState.searchForm.location,
-    specialization: searchState.searchForm.specialization,
-    available: String(searchState.availableQuery),
-    sortBy: searchState.sortBy,
-  });
+  // const queryParams = new URLSearchParams({});
+
+  // if (searchState.pageQuery !== undefined && searchState.pageQuery !== null) {
+  //   queryParams.set("page", String(searchState.pageQuery));
+  // }
+
+  // if (searchState.searchForm.location !== undefined) {
+  //   queryParams.set("search", searchState.searchForm.location);
+  // }
+
+  // if (searchState.searchForm.specialization !== undefined) {
+  //   queryParams.set("specialization", searchState.searchForm.specialization);
+  // }
+
+  // if (searchState.sortBy !== undefined) {
+  //   queryParams.set("sortBy", searchState.sortBy);
+  // }
+
+  // if (searchState.filterValue !== undefined) {
+  //   queryParams.set("filter", searchState.filterValue);
+  // }
 
   const { data, refetch: refetchDoctors } =
     useFetchData<DoctorsBackendResponse>({
@@ -52,7 +66,7 @@ const Doctors = (props: Props) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [searchState.pageQuery, searchState.searchTrigger]); // refetch doctors every time the page changes
+  }, [searchState.pageQuery, searchState.searchTrigger, queryParams]); // refetch doctors every time the page changes
 
   // memoized doctors data
   const doctorsDataMemo = useMemo(() => data?.doctors || [], [data?.doctors]); // updates only when the doctors change
@@ -62,7 +76,7 @@ const Doctors = (props: Props) => {
     parameter: any,
     defaultPageNum = 1
   ) => {
-    let newParams = new URLSearchParams(params.toString());
+    let newParams = new URLSearchParams(queryParams.toString());
 
     if (type === "filter") {
       newParams = new URLSearchParams();
@@ -87,7 +101,7 @@ const Doctors = (props: Props) => {
 
   // for page chnage (PAGINATION)
   const handlePageChange = (newPage: number) => {
-    const newParams = new URLSearchParams(params.toString());
+    const newParams = new URLSearchParams(queryParams.toString());
     newParams.set("page", newPage.toString());
 
     router.push(`${pathname}?${newParams.toString()}`);
@@ -119,15 +133,12 @@ const Doctors = (props: Props) => {
           setFilterValue={actions.setFilterValue}
           setSearchForm={actions.setSearchForm}
           setSearchTrigger={actions.setSearchTrigger}
-          setShowSortOptions={actions.toogleSortOptions}
           setSortBy={actions.setSortOption}
           setPage={actions.setPageQuery}
           setAllSuggestions={actions.setAllSuggestions}
           setShowSuggestionsList={actions.setShowSuggestionsList}
           showSuggestionList={searchState.showSuggestionList}
-          showSortOptions={searchState.showSortOptions}
           sortBy={searchState.sortBy}
-          setAvailableQuery={actions.setAvailable}
           resetAll={actions.resetAll}
         />
 

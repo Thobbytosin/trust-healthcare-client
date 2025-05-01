@@ -7,8 +7,8 @@ import {
   ExpandMoreOutlinedIcon,
   MenuIcon,
 } from "../../../icons/icons";
-import { useAuth } from "../../../../app/context/AuthContext";
-import { getInitials } from "@/utils/helpers";
+import { getInitials } from "../../../utils/helpers";
+import { useUserStore } from "../../../store/useUserStore";
 
 type Props = {
   setOpenModal: (value: boolean) => void;
@@ -29,7 +29,7 @@ const menuItems = [
 ];
 
 const NavMobile: FC<Props> = ({ setMode, setOpenModal }) => {
-  const { user } = useAuth();
+  const { user } = useUserStore((state) => state);
   const [openSidebar, setOpenSidebar] = useState<any>(undefined);
   const [openSubmenu, setOpenSubmenu] = useState<any>(false);
 
@@ -60,7 +60,7 @@ const NavMobile: FC<Props> = ({ setMode, setOpenModal }) => {
       </Link>
 
       <div className=" flex items-center gap-12">
-        {user ? (
+        {Object.keys(user).length > 0 ? (
           <button
             aria-label="User Account"
             className=" cursor-pointer flex items-center "

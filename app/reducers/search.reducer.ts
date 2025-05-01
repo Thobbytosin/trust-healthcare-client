@@ -1,15 +1,13 @@
 import { SearchAction, SearchState } from "../types/all.types";
 
 export const initialState: SearchState = {
-  searchForm: { location: "", specialization: "" },
+  searchForm: { location: undefined, specialization: undefined },
   locationSearched: false,
-  showFilterOptions: false,
-  showSortOptions: false,
-  filterValue: "All",
-  sortBy: "Latest",
-  searchQuery: "",
-  pageQuery: 1,
-  availableQuery: false,
+  filterValue: undefined,
+  sortBy: undefined,
+  searchQuery: undefined,
+  pageQuery: undefined,
+  availableQuery: undefined,
   searchTrigger: 0,
   allSuggestions: [],
   showSuggestionList: false,
@@ -25,12 +23,6 @@ export function searchReducer(state: SearchState, action: SearchAction) {
 
     case "SET_LOCATION_SEARCHED":
       return { ...state, locationSearched: action.payload };
-
-    case "TOOGLE_FILTER_OPTIONS":
-      return { ...state, showFilterOptions: !state.showFilterOptions };
-
-    case "TOOGLE_SORT_OPTIONS":
-      return { ...state, showSortOptions: !state.showSortOptions };
 
     case "SET_FILTER_VALUE":
       return { ...state, filterValue: action.payload };

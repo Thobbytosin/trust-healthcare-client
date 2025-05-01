@@ -1,5 +1,4 @@
 "use client";
-import { useAuth } from "../../../app/context/AuthContext";
 import React, { useEffect, useState } from "react";
 import Header from "../global/header/Header";
 import Hero from "./Hero";
@@ -16,11 +15,12 @@ import { useDoctorsStore } from "@/store/useDoctorsStore";
 import LandingPageLoader from "./LandingPageLoader";
 import { usePathname, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { useAuth } from "../../hooks/useAuth";
 
 type Props = {};
 
 const Home = (props: Props) => {
-  const { isLoading, refetchUser, user } = useAuth();
+  const { isLoading: userLoading, refetch: refetchUser } = useAuth();
   const { isLoading: doctorsLoading, refetch: refetchDoctors } =
     useFetchDoctors();
   const doctors = useDoctorsStore((state) => state.doctorsFree);
@@ -70,7 +70,7 @@ const Home = (props: Props) => {
   }, [searchParams, pathname]);
 
   if (mounted) {
-    if (isLoading || doctorsLoading) {
+    if (userLoading || doctorsLoading) {
       return <LandingPageLoader />;
     }
   }
@@ -78,7 +78,7 @@ const Home = (props: Props) => {
   return (
     <main>
       {/* Don't render Header until data is loaded */}
-      {mounted && !isLoading && !doctorsLoading && <Header />}
+      {mounted && !userLoading && !doctorsLoading && <Header />}
 
       <Hero />
 

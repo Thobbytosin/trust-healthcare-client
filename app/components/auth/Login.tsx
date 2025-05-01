@@ -6,7 +6,7 @@ import {
 import React, { FC, FormEvent, useState } from "react";
 import { toast } from "sonner";
 import Loader from "../global/loaders/Loader";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "../../hooks/useAuth";
 
 type Props = {
   setMode: (value: string) => void;
@@ -14,7 +14,7 @@ type Props = {
 };
 
 const Login: FC<Props> = ({ setMode, setOpenModal }) => {
-  const { refetchUser } = useAuth();
+  const { refetch: refetchUser } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState<any>({});
   const { mutate: loginUser, isPending } = useMutateData({

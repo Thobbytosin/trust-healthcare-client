@@ -4,11 +4,11 @@ import React from "react";
 
 type Props = {
   trigger: number;
-  location: string;
+  location: string | undefined;
   resultsLength: number;
-  specialization: string;
+  specialization: string | undefined;
   defaultData: any;
-  filterValue: string;
+  filterValue: string | undefined;
 };
 
 const SearchBanner = ({
@@ -29,6 +29,7 @@ const SearchBanner = ({
       {/* for search results */}
       {trigger &&
       location !== "" &&
+      location &&
       location.toLowerCase() === currentLocation.toLowerCase() ? (
         resultsLength >= 1 ? (
           <>
@@ -67,6 +68,7 @@ const SearchBanner = ({
       {/* for specialization results */}
       {trigger &&
       specialization !== "" &&
+      specialization &&
       specialization.toLowerCase() === currentSpecialization.toLowerCase() ? (
         resultsLength >= 1 ? (
           <>
@@ -108,6 +110,7 @@ const SearchBanner = ({
       {/* for filter results */}
       {trigger &&
       filterValue !== "" &&
+      filterValue &&
       filterValue.toLowerCase() === currentFilterValue.toLowerCase() ? (
         resultsLength >= 1 ? (
           <>

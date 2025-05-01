@@ -1,3 +1,5 @@
+import { useSearchReducer } from "../hooks/useSearchReducer";
+
 export function getInitials(name: string) {
   if (!name) return "";
 
@@ -43,32 +45,6 @@ export async function reverseGeocode(latitude: number, longitude: number) {
     return null;
   }
 }
-
-// export async function fetchLocation() {
-//   if (!navigator.geolocation) {
-//     console.log("Geolocation is not supported on this browser");
-//     return;
-//   }
-
-//   //   get coordinates
-//   const location = navigator.geolocation.getCurrentPosition(
-//     async (position) => {
-//       const { latitude, longitude } = position.coords;
-
-//       // console.log("Coordinates:", latitude, longitude);
-
-//       // get address
-//       const addressData = await reverseGeocode(latitude, longitude);
-//       // console.log(addressData);
-//       return addressData;
-//     },
-//     (error) => {
-//       console.log("Error getting Location:", error);
-//     }
-//   );
-
-//   return location;
-// }
 
 export function fetchLocation() {
   return new Promise((resolve, reject) => {

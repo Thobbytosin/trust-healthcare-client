@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { AuthProvider } from "./context/AuthContext";
 import "./globals.css";
 import QueryProvider from "./providers/QueryProvider";
 import { Toaster } from "sonner";
@@ -37,9 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body className=" font-poppins min-h-screen ">
-        <QueryProvider>
-          <AuthProvider>{children}</AuthProvider>
-        </QueryProvider>
+        <QueryProvider>{children}</QueryProvider>
         <Toaster richColors />
       </body>
     </html>
