@@ -18,6 +18,7 @@ const SearchBanner = ({ loading, data }: Props) => {
   const currentLocation = params.get("location");
   const currentSpecialization = params.get("specialization");
   const currentFilterValue = params.get("filter");
+
   // const currentFilterValue = params.get("filter");
   const { searchState } = useSearch();
   const { searchForm, filterValue, typingTrigger, userLocation } = searchState;
@@ -176,7 +177,7 @@ const SearchBanner = ({ loading, data }: Props) => {
       currentFilterValue === null ? (
         <>
           <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-            Over {totalDoctors - 2} doctors available for you.
+            Verified doctors available for you.
           </h2>
           <p className="text-[#787887] max-w-[80%] md:min-w-full mx-auto  md:text-left text-center font-light mt-1 text-xs md:text-sm flex items-center gap-2">
             <span className="hidden md:w-[18px] md:h-[18px] rounded-full border border-[#787887] text-xs md:text-sm md:flex justify-center items-center">
