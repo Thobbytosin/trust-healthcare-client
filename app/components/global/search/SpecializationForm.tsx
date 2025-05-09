@@ -1,33 +1,98 @@
 import ToolTip from "../../ui/Tooltip";
-import { SearchOutlinedIcon } from "../../../icons/icons";
-import { SearchDoctorForm } from "../../../types/all.types";
-import React, { FC, FormEvent, RefObject } from "react";
+import { SearchOutlinedIcon } from "@/icons/icons";
+import React, {
+  FC,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import useTooltip from "@/hooks/useTooltip";
+import { useSearch } from "@/hooks/useSearch";
+import debounce from "lodash.debounce";
 
 type Props = {
-  handleSubmit: (e: FormEvent) => Promise<void>;
-  searchForm: SearchDoctorForm;
-  currentSpecialization: string;
-  setSearchForm: (value: SearchDoctorForm) => void;
-  showSpecializationTooltip: boolean;
-  showSuggestionList: boolean;
-  allSuggestions: string[];
-  suggestionListRef: RefObject<HTMLUListElement | null>;
-  setShowSuggestionsList: (value: boolean) => void;
+  handlePageParamsChange: (
+    type: "filter" | "search" | "specialization" | "sortBy",
+    parameter: any,
+    defaultPageNum?: number
+  ) => any;
 };
 
-const SpecializationForm: FC<Props> = ({
-  handleSubmit,
-  searchForm,
-  currentSpecialization,
-  setSearchForm,
-  showSpecializationTooltip,
-  showSuggestionList,
-  allSuggestions,
-  suggestionListRef,
-  setShowSuggestionsList,
-}) => {
+const SpecializationForm: FC<Props> = ({ handlePageParamsChange }) => {
+  const suggestionListRef = useRef<HTMLUListElement>(null);
+  const { actions, searchState } = useSearch();
+  const {
+    setSearchForm,
+    setPageQuery,
+    setSearchTrigger,
+    setAllSuggestions,
+    setShowSuggestionsList,
+    resetAll,
+    setTypingTrigger,
+  } = actions;
+  const { searchForm, allSuggestions, showSuggestionList, typingTrigger } =
+    searchState;
+  const showSpecializationTooltip = useTooltip("specialization");
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
+
+  useEffect(() => {
+    resetAll();
+  }, []);
+
+  //   close suggestionlist when clicking anywhere
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        suggestionListRef.current &&
+        !suggestionListRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestionsList(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Handle fetch suggestions
+  const fetchSuggestions = useCallback(
+    debounce(async (term: string) => {
+      const stored = localStorage.getItem("search_suggestions");
+      const suggestions: string[] = stored ? JSON.parse(stored) : [];
+
+      // filter
+      const filtered = suggestions.filter((s: string) =>
+        s.toLowerCase().includes(term.toLowerCase())
+      );
+
+      setAllSuggestions(filtered);
+      setShowSuggestionsList(true);
+    }, 2000),
+    []
+  );
+
+  // to fetchSuggestions
+  useEffect(() => {
+    if (!typingTrigger) return;
+
+    if (
+      typeof searchForm.specialization === "string" &&
+      searchForm.specialization?.trim()?.length > 0
+    ) {
+      fetchSuggestions(searchForm.specialization);
+    } else {
+      setAllSuggestions([]);
+      setShowSuggestionsList(false);
+    }
+  }, [typingTrigger]);
+
   const handleSuggestionClick = async (suggestion: string) => {
-    setSearchForm({ ...searchForm, specialization: suggestion });
     setShowSuggestionsList(false);
 
     // Create a fake form submit event
@@ -35,8 +100,55 @@ const SpecializationForm: FC<Props> = ({
     const fakeEvent = new Event("submit", { bubbles: true, cancelable: true });
     form.dispatchEvent(fakeEvent);
 
-    await handleSubmit(fakeEvent as unknown as FormEvent);
+    handleSubmit(fakeEvent as unknown as FormEvent, true, suggestion);
   };
+
+  const saveSuggestions = (term: string) => {
+    const stored = localStorage.getItem("search_suggestions");
+    const suggestions: string[] = stored ? JSON.parse(stored) : [];
+
+    if (!suggestions.includes(term)) {
+      suggestions.unshift(term);
+      localStorage.setItem(
+        "search_suggestions",
+        JSON.stringify(suggestions.slice(0, 10))
+      );
+    }
+  };
+  // search by specialization
+  const handleSubmit = async (
+    e?: FormEvent,
+    clicked = false,
+    query?: string
+  ) => {
+    e?.preventDefault();
+
+    setTypingTrigger(false);
+
+    if (searchForm.specialization?.trim() === "") return;
+
+    setPageQuery(1); // always set page to 1
+
+    if (!clicked) {
+      if (searchForm.specialization) {
+        handlePageParamsChange("specialization", searchForm.specialization);
+        // save to suggestions
+        saveSuggestions(searchForm?.specialization);
+      }
+    } else {
+      if (query) {
+        setSearchForm({ ...searchForm, specialization: query });
+        handlePageParamsChange("specialization", query);
+
+        // save to suggestions
+        saveSuggestions(query);
+      }
+    }
+
+    setSearchTrigger(Date.now()); // to always trigger the useeffect
+  };
+
+  const currentSpecialization = params.get("specialization");
 
   return (
     <>
@@ -55,10 +167,20 @@ const SpecializationForm: FC<Props> = ({
             type="text"
             placeholder="Search by Specialization..."
             className=" outline-none bg-transparent h-[41.33px] py-5 px-3 text-text-primary w-full text-sm"
-            value={searchForm.specialization || ""}
-            onChange={(e) =>
-              setSearchForm({ ...searchForm, specialization: e.target.value })
-            }
+            value={searchForm.specialization ?? ""}
+            onChange={(e) => {
+              setTypingTrigger(Date.now());
+              setSearchForm({
+                ...searchForm,
+                specialization: e.target.value,
+              });
+
+              if (e.target.value.trim() === "") {
+                setTypingTrigger(false);
+                resetAll();
+                router.push(pathname); // removes all search/query params
+              }
+            }}
           />
           <SearchOutlinedIcon className="text-text-primary absolute right-2 top-2 " />
 
@@ -67,12 +189,12 @@ const SpecializationForm: FC<Props> = ({
             show={showSpecializationTooltip}
           />
 
-          {showSuggestionList && allSuggestions.length > 0 && (
+          {showSuggestionList && allSuggestions?.length > 0 && (
             <ul
               ref={suggestionListRef}
               className="absolute bg-[#e8f4fc] mt-1 w-full shadow z-10"
             >
-              {allSuggestions.map((suggestion, i) => (
+              {allSuggestions?.map((suggestion, i) => (
                 <li
                   key={i}
                   onClick={() => handleSuggestionClick(suggestion)}
@@ -91,14 +213,14 @@ const SpecializationForm: FC<Props> = ({
           title="search-form-submit"
           type="submit"
           disabled={
-            searchForm.specialization === "" ||
-            searchForm.specialization?.toLowerCase() ===
-              currentSpecialization.toLowerCase()
+            typeof searchForm?.specialization !== "string" ||
+            currentSpecialization?.toLowerCase() ===
+              searchForm.specialization.toLowerCase().trim()
           }
           className={`mt-4 md:mt-0 md:ml-4 h-[41.33px] w-[150px] lg:w-[231px] text-sm ${
-            searchForm.specialization === "" ||
-            searchForm.specialization?.toLowerCase() ===
-              currentSpecialization.toLowerCase()
+            typeof searchForm?.specialization !== "string" ||
+            currentSpecialization?.toLowerCase() ===
+              searchForm.specialization.toLowerCase().trim()
               ? "cursor-not-allowed bg-gray-300"
               : "cursor-pointer bg-primary "
           } rounded-md text-center text-white`}

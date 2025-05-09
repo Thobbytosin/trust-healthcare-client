@@ -4,10 +4,11 @@ import {
   DoneOutlinedIcon,
   VisibilityOffOutlinedIcon,
   VisibilityOutlinedIcon,
-} from "../../../app/icons/icons";
+} from "@/icons/icons";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import Loader from "../global/loaders/Loader";
+import { RESETPASSWORD } from "@/config/user.endpoints";
 
 type Props = {
   setMode: (value: string) => void;
@@ -42,8 +43,7 @@ const ResetPassword = ({ setMode }: Props) => {
   const { mutate: resetPassword, isPending } = useMutateData({
     method: "POST",
     mutationKey: ["resetPassword"],
-    url: "/user/reset-password",
-    skipAuthRefresh: true,
+    url: RESETPASSWORD,
   });
 
   const handleReset = (e: React.FormEvent) => {

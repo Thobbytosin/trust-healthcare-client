@@ -42,6 +42,6 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://trusthealthcare.com"),
 };
 
-export default function LandingPage() {
+export default async function LandingPage() {
   return <Home />;
 }

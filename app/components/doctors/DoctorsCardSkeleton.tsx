@@ -1,10 +1,8 @@
 import React, { FC } from "react";
 
-type Props = {
-  doctor: any;
-};
+type Props = {};
 
-const DoctorCardSkeleton: FC<Props> = ({ doctor }) => {
+const DoctorCardSkeleton: FC<Props> = () => {
   return (
     <div className=" w-full min-h-[fit] bg-white  rounded-xl overflow-clip cursor-pointer transition-all duration-700 hover:scale-95 p-4 flex items-start justify-between gap-2 lg:gap-4 mb-4">
       {/* image ske */}

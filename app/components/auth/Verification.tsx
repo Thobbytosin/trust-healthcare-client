@@ -1,9 +1,10 @@
 import Image from "next/image";
 import React, { FC, useEffect, useRef, useState } from "react";
 import phoneIcon from "../../../public/assets/phone.png";
-import { useMutateData } from "../../../app/hooks/useApi";
+import { useMutateData } from "@/hooks/useApi";
 import Loader from "../global/loaders/Loader";
 import { toast } from "sonner";
+import { RESENDVERIFICATIONCODE, VERIFICATION } from "@/config/auth.endpoints";
 
 type Props = {
   setMode: (value: string) => void;
@@ -83,8 +84,7 @@ const Verification: FC<Props> = ({ setMode }) => {
   const { mutate: verifyAccount, isPending } = useMutateData({
     method: "POST",
     mutationKey: ["verification"],
-    url: "/auth/account-verification",
-    skipAuthRefresh: true,
+    url: VERIFICATION,
   });
 
   // handle submit
@@ -115,8 +115,7 @@ const Verification: FC<Props> = ({ setMode }) => {
   const { mutate: resendCode, isPending: resendPending } = useMutateData({
     method: "POST",
     mutationKey: ["resendCode"],
-    url: "/auth/resend-verification-code",
-    skipAuthRefresh: true,
+    url: RESENDVERIFICATIONCODE,
   });
 
   // handle resend code

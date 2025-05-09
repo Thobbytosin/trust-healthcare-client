@@ -6,28 +6,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../components/ui/select";
+import { useSearch } from "@/hooks/useSearch";
+import useTooltip from "@/hooks/useTooltip";
+import ToolTip from "@/components/ui/Tooltip";
 
 type Props = {
-  sortBy: string | undefined;
-  setSortBy: (value: string) => void;
-  setPage: (value: number) => void;
   handlePageParamsChange: (
     type: "filter" | "search" | "specialization" | "sortBy",
     parameter: any,
     defaultPageNum?: number
   ) => any;
-  setSearchTrigger: (value: number) => void;
 };
 
-const SortSearch = ({
-  sortBy,
-  setSortBy,
-  handlePageParamsChange,
-  setPage,
-  setSearchTrigger,
-}: Props) => {
+const SortSearch = ({ handlePageParamsChange }: Props) => {
+  const { actions, searchState } = useSearch();
+  const { setSortBy, setPageQuery, setSearchTrigger } = actions;
+  const { sortBy } = searchState;
+  const showSortTooltip = useTooltip("sort");
+
   return (
-    <div className=" flex items-center gap-2 ">
+    <div className=" w-full relative flex items-center gap-2 ">
       <span className=" text-primary md:text-sm text-xs">Sort By:</span>
       <div className=" w-fit h-[36px] bg-gray-100 border border-gray-200 rounded-md  flex justify-between items-center text-sm cursor-pointer relative">
         <Select
@@ -35,7 +33,7 @@ const SortSearch = ({
           onValueChange={(value: string) => {
             setSortBy(value);
 
-            setPage(1); // always set page to 1
+            setPageQuery(1); // always set page to 1
 
             handlePageParamsChange("sortBy", value);
 
@@ -74,6 +72,7 @@ const SortSearch = ({
           </SelectContent>
         </Select>
       </div>
+      <ToolTip message="Sort by option" show={showSortTooltip} />
     </div>
   );
 };

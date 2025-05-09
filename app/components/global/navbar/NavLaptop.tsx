@@ -4,7 +4,7 @@ import React, { FC, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { getInitials } from "../../../../app/utils/helpers";
 import { ExpandMoreOutlinedIcon } from "../../../../app/icons/icons";
-import { useUserStore } from "../../../store/useUserStore";
+import { useAuthStore } from "@/store/useAuthStore";
 
 type Props = {
   setOpenModal: (value: boolean) => void;
@@ -27,7 +27,7 @@ const menuItems = [
 ];
 
 const NavLaptop: FC<Props> = ({ setOpenModal, setMode, activeIndex }) => {
-  const { user } = useUserStore((state) => state);
+  const { user } = useAuthStore((state) => state);
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const dropDownRef = useRef<HTMLUListElement>(null);
   const navRef = useRef<HTMLUListElement>(null);
@@ -195,7 +195,7 @@ const NavLaptop: FC<Props> = ({ setOpenModal, setMode, activeIndex }) => {
       </ul>
 
       {/* check if user has logged in */}
-      {Object.keys(user).length > 0 ? (
+      {user && Object.keys(user).length > 0 ? (
         <button
           aria-label="User Account"
           className=" cursor-pointer flex items-center "

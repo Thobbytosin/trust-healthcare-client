@@ -1,9 +1,6 @@
 import React from "react";
-import Header from "../components/global/header/Header";
 import { Metadata } from "next";
 import FindDoctors from "../components/doctors/FindDoctors";
-import { SERVER_URI } from "@/utils/uri";
-import { cookies } from "next/headers";
 
 // SE0
 export const metadata: Metadata = {

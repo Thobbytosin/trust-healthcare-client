@@ -1,7 +1,9 @@
 import { Metadata } from "next";
 import "./globals.css";
-import QueryProvider from "./providers/QueryProvider";
 import { Toaster } from "sonner";
+import AppProvider from "./providers/AppProvider";
+import AuthIntializer from "./providers/AuthIntializer";
+import UserInactivityTracker from "./providers/UserInactivityTracker";
 
 export const metadata: Metadata = {
   title: "Trust Healthcare",
@@ -36,7 +38,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body className=" font-poppins min-h-screen ">
-        <QueryProvider>{children}</QueryProvider>
+        <AppProvider>
+          <AuthIntializer />
+          <UserInactivityTracker />
+          {children}
+        </AppProvider>
         <Toaster richColors />
       </body>
     </html>

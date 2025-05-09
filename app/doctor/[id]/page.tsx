@@ -1,10 +1,9 @@
 import { Metadata } from "next";
 import React from "react";
 import Doctor from "../../../app/components/doctor/Doctor";
-import { IDoctor } from "../../../app/store/useDoctorsStore";
-import { SERVER_URI } from "../../../app/utils/uri";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { SERVER_URI } from "@/config/api";
+import { IDoctor } from "@/types/doctor.types";
 
 type Props = {
   params: {
@@ -18,55 +17,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { id } = await params;
     // set cookie manually since this SSR
     const cookieStore = await cookies();
-    const refreshToken = cookieStore.get("refresh_token")?.value || "";
-    const accessToken = cookieStore.get("access_token")?.value || "";
+    const accessToken = cookieStore.get("access_token")?.value;
+    const consent = cookieStore.get("cookie_consent")?.value;
 
-    // refresh tokens first
-    const refreshes = await fetch(`${SERVER_URI}/refresh-tokens`, {
-      method: "GET",
-      headers: {
-        Cookie: `refresh_token=${refreshToken}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!refreshes.ok) {
-      // throw new Error("You are not logged in");
-      return {
-        title: "Unauthorized | Trust Healthcare",
-        description:
-          "View doctor details and book appointments at Trust Healthcare.",
-        icons: {
-          icon: "/logo.png", //Path relative to /public
-          shortcut: "/logo.png",
-        },
-        openGraph: {
-          images: [
-            {
-              url: "/logo.png",
-              width: 800,
-              height: 600,
-              alt: "Trust Healthcare Logo",
-            },
-          ],
-        },
-        twitter: {
-          card: "summary_large_image",
-          title: "Trust Healthcare - Your Trusted Medical Partner",
-          description:
-            "Get the best medical services, telemedicine consultations, and expert healthcare solutions at Trust Healthcare.",
-          images: ["/logo.png"],
-        },
-      };
-    }
-
-    // fetch the doctors
-    const res = await fetch(`${SERVER_URI}/get-doctor/${id}`, {
+    // fetch the doctor
+    const res = await fetch(`${SERVER_URI}/doctor/get-doctor/${id}`, {
       method: "GET",
       cache: "no-store",
       headers: {
         Cookie: `access_token=${accessToken}`,
         "Content-Type": "application/json",
+        "x-cookie-consent": consent || "",
       },
     });
 

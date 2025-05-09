@@ -1,12 +1,15 @@
 import { useMutateData } from "@/hooks/useApi";
-import {
-  VisibilityOffOutlinedIcon,
-  VisibilityOutlinedIcon,
-} from "../../../app/icons/icons";
 import React, { FC, FormEvent, useState } from "react";
 import { toast } from "sonner";
 import Loader from "../global/loaders/Loader";
-import { useAuth } from "../../hooks/useAuth";
+import {
+  VisibilityOffOutlinedIcon,
+  VisibilityOutlinedIcon,
+} from "@/icons/icons";
+import { LOGIN } from "@/config/auth.endpoints";
+import { LoginResponse } from "@/types/auth.types";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "@/store/useAuthStore";
 
 type Props = {
   setMode: (value: string) => void;
@@ -14,15 +17,15 @@ type Props = {
 };
 
 const Login: FC<Props> = ({ setMode, setOpenModal }) => {
-  const { refetch: refetchUser } = useAuth();
+  const setUser = useAuthStore((state) => state.setUser);
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState<any>({});
-  const { mutate: loginUser, isPending } = useMutateData({
+  const { mutate: loginUser, isPending } = useMutateData<LoginResponse>({
     method: "POST",
     mutationKey: ["loginUser"],
-    url: "/auth/login",
-    skipAuthRefresh: true,
+    url: LOGIN,
   });
+  const queryClient = useQueryClient();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -32,15 +35,19 @@ const Login: FC<Props> = ({ setMode, setOpenModal }) => {
     e.preventDefault();
 
     loginUser(form, {
-      onSuccess: async (data: any) => {
+      onSuccess: async (data) => {
         toast.success("Welcome to Trust HealthCare!", {
           description: data.message,
           duration: 4000,
         });
 
+        setUser(data.user);
+
+        localStorage.setItem("access_token_expiry", data.expiresAt);
+
         setOpenModal(false);
 
-        refetchUser();
+        queryClient.invalidateQueries({ queryKey: ["user"] });
       },
       onError: (error: any) => {
         toast.error(`${error.response.data.message}`, {

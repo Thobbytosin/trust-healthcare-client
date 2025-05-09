@@ -5,58 +5,50 @@ import Hero from "./Hero";
 import Search from "../global/search/Search";
 import CookiesConsent from "../cookieconsent/CookiesConsent";
 import Footer from "../global/footer/Footer";
-import NewsLetter from "./NewsLetter";
-import VideoSection from "./VideoSection";
-import Testimonials from "./Testimonials";
-import MeetDoctors from "./MeetDoctors";
-import Services from "./Services";
-import { useFetchDoctors } from "../../../app/hooks/useFetchDoctors";
 import { useDoctorsStore } from "@/store/useDoctorsStore";
-import LandingPageLoader from "./LandingPageLoader";
+import LandingPageLoader from "../global/loaders/LandingPageLoader";
 import { usePathname, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { useAuth } from "../../hooks/useAuth";
+import { getCookie } from "@/utils/helpers";
+import LazyLoad from "../global/lazyLoad/LazyLoad";
+import Services from "./Services";
+import { useFetchDoctorsFree } from "@/hooks/useFetchDoctorsFree";
 
 type Props = {};
 
 const Home = (props: Props) => {
-  const { isLoading: userLoading, refetch: refetchUser } = useAuth();
-  const { isLoading: doctorsLoading, refetch: refetchDoctors } =
-    useFetchDoctors();
-  const doctors = useDoctorsStore((state) => state.doctorsFree);
-
-  const [mounted, setMounted] = useState(false);
-
   // for protected route nextjs middleware
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const { loading: doctorsLoading } = useFetchDoctorsFree();
+  const [showConsent, setShowConsent] = useState(false);
+  const doctors = useDoctorsStore((state) => state.doctors);
+  const [isMounted, setIsMounted] = useState(false); // Track if component is mounted
 
   useEffect(() => {
-    setMounted(true);
+    setIsMounted(true); // Set to true once the component is mounted
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
-
+    if (!isMounted) return;
     if (typeof window === "undefined") return;
 
-    const consent = localStorage.getItem("cookie_consent");
+    const consent = getCookie("cookie_consent");
 
-    if (!consent) return;
+    if (!consent) {
+      setShowConsent(true);
+      return;
+    }
+  }, [isMounted]);
 
-    const timeout = setTimeout(() => {
-      refetchDoctors();
-      refetchUser();
-    }, 100);
-
-    return () => clearTimeout(timeout);
-  }, [mounted]);
-
+  // for middleware error
   useEffect(() => {
-    if (!mounted) return;
+    if (!isMounted) return;
+    if (typeof window === "undefined") return;
+
     if (searchParams.get("authError") === "true") {
-      toast.error("You are not logged in", {
-        description: "Sign in to proceed. Thanks",
+      toast.error("Session has expired", {
+        description: "Refresh page to proceed. Thanks",
         duration: 4000,
       });
 
@@ -67,18 +59,18 @@ const Home = (props: Props) => {
       // const newUrl = `${pathname}?${newParams.toString()}`;
       window.history.replaceState({}, "", "/");
     }
-  }, [searchParams, pathname]);
+  }, [isMounted, searchParams, pathname]);
 
-  if (mounted) {
-    if (userLoading || doctorsLoading) {
-      return <LandingPageLoader />;
-    }
+  if (!isMounted) return null;
+
+  if (doctorsLoading) {
+    return <LandingPageLoader />;
   }
 
   return (
     <main>
       {/* Don't render Header until data is loaded */}
-      {mounted && !userLoading && !doctorsLoading && <Header />}
+      {!doctorsLoading && <Header />}
 
       <Hero />
 
@@ -86,18 +78,21 @@ const Home = (props: Props) => {
 
       <Services />
 
-      <MeetDoctors doctors={doctors} />
+      <LazyLoad
+        importFunc={() => import("./MeetDoctors")}
+        props={{ doctors }}
+      />
 
-      <Testimonials />
+      <LazyLoad importFunc={() => import("./Testimonials")} />
 
-      <VideoSection />
+      <LazyLoad importFunc={() => import("./VideoSection")} />
 
-      <NewsLetter />
+      <LazyLoad importFunc={() => import("./NewsLetter")} />
 
       <Footer />
 
       {/* cookies consent */}
-      <CookiesConsent />
+      {showConsent && <CookiesConsent setShowConsent={setShowConsent} />}
     </main>
   );
 };

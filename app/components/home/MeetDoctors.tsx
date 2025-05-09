@@ -1,6 +1,6 @@
 "use client";
 import { styles } from "../../../app/styles/styles";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SectionHeading from "../ui/SectionHeading";
 import Ratings from "../ui/Ratings";
 import Image from "next/image";
@@ -8,22 +8,10 @@ import { motion } from "framer-motion";
 import RevealWrapper from "../ui/RevealWrapper";
 import { useRouter } from "next/navigation";
 import ButtonLoader from "../global/loaders/ButtonLoader";
-import { toast } from "sonner";
-import { SERVER_URI } from "@/utils/uri";
+import { IDoctor } from "@/types/doctor.types";
 
-export interface IDoctorFree {
-  id: string;
-  name: string;
-  about: string;
-  ratings: number;
-  available: boolean;
-  image: string;
-  specialization: string[];
-  yearsOfExperience: number;
-  verificationStatus: string;
-}
 type Props = {
-  doctors: IDoctorFree[];
+  doctors: IDoctor[];
 };
 
 const MeetDoctors = ({ doctors }: Props) => {
@@ -32,39 +20,18 @@ const MeetDoctors = ({ doctors }: Props) => {
   const [currentId, setCurrentId] = useState<string | undefined>();
 
   const handleBtnNavigate = async (id: string) => {
-    const cookieConsent =
-      localStorage.getItem("cookie_consent") || "wrong_value";
+    router.prefetch(`/doctor/${id}`);
 
     setLoading(true);
     setCurrentId(id);
 
-    const refreshes = await fetch(`${SERVER_URI}/auth/refresh-tokens`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        "x-cookie-consent": cookieConsent,
-      },
-    });
-
-    const res = await refreshes.json();
-
-    if (refreshes.ok) {
+    setTimeout(() => {
       router.push(`/doctor/${id}`);
-
-      setTimeout(() => {
-        setLoading(false);
-        setCurrentId(undefined);
-      }, 10000);
-    } else {
       setLoading(false);
       setCurrentId(undefined);
-      toast.error(res.message, {
-        description: "Something went wrong",
-        duration: 4000,
-      });
-    }
+    }, 1000);
   };
+
   return (
     <RevealWrapper>
       <section className={styles.newSection}>

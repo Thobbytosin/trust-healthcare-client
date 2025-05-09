@@ -5,43 +5,28 @@ import {
   ChevronRightIcon,
   KeyboardDoubleArrowLeftOutlinedIcon,
   KeyboardDoubleArrowRightOutlinedIcon,
-} from "../../../app/icons/icons";
+} from "@/icons/icons";
 import Sidebar from "./Sidebar";
-import { IDoctor } from "@/store/useDoctorsStore";
 import DoctorCardSkeleton from "./DoctorsCardSkeleton";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { DoctorsBackendResponse, IDoctor } from "@/types/doctor.types";
+import { useSearch } from "@/hooks/useSearch";
 
 type Props = {
   loading: boolean;
-  page: number | undefined;
-  setPage: (value: number) => void;
   handlePageChange: (value: number) => any;
-  doctorsData: IDoctor[];
-  location: string | undefined;
-  setLocationSearched: (value: boolean) => void;
-  locationSearched: boolean;
-  totalDoctors: number;
-  limit: number;
-  resetAll: () => void;
-  setSearchTrigger: (value: number) => void;
+  data: DoctorsBackendResponse | undefined;
 };
 
-const DoctorsGrid: FC<Props> = ({
-  loading,
-  page,
-  setPage,
-  handlePageChange,
-  doctorsData,
-  location,
-  locationSearched,
-  setLocationSearched,
-  totalDoctors,
-  limit,
-  resetAll,
-  setSearchTrigger,
-}) => {
-  // const limit = 4;
-  // const skip = (page - 1) * limit;
+const DoctorsGrid: FC<Props> = ({ loading, handlePageChange, data }) => {
+  const params = useSearchParams();
+  const totalDoctors = data?.results || 0;
+  const limit = data?.limit || 4;
+  const doctorsData = data?.doctors || [];
+  const { actions, searchState } = useSearch();
+  const { setPageQuery, resetAll, setSearchTrigger } = actions;
+  const currentPage = params?.get("page");
+  const { pageQuery = currentPage ? +currentPage : 1 } = searchState;
 
   const router = useRouter();
   const pathname = usePathname();
@@ -58,17 +43,17 @@ const DoctorsGrid: FC<Props> = ({
   }
 
   const handleNext = (pageNum: number) => {
-    if (page) {
-      if (page < totalPages) {
+    if (pageQuery) {
+      if (pageQuery < totalPages) {
         // check if page is not 1st page and last page
-        const newPage = page + 1; // increase page by 1
+        const newPage = pageQuery + 1; // increase page by 1
 
         if (newPage > windowEnd) {
           // if page his greater than the window, update window start to the window end
           setWindowStart(windowEnd);
         }
 
-        setPage(newPage);
+        setPageQuery(newPage);
 
         handlePageChange(Math.min(totalPages, pageNum + 1));
       }
@@ -76,15 +61,15 @@ const DoctorsGrid: FC<Props> = ({
   };
 
   const handlePrev = (pageNum: number) => {
-    if (page) {
-      if (page > 1) {
-        const newPage = page - 1;
+    if (pageQuery) {
+      if (pageQuery > 1) {
+        const newPage = pageQuery - 1;
 
         if (newPage <= windowStart) {
           setWindowStart(Math.max(0, windowStart - windowSize));
         }
 
-        setPage(newPage);
+        setPageQuery(newPage);
 
         handlePageChange(Math.max(1, pageNum - 1));
       }
@@ -92,7 +77,7 @@ const DoctorsGrid: FC<Props> = ({
   };
 
   const handlePageNum = (pageNum: number) => {
-    setPage(pageNum);
+    setPageQuery(pageNum);
 
     handlePageChange(pageNum);
 
@@ -105,7 +90,7 @@ const DoctorsGrid: FC<Props> = ({
   };
 
   const clearAllQueryParams = () => {
-    router.push(pathname); // removes all search/query params
+    if (pathname) router.push(pathname); // removes all search/query params
   };
 
   const handleReset = () => {
@@ -119,25 +104,24 @@ const DoctorsGrid: FC<Props> = ({
     <section className=" w-[90%] lg:w-[80%] mx-auto flex flex-col md:flex-row gap-4 lg:gap-8 justify-between">
       <div className=" w-full md:w-[70%] h-fit">
         {loading
-          ? [1, 2, 3, 4].map((doctor: any, index) => (
-              <DoctorCardSkeleton key={index} doctor={doctor} />
-            ))
+          ? [1, 2, 3, 4].map((_, index) => <DoctorCardSkeleton key={index} />)
           : doctorsData.map((doctor: any, index) => (
               <DoctorCard key={index} doctor={doctor} />
             ))}
 
-        {!loading && page && doctorsData.length >= 1 ? (
+        {!loading && doctorsData.length >= 1 ? (
           <div className=" my-10 flex justify-center items-center gap-2 mt-8 bg-white w-full py-3 rounded-md mx-auto">
+            {/* prev button */}
             <button
-              onClick={() => handlePrev(page)}
-              disabled={page === 1}
+              onClick={() => pageQuery && handlePrev(pageQuery)}
+              disabled={pageQuery === 1}
               className={`mr-6 w-8 h-8 rounded-md  ${
-                page === 1
+                pageQuery === 1
                   ? "cursor-not-allowed border border-text-primary/20 text-text-primary/20"
                   : "cursor-pointer text-primary border border-text-primary/60"
               }`}
             >
-              {page <= windowSize ? (
+              {pageQuery && pageQuery <= windowSize ? (
                 <>
                   <ChevronLeftIcon />
                 </>
@@ -148,7 +132,7 @@ const DoctorsGrid: FC<Props> = ({
               )}
             </button>
 
-            {page && page > windowSize && (
+            {pageQuery && pageQuery > windowSize && (
               <div className=" text-primary text-xl">...</div>
             )}
 
@@ -157,7 +141,7 @@ const DoctorsGrid: FC<Props> = ({
                 key={pageNum}
                 onClick={() => handlePageNum(pageNum)}
                 className={`rounded-md cursor-pointer flex justify-center items-center text-xs w-8 h-8 ${
-                  page === pageNum
+                  pageQuery === pageNum
                     ? "bg-primary text-white"
                     : "bg-gray-200 text-gray-700 hover:bg-primary hover:text-white"
                 }`}
@@ -166,20 +150,22 @@ const DoctorsGrid: FC<Props> = ({
               </button>
             ))}
 
-            {totalPages > windowSize && page && page < totalPages && (
+            {totalPages > windowSize && pageQuery && pageQuery < totalPages && (
               <div className=" text-primary text-xl">...</div>
             )}
 
             <button
-              onClick={() => handleNext(page)}
-              disabled={page === totalPages}
+              onClick={() => pageQuery && handleNext(pageQuery)}
+              disabled={pageQuery === totalPages}
               className={` ml-6 w-8 h-8 rounded-md  ${
-                page === totalPages
+                pageQuery === totalPages
                   ? "cursor-not-allowed border border-text-primary/20 text-text-primary/20"
                   : "cursor-pointer text-primary border border-text-primary/60"
               }  `}
             >
-              {page < totalPages && totalPages > windowSize * 2 ? (
+              {pageQuery &&
+              pageQuery < totalPages &&
+              totalPages > windowSize * 2 ? (
                 <KeyboardDoubleArrowRightOutlinedIcon />
               ) : (
                 <ChevronRightIcon />
@@ -196,17 +182,10 @@ const DoctorsGrid: FC<Props> = ({
         )}
       </div>
 
-      {/* SIDEBAR
+      {/* SIDEBAR */}
       <div className=" w-full md:w-[30%] relative md:my-0 mb-12">
-        <Sidebar
-          location={location}
-          doctorsData={doctorsData}
-          setActiveSpecialization={setActiveSpecialization}
-          setSearched={setSearched}
-          searched={searched}
-          handleFilterChange={handleFilterChange}
-        />
-      </div> */}
+        <Sidebar doctorsData={doctorsData} />
+      </div>
     </section>
   );
 };

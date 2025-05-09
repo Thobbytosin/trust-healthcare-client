@@ -6,46 +6,41 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../components/ui/select";
+import { useSearch } from "@/hooks/useSearch";
+import useTooltip from "@/hooks/useTooltip";
+import ToolTip from "@/components/ui/Tooltip";
 
 type Props = {
-  filterValue: string | undefined;
-  setFilterValue: (value: string) => void;
-  setPage: (value: number) => void;
   handlePageParamsChange: (
     type: "filter" | "search" | "specialization" | "sortBy",
     parameter: any,
     defaultPageNum?: number
   ) => any;
-  setSearchTrigger: (value: number) => void;
-  resetAll: () => void;
 };
 
-const FilterSearch = ({
-  filterValue,
-  setFilterValue,
-  setPage,
-  handlePageParamsChange,
-  setSearchTrigger,
-  resetAll,
-}: Props) => {
+const FilterSearch = ({ handlePageParamsChange }: Props) => {
+  const { actions, searchState } = useSearch();
+  const { filterValue } = searchState;
+  const { setFilterValue, setUserLocationSearched, setPageQuery } = actions;
+  const showFilterTooltip = useTooltip("filter");
+
   return (
-    <div className=" flex items-center gap-2 ">
+    <div className=" relative w-full flex items-center gap-2 ">
       <span className=" text-primary md:text-sm text-xs">Filter:</span>
-      <div className=" w-fit h-[36px] bg-gray-100 border border-gray-200 rounded-md  flex justify-between items-center text-sm cursor-pointer relative">
+      <div className=" w-fit h-[36px] bg-gray-100 border border-gray-200 rounded-md  flex justify-between items-center text-sm cursor-pointer">
         <Select
           value={filterValue}
           onValueChange={(value: string) => {
             setFilterValue(value);
-            setSearchTrigger(Date.now()); // to always trigger the useeffect
+            setUserLocationSearched(false);
             if (value === "available") {
-              setPage(1); // always set page to 1
+              setPageQuery(1); // always set page to 1
 
               handlePageParamsChange("filter", value);
             } else {
               // clear all params
               const newUrl = window.location.pathname;
               window.history.replaceState({}, "", newUrl);
-              // resetAll();
             }
           }}
         >
@@ -75,6 +70,7 @@ const FilterSearch = ({
           </SelectContent>
         </Select>
       </div>
+      <ToolTip message="Filter by option" show={showFilterTooltip} />
     </div>
   );
 };
