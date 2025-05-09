@@ -1,163 +1,18 @@
-import React, { FC, FormEvent, useCallback, useEffect, useRef } from "react";
-import { ExpandMoreOutlinedIcon } from "../../../../app/icons/icons";
-import { useSearchParams } from "next/navigation";
-import useTooltip from "../../../hooks/useTooltip";
-import debounce from "lodash.debounce";
-import { SERVER_URI } from "../../../utils/uri";
-import { SearchDoctorForm } from "../../../types/all.types";
+import React from "react";
 import SelectLocation from "./SelectLocation";
 import SpecializationForm from "./SpecializationForm";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../../components/ui/select";
-
-// sort options
-const sortOptions = [
-  { option: "Latest" },
-  { option: "Ratings" },
-  { option: "Oldest" },
-];
+import FilterSearch from "./FilterSearch";
+import SortSearch from "./SortSearch";
 
 type Props = {
-  setSearchForm: (value: SearchDoctorForm) => void;
-  searchForm: SearchDoctorForm;
-  setShowSortOptions: React.Dispatch<React.SetStateAction<boolean>>;
-  filterValue: string;
-  setFilterValue: (value: string) => void;
-  setSearchTrigger: (value: number) => void;
-  setPage: (value: number) => void;
-  sortBy: string;
-  showSortOptions: boolean;
-  setSortBy: (value: string) => void;
   handlePageParamsChange: (
     type: "filter" | "search" | "specialization" | "sortBy",
     parameter: any,
     defaultPageNum?: number
   ) => any;
-  setAllSuggestions: (value: []) => void;
-  setShowSuggestionsList: (value: boolean) => void;
-  allSuggestions: string[];
-  showSuggestionList: boolean;
-  setAvailableQuery: (value: boolean) => void;
-  resetAll: () => void;
 };
 
-const SearchHeader: FC<Props> = ({
-  setSearchForm,
-  searchForm,
-  filterValue,
-  setSearchTrigger,
-  setFilterValue,
-  setPage,
-  sortBy,
-  showSortOptions,
-  setSortBy,
-  setShowSortOptions,
-  handlePageParamsChange,
-  setAllSuggestions,
-  setShowSuggestionsList,
-  allSuggestions,
-  showSuggestionList,
-  setAvailableQuery,
-  resetAll,
-}) => {
-  const suggestionListRef = useRef<HTMLUListElement>(null);
-  const sortRef = useRef<HTMLUListElement>(null);
-  const params = useSearchParams();
-  const showLocationTooltip = useTooltip("location-select");
-  const showSpecializationTooltip = useTooltip("specialization");
-
-  //   close suggestionlist, or sort or filter the drop down when clicking anywhere
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
-        setShowSortOptions(false);
-      } else if (
-        suggestionListRef.current &&
-        !suggestionListRef.current.contains(event.target as Node)
-      ) {
-        setShowSuggestionsList(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Handle fetch suggestions
-  const fetchSuggestions = useCallback(
-    debounce(async (term: string) => {
-      try {
-        const res = await fetch(
-          `${SERVER_URI}/suggestion/fetch-suggestions?term=${term}`
-        );
-        const data = await res.json();
-
-        setAllSuggestions(data.resultKeywords);
-        setShowSuggestionsList(true);
-      } catch (error) {
-        console.log("Error fetching suggestions", error);
-      }
-    }, 500),
-    []
-  );
-
-  // to fetchSuggestions
-  useEffect(() => {
-    if (
-      searchForm.specialization.length &&
-      searchForm.specialization.length > 2
-    ) {
-      fetchSuggestions(searchForm.specialization);
-    } else {
-      setAllSuggestions([]);
-      setShowSuggestionsList(false);
-    }
-  }, [searchForm.specialization]);
-
-  // search by specialization
-  const handleSubmitSpecializationSearchForm = async (e: FormEvent) => {
-    e.preventDefault();
-
-    const currentSpecialization = params.get("specialization") || "";
-    if (searchForm.specialization.trim() === "") return;
-
-    if (
-      searchForm.specialization.toLowerCase() ===
-      currentSpecialization.toLowerCase()
-    )
-      return; // to avoid searching same location again
-
-    setPage(1); // always set page to 1
-
-    handlePageParamsChange("specialization", searchForm.specialization);
-
-    setSearchTrigger(Date.now()); // to always trigger the useeffect
-
-    // save to suggestions in the backend
-
-    try {
-      await fetch(`${SERVER_URI}/suggestion/save-suggestion`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ keyword: searchForm.specialization }),
-      });
-
-      setShowSuggestionsList(false);
-    } catch (error) {
-      console.error("Error saving suggestion", error);
-    }
-  };
-
-  const currentSpecialization = params.get("specialization") || "";
-
+const SearchHeader = ({ handlePageParamsChange }: Props) => {
   return (
     <div className=" bg-white w-[90%] lg:w-[80%] mx-auto -mt-[50px] shadow-md shadow-black/10 rounded-xl min-h-fit p-6">
       {/* SEARCH FORM */}
@@ -166,130 +21,27 @@ const SearchHeader: FC<Props> = ({
         <SelectLocation
           key={"select-location"}
           handlePageParamsChange={handlePageParamsChange}
-          searchForm={searchForm}
-          setPage={setPage}
-          setSearchForm={setSearchForm}
-          setSearchTrigger={setSearchTrigger}
-          showLocationTooltip={showLocationTooltip}
         />
 
         <SpecializationForm
           key={"specialization-search-form"}
-          allSuggestions={allSuggestions}
-          currentSpecialization={currentSpecialization}
-          handleSubmit={handleSubmitSpecializationSearchForm}
-          searchForm={searchForm}
-          setSearchForm={setSearchForm}
-          setShowSuggestionsList={setShowSuggestionsList}
-          showSpecializationTooltip={showSpecializationTooltip}
-          showSuggestionList={showSuggestionList}
-          suggestionListRef={suggestionListRef}
+          handlePageParamsChange={handlePageParamsChange}
         />
       </div>
 
       {/* SORT/FILTER */}
-      <div className=" mt-8 md:flex gap-20 items-center">
+      <div className=" mt-8 flex gap-10 md:gap-20 items-center">
         {/* filter */}
-        <div className=" flex items-center gap-2 ">
-          <span className=" text-primary md:text-sm text-xs">Filter:</span>
-          <div className=" w-fit h-[36px] bg-gray-100 border border-gray-200 rounded-md  flex justify-between items-center text-sm cursor-pointer relative">
-            <Select
-              value={filterValue}
-              onValueChange={(value: string) => {
-                if (value === "Available") {
-                  setFilterValue(value);
-
-                  setPage(1); // always set page to 1
-
-                  handlePageParamsChange("filter", value);
-
-                  setSearchTrigger(Date.now()); // to always trigger the useeffect
-                  setAvailableQuery(true);
-                } else {
-                  // clear all params
-                  const newUrl = window.location.pathname;
-                  window.history.replaceState({}, "", newUrl);
-                  resetAll();
-                }
-              }}
-            >
-              <SelectTrigger
-                id="filter"
-                name="filter"
-                aria-label="filter"
-                data-testid="filter-doctors"
-                disabled={filterValue.trim() === ""}
-                className="w-fit h-full border-none py-5 focus:outline-0 focus:border-0 outline-none text-text-primary focus:outline-none ring-0 focus:ring-0 text-xs "
-              >
-                <SelectValue placeholder="Choose option" />
-              </SelectTrigger>
-              <SelectContent className=" mt-3 bg-white border-none text-text-primary ">
-                <SelectItem
-                  value="All"
-                  className=" transition-all duration-700 hover:bg-gray-200"
-                >
-                  All
-                </SelectItem>
-                <SelectItem
-                  value="Available"
-                  className=" transition-all duration-700 hover:bg-gray-200"
-                >
-                  Available
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
+        <FilterSearch
+          key={"filter-search"}
+          handlePageParamsChange={handlePageParamsChange}
+        />
 
         {/* sort */}
-        <div className=" flex items-center gap-2 ">
-          <span className=" text-primary md:text-sm text-xs">Sort By:</span>
-          <div className=" w-fit h-[36px] bg-gray-100 border border-gray-200 rounded-md  flex justify-between items-center text-sm cursor-pointer relative">
-            <Select
-              value={sortBy}
-              onValueChange={(value: string) => {
-                setSortBy(value);
-
-                setPage(1); // always set page to 1
-
-                handlePageParamsChange("sortBy", value);
-
-                setSearchTrigger(Date.now()); // to always trigger the useeffect
-              }}
-            >
-              <SelectTrigger
-                id="sort"
-                name="sort"
-                aria-label="sort"
-                data-testid="sort-doctors"
-                disabled={sortBy.trim() === ""}
-                className="w-fit h-full border-none py-5 focus:outline-0 focus:border-0 outline-none text-text-primary focus:outline-none ring-0 focus:ring-0 text-xs "
-              >
-                <SelectValue placeholder="Choose option" />
-              </SelectTrigger>
-              <SelectContent className=" mt-3 bg-white border-none text-text-primary ">
-                <SelectItem
-                  value="Latest"
-                  className=" transition-all duration-700 hover:bg-gray-200"
-                >
-                  Latest
-                </SelectItem>
-                <SelectItem
-                  value="Oldest"
-                  className=" transition-all duration-700 hover:bg-gray-200"
-                >
-                  Oldest
-                </SelectItem>
-                <SelectItem
-                  value="Ratings"
-                  className=" transition-all duration-700 hover:bg-gray-200"
-                >
-                  Ratings
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
+        <SortSearch
+          key={"sort-search"}
+          handlePageParamsChange={handlePageParamsChange}
+        />
       </div>
     </div>
   );

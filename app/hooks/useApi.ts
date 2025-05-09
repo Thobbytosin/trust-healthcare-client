@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { SERVER_URI } from "../utils/uri";
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "@/utils/axiosInstance";
+import { SERVER_URI } from "@/config/api";
 
 interface FetchOptions {
   url: string;
@@ -19,7 +19,7 @@ export function useFetchData<T>({
   method,
   enabled = false,
   staleTime = 1000 * 60 * 5, // Default: 5 minutes
-  skipAuthRefresh,
+  skipAuthRefresh = false,
 }: FetchOptions) {
   return useQuery<T, any>({
     queryKey: [queryKey],
@@ -29,6 +29,7 @@ export function useFetchData<T>({
           method,
           url: `${SERVER_URI}${url}`,
           withCredentials: true,
+          skipAuthRefresh,
         };
 
         const response = await axiosInstance(config);
@@ -36,10 +37,11 @@ export function useFetchData<T>({
           return response.data;
         }
       } catch (error: any) {
-        if (axios.isAxiosError(error) && error.response) {
-          throw new Error(error.response.data?.message || "API request failed");
+        if (axios?.isAxiosError(error) && error.response) {
+          // throw new Error(error.response.data?.message || "API request failed");
+          console.error(error.response.data?.message || "API request failed");
         }
-        throw new Error("Something went wrong"); // generic error message
+        // throw new Error("Something went wrong"); // generic error message
       }
     },
     staleTime,
@@ -62,10 +64,8 @@ export function useMutateData<T>({
   method,
   headers = false,
   mutationKey,
-  skipAuthRefresh,
+  skipAuthRefresh = true,
 }: MutationOptions) {
-  const queryClient = useQueryClient();
-
   return useMutation<T, any, any>({
     mutationKey: [mutationKey],
     mutationFn: async (data: any) => {
@@ -74,28 +74,27 @@ export function useMutateData<T>({
         url: `${SERVER_URI}${url}`,
         data,
         withCredentials: true,
+        skipAuthRefresh,
       };
+
+      // Optionally add custom headers if needed
+      if (headers) {
+        config.headers = {
+          ...(typeof headers === "object" ? headers : {}),
+        };
+      }
 
       const response = await axiosInstance(config);
 
       return response.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries(); // refresh after success
-    },
     onError: (error: any) => {
       if (axios.isAxiosError(error) && error.response) {
-        console.log(
-          "Backend Error Message:",
-          error.response.data?.message || "No error message from server"
-        );
-        console.log(
+        console.error(
           "Backend Error Details:",
           error.response.data || "No error message from server"
         );
-        throw new Error(error.response.data?.message || "API request failed");
       }
-      throw new Error("Something went wrong");
     },
   });
 }

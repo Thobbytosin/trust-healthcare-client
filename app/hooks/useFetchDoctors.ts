@@ -1,44 +1,26 @@
-import { useEffect } from "react";
-import { useDoctorsStore } from "../store/useDoctorsStore";
+import { useMemo } from "react";
 import { useFetchData } from "./useApi";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { DoctorsBackendResponse } from "@/types/doctor.types";
+import { GETALLDOCTORS } from "@/config/doctor.endpoints";
 
-interface BackendSuccessResponse {
-  success: boolean;
-  message: string;
-  doctors: any;
-  totalPages: number;
-}
+export const useFetchDoctors = (queryParams: URLSearchParams | null) => {
+  const hasBeenAuthenticated =
+    typeof window !== undefined &&
+    typeof document !== undefined &&
+    document.cookie.includes("cookie_consent") &&
+    document.cookie.includes("has_logged_in");
 
-export const useFetchDoctors = () => {
-  const setDoctors = useDoctorsStore((state) => state.setDoctorsFree);
-  const queryClient = useQueryClient();
+  const queryString = useMemo(() => queryParams?.toString(), [queryParams]);
 
-  const { data, isLoading, error, refetch } =
-    useFetchData<BackendSuccessResponse>({
+  const queryKey = useMemo(() => ["doctors", queryString], [queryString]);
+
+  const { data, error, isLoading, isSuccess } =
+    useFetchData<DoctorsBackendResponse>({
       method: "GET",
-      queryKey: ["getDoctors"],
-      url: `/doctor/get-some-doctors-free`,
-      enabled: false,
-      skipAuthRefresh: true,
+      url: `${GETALLDOCTORS}?${queryString}`,
+      queryKey: [`${queryKey || "doctors"}`],
+      enabled: hasBeenAuthenticated,
     });
 
-  useEffect(() => {
-    if (data) {
-      setDoctors(data.doctors);
-      queryClient.invalidateQueries(); // refresh after success
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (error) {
-      toast.error("Something went wrong!", {
-        description: error.message,
-        duration: 4000,
-      });
-    }
-  }, [error]);
-
-  return { isLoading, refetch };
+  return { data, error, isLoading, isSuccess };
 };

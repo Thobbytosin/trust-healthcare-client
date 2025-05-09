@@ -1,61 +1,49 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { IDoctor } from "@/app/store/useDoctorsStore";
-import React, { FC, useEffect, useState } from "react";
+"use client";
+
+import { useFetchDoctors } from "@/hooks/useFetchDoctors";
+import { useSearch } from "@/hooks/useSearch";
+import useUserLocation from "@/hooks/useUserLocation";
+import { IDoctor } from "@/types/doctor.types";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { FC } from "react";
+import ButtonLoader from "../global/loaders/ButtonLoader";
 
 type Props = {
-  location: string | undefined;
   doctorsData: IDoctor[];
-  setActiveSpecialization: (value: string) => void;
-  setSearched: (value: boolean) => void;
-  searched: boolean;
-  handleFilterChange: (value: string) => any;
 };
 
-const Sidebar: FC<Props> = ({
-  location,
-  doctorsData,
-  setActiveSpecialization,
-  searched,
-  setSearched,
-  handleFilterChange,
-}) => {
-  const [locationData, setLocationData] = useState<[]>([]);
-  const [loading, setLoading] = useState(false);
+const Sidebar: FC<Props> = ({ doctorsData }) => {
+  const queryParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const { data } = useFetchDoctors(queryParams);
+  const { searchState, actions } = useSearch();
+  const { userLocationSearched } = searchState;
+  const { setUserLocationLoading, setUserLocationSearched } = actions;
+  const { error, loading, location } = useUserLocation();
+  const doctors = data?.doctors;
+  const currentLocation = queryParams.get("location");
+  const currentSearch = queryParams.get("search");
 
-  // handle filter doctors
-  const handleFilterDoctors = () => {
-    setLoading(true);
-    setSearched(false);
+  // console.log("LOCATION LODADING:", loading);
+  // console.log("LOCATION ERROR:", error);
+  // console.log("LOCATION:", location);
 
-    // Simulate an async task (e.g., fetching data)
-    setTimeout(() => {
-      setLoading(false); // Stop loading after 3 seconds
-      setSearched(true);
+  const handlePageParamsChange = (
+    type: "location",
+    parameter: any,
+    defaultPageNum = 1
+  ) => {
+    let newParams = new URLSearchParams(queryParams?.toString());
 
-      const destructureLocation = location?.trim().toLowerCase().split(",");
+    if (type === "location") {
+      newParams = new URLSearchParams();
+      newParams.set("page", defaultPageNum.toString());
+      newParams.set("location", parameter?.toLowerCase());
+    }
 
-      if (destructureLocation) {
-        const lga = destructureLocation[0];
-        const city = destructureLocation[1];
-
-        const filteredDoctors: any = doctorsData?.filter(
-          (doctor: any) =>
-            doctor.clinicAddress.toLowerCase().includes(lga) ||
-            doctor.clinicAddress.toLowerCase().includes(city)
-        );
-        if (filteredDoctors.length) {
-          handleFilterChange(lga);
-          setLocationData(filteredDoctors);
-        }
-      }
-    }, 3000);
+    router.push(`${pathname}?${newParams}`);
   };
-
-  // useEffect(() => {
-  //   if (locationData.length) {
-  //     setDoctorsData(locationData);
-  //   }
-  // }, [locationData]);
 
   return (
     <aside className=" w-full min-h-fit  right-0 md:sticky -top-[100px]  ">
@@ -63,7 +51,7 @@ const Sidebar: FC<Props> = ({
         <h3 className=" text-text-primary font-medium text-xs lg:text-sm">
           Search by current location to see doctors near you
         </h3>
-        {locationData?.length ? (
+        {userLocationSearched && doctors && doctors.length ? (
           <p className=" font-light text-[#787887] text-xs mt-2">
             You are seeing results from{" "}
             <span className=" font-medium text-primary italic">{location}</span>
@@ -72,13 +60,13 @@ const Sidebar: FC<Props> = ({
         ) : null}
 
         {/* // search results */}
-        {searched ? (
-          locationData?.length >= 1 ? (
+        {userLocationSearched && !loading ? (
+          doctors && doctors.length >= 1 ? (
             <p className="my-6 cursor-pointer font-normal text-xs bg-primary text-white block p-1">
-              {locationData.length > 3
-                ? `${locationData.length} or more doctors found`
-                : `${locationData.length} ${
-                    locationData.length > 1 ? "doctors" : "doctor"
+              {doctors.length > 3
+                ? `${doctors.length} or more doctors found`
+                : `${doctors.length} ${
+                    doctors.length > 1 ? "doctors" : "doctor"
                   } found`}
             </p>
           ) : (
@@ -88,18 +76,36 @@ const Sidebar: FC<Props> = ({
           )
         ) : null}
 
-        <button
-          type="button"
-          disabled={loading}
-          onClick={handleFilterDoctors}
-          className={` text-xs text-center lg:px-4 px-4 py-1 lg:py-1.5 rounded-full mt-6 flex justify-self-end ${
-            location
-              ? " cursor-pointer bg-primary text-white hover:opacity-80 transition-all duration-500"
-              : "cursor-not-allowed text-text-primary opacity-50 bg-gray-200"
-          }`}
-        >
-          {loading ? "Loading..." : "Yes, Search"}
-        </button>
+        {error ? (
+          <>
+            <p className=" text-red-400 my-4 text-xs">{error}</p>
+          </>
+        ) : (
+          <button
+            type="button"
+            disabled={loading || currentLocation !== null}
+            onClick={() => {
+              setUserLocationLoading(true);
+              setTimeout(() => {
+                handlePageParamsChange("location", location);
+                setUserLocationLoading(false);
+                setUserLocationSearched(true);
+              }, 2000);
+            }}
+            className={` text-xs text-center lg:px-4 px-4 py-1 lg:py-1.5 rounded-full  flex justify-self-end ${
+              !loading
+                ? currentLocation === null &&
+                  "cursor-pointer mt-6 bg-primary text-white hover:opacity-80 transition-all duration-500"
+                : "cursor-not-allowed text-text-primary opacity-50 bg-transparent"
+            }`}
+          >
+            {loading ? (
+              <ButtonLoader />
+            ) : (
+              currentLocation === null && "Yes, Search"
+            )}
+          </button>
+        )}
       </div>
 
       <div className=" bg-white h-[300px] p-4 rounded-lg">

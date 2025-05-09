@@ -4,10 +4,11 @@ import {
   DoneOutlinedIcon,
   VisibilityOffOutlinedIcon,
   VisibilityOutlinedIcon,
-} from "../../../app/icons/icons";
+} from "@/icons/icons";
 import React, { FC, useState } from "react";
 import { toast } from "sonner";
 import Loader from "../global/loaders/Loader";
+import { SIGNUP } from "@/config/auth.endpoints";
 
 type Props = {
   setMode: (value: string) => void;
@@ -22,8 +23,7 @@ const Signup: FC<Props> = ({ setMode }) => {
   const { mutate: registerUser, isPending } = useMutateData<any>({
     mutationKey: ["registerUser"],
     method: "POST",
-    url: "/auth/signup",
-    skipAuthRefresh: true,
+    url: SIGNUP,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

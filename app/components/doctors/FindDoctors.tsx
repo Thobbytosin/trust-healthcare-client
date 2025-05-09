@@ -2,28 +2,28 @@
 import React, { useEffect, useState } from "react";
 import Header from "../global/header/Header";
 import Doctors from "./Doctors";
-import { useAuth } from "@/context/AuthContext";
-import LandingPageLoader from "../home/LandingPageLoader";
+import LandingPageLoader from "../global/loaders/LandingPageLoader";
 
 type Props = {};
 
 const FindDoctors = (props: Props) => {
-  const [mounted, setMounted] = useState<boolean>(false);
-  const { isLoading, refetchUser, user } = useAuth();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setMounted(true);
-    refetchUser(); // get latest user data
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, []);
 
-  if (mounted) {
-    if (isLoading) {
-      return <LandingPageLoader />;
-    }
+  if (loading) {
+    return <LandingPageLoader />;
   }
+
   return (
     <main>
-      {mounted && !isLoading && <Header activeIndex={2} />}
+      {!loading && <Header activeIndex={2} />}
 
       <Doctors />
     </main>

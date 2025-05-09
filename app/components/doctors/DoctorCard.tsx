@@ -1,11 +1,8 @@
 import React, { FC, useState } from "react";
 import Ratings from "../ui/Ratings";
 import Image from "next/image";
-import { VerifiedIcon } from "../../../app/icons/icons";
-import Link from "next/link";
+import { VerifiedIcon } from "@/icons/icons";
 import { useRouter } from "next/navigation";
-import { SERVER_URI } from "@/utils/uri";
-import { toast } from "sonner";
 
 type Props = {
   doctor: any;
@@ -18,24 +15,7 @@ const DoctorCard: FC<Props> = ({ doctor }) => {
   const toggleShowMore = () => setShowMoreText(!showMoreText);
 
   const handleNavigate = async (doctorId: string) => {
-    // refresh token first
-    const refreshes = await fetch(`${SERVER_URI}/refresh-tokens`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        // Cookie: `refresh_token=${refreshToken}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (refreshes.ok) {
-      router.push(`/doctor/${doctorId}`);
-    } else {
-      toast.error("You are not logged in", {
-        description: "Sign in to proceed. Thanks",
-        duration: 4000,
-      });
-    }
+    router.push(`/doctor/${doctorId}`);
   };
 
   return (

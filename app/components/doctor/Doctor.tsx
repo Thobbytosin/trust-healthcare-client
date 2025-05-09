@@ -2,41 +2,35 @@
 
 import React, { useEffect, useState } from "react";
 import RevealWrapper, { fadeInDown } from "../ui/RevealWrapper";
-
 import Header from "../global/header/Header";
-
-import { useFetchData } from "../../../app/hooks/useApi";
-import { useAuth } from "../../../app/context/AuthContext";
-import LandingPageLoader from "../home/LandingPageLoader";
+import LandingPageLoader from "../global/loaders/LandingPageLoader";
+import { useFetchDoctor } from "@/hooks/useFetchDoctor";
 
 type Props = {
   doctorId: string;
 };
 
 const Doctor = ({ doctorId }: Props) => {
-  const { isLoading, refetchUser } = useAuth();
+  useFetchDoctor(doctorId);
+
+  const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
-  const {
-    data: doctorData,
-    isLoading: doctorLoading,
-    isError,
-    error,
-    refetch: refetchDoctor,
-  } = useFetchData({
-    method: "GET",
-    url: `/get-doctor/${doctorId}`,
-    queryKey: [`${doctorId}`],
-    enabled: false,
-  });
 
   useEffect(() => {
     setMounted(true);
-    refetchDoctor(); // get latest doctor data
-    refetchUser(); // get latest user data
   }, []);
 
+  useEffect(() => {
+    // slight loading delay
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [mounted]);
+
   if (mounted) {
-    if (isLoading || doctorLoading) {
+    if (loading) {
       return <LandingPageLoader />;
     }
   }
@@ -44,7 +38,7 @@ const Doctor = ({ doctorId }: Props) => {
   return (
     <main>
       {/* Don't render Header until data is loaded */}
-      {mounted && !isLoading && !doctorLoading && <Header activeIndex={-1} />}
+      {mounted && !loading && <Header activeIndex={-1} />}
 
       <RevealWrapper key={"doctor"} variants={fadeInDown} animate>
         {/* blue header */}

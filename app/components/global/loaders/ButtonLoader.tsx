@@ -5,7 +5,7 @@ const ButtonLoader = () => {
   return (
     <div className=" flex items-center justify-center z-50 my-6">
       <Image
-        src="./assets/loader.svg"
+        src="/assets/icons/loader.svg"
         alt="Loading..."
         aria-label="loading_icon"
         width={30}

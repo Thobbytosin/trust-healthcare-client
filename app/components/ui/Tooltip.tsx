@@ -23,7 +23,7 @@ const ToolTip = ({ message, position = "top", show }: Props) => {
 
   return show ? (
     <div
-      className={`absolute z-50 text-xs bg-slate-800 text-white px-3 py-2 rounded shadow-md ${totalTipPosition} whitespace-pre-line`}
+      className={`absolute w-fit  z-50 text-xs bg-slate-800 text-white px-3 py-2 rounded shadow-md ${totalTipPosition} whitespace-pre-line`}
     >
       {message}
       <div

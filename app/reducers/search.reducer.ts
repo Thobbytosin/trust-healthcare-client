@@ -1,21 +1,25 @@
-import { SearchAction, SearchState } from "../types/all.types";
+import { SearchAction, SearchState } from "../types/search.types";
 
 export const initialState: SearchState = {
-  searchForm: { location: "", specialization: "" },
-  locationSearched: false,
-  showFilterOptions: false,
-  showSortOptions: false,
-  filterValue: "All",
-  sortBy: "Latest",
-  searchQuery: "",
-  pageQuery: 1,
-  availableQuery: false,
+  searchForm: { location: undefined, specialization: undefined },
+  userLocationLoading: true,
+  userLocationSearched: false,
+  userLocation: undefined,
+  userLocationError: undefined,
+  filterValue: undefined,
+  sortBy: undefined,
+  searchQuery: undefined,
+  pageQuery: undefined,
   searchTrigger: 0,
   allSuggestions: [],
   showSuggestionList: false,
+  typingTrigger: false,
 };
 
-export function searchReducer(state: SearchState, action: SearchAction) {
+export function searchReducer(
+  state: SearchState,
+  action: SearchAction
+): SearchState {
   switch (action.type) {
     case "SET_SEARCH_FORM":
       return {
@@ -23,14 +27,17 @@ export function searchReducer(state: SearchState, action: SearchAction) {
         searchForm: { ...state.searchForm, ...action.payload },
       };
 
-    case "SET_LOCATION_SEARCHED":
-      return { ...state, locationSearched: action.payload };
+    case "SET_USER_LOCATION_LOADING":
+      return { ...state, userLocationLoading: action.payload };
 
-    case "TOOGLE_FILTER_OPTIONS":
-      return { ...state, showFilterOptions: !state.showFilterOptions };
+    case "SET_USER_LOCATION_SEARCHED":
+      return { ...state, userLocationSearched: action.payload };
 
-    case "TOOGLE_SORT_OPTIONS":
-      return { ...state, showSortOptions: !state.showSortOptions };
+    case "SET_USER_LOCATION_ERROR":
+      return { ...state, userLocationError: action.payload };
+
+    case "SET_USER_LOCATION":
+      return { ...state, userLocation: action.payload };
 
     case "SET_FILTER_VALUE":
       return { ...state, filterValue: action.payload };
@@ -40,12 +47,15 @@ export function searchReducer(state: SearchState, action: SearchAction) {
 
     case "SET_SEARCH_QUERY":
       return { ...state, searchQuery: action.payload };
+
     case "SET_PAGE_QUERY":
       return { ...state, pageQuery: action.payload };
-    case "SET_AVAILABLE_QUERY":
-      return { ...state, availableQuery: action.payload };
+
     case "SET_SEARCH_TRIGGER":
       return { ...state, searchTrigger: action.payload };
+
+    case "SET_TYPING_TRIGGER":
+      return { ...state, typingTrigger: action.payload };
 
     case "RESET_SEARCH_FORM":
       return { ...state, searchForm: { location: "", specialization: "" } };

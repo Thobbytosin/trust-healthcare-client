@@ -6,30 +6,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../components/ui/select";
-import { SearchDoctorForm } from "../../../types/all.types";
 import ToolTip from "../../ui/Tooltip";
+import { useSearch } from "../../../hooks/useSearch";
+import useTooltip from "@/hooks/useTooltip";
 
 type Props = {
-  searchForm: SearchDoctorForm;
-  setSearchForm: (value: SearchDoctorForm) => void;
-  setPage: (value: number) => void;
   handlePageParamsChange: (
     type: "filter" | "search" | "specialization",
     parameter: any,
     defaultPageNum?: number
   ) => any;
-  setSearchTrigger: (value: number) => void;
-  showLocationTooltip: boolean;
 };
 
-const SelectLocation: FC<Props> = ({
-  searchForm,
-  setSearchForm,
-  setPage,
-  handlePageParamsChange,
-  setSearchTrigger,
-  showLocationTooltip,
-}) => {
+const SelectLocation: FC<Props> = ({ handlePageParamsChange }) => {
+  const { actions, searchState } = useSearch();
+  const { searchForm } = searchState;
+  const { setPageQuery, setSearchForm, setUserLocationSearched } = actions;
+  const showLocationTooltip = useTooltip("location-select");
+
   return (
     <div className=" relative w-full md:w-[190px] lg:w-[270px] h-fit  bg-gray-100  rounded-md">
       <Select
@@ -37,11 +31,11 @@ const SelectLocation: FC<Props> = ({
         onValueChange={(value: string) => {
           setSearchForm({ ...searchForm, location: value });
 
-          setPage(1); // always set page to 1
+          setPageQuery(1); // always set page to 1
 
           handlePageParamsChange("search", value);
 
-          setSearchTrigger(Date.now()); // to always trigger the useeffect
+          setUserLocationSearched(false);
         }}
       >
         <SelectTrigger
@@ -49,7 +43,10 @@ const SelectLocation: FC<Props> = ({
           name="location"
           aria-label="Location"
           data-testid="location-select"
-          disabled={searchForm.specialization !== ""}
+          disabled={
+            typeof searchForm.specialization === "string" &&
+            searchForm.specialization?.trim()?.length > 0
+          }
           className="w-full border border-gray-200 py-5 outline-none text-text-primary focus:outline-none ring-0 focus:ring-0  "
         >
           <SelectValue placeholder="Select Your Location" />

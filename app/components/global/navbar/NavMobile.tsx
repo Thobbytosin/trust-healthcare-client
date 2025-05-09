@@ -1,14 +1,10 @@
 import Link from "next/link";
-import { styles } from "../../../styles/styles";
-import React, { FC, useRef, useState } from "react";
+import { styles } from "@/styles/styles";
+import React, { FC, useState } from "react";
 import Image from "next/image";
-import {
-  CloseIcon,
-  ExpandMoreOutlinedIcon,
-  MenuIcon,
-} from "../../../icons/icons";
-import { useAuth } from "../../../../app/context/AuthContext";
+import { CloseIcon, ExpandMoreOutlinedIcon, MenuIcon } from "@/icons/icons";
 import { getInitials } from "@/utils/helpers";
+import { useAuthStore } from "@/store/useAuthStore";
 
 type Props = {
   setOpenModal: (value: boolean) => void;
@@ -29,7 +25,7 @@ const menuItems = [
 ];
 
 const NavMobile: FC<Props> = ({ setMode, setOpenModal }) => {
-  const { user } = useAuth();
+  const { user } = useAuthStore((state) => state);
   const [openSidebar, setOpenSidebar] = useState<any>(undefined);
   const [openSubmenu, setOpenSubmenu] = useState<any>(false);
 
@@ -60,7 +56,7 @@ const NavMobile: FC<Props> = ({ setMode, setOpenModal }) => {
       </Link>
 
       <div className=" flex items-center gap-12">
-        {user ? (
+        {user && Object.keys(user).length > 0 ? (
           <button
             aria-label="User Account"
             className=" cursor-pointer flex items-center "

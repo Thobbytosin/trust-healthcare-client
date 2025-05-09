@@ -1,58 +1,75 @@
 "use client";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
-type Props = {};
+type Props = {
+  setShowConsent: (value: boolean) => void;
+};
 
 const ConsentModal = dynamic(() => import("./ConsentModal"), {
   ssr: false,
 });
 
-const CookiesConsent = (props: Props) => {
-  const [closeAll, setCloseAll] = useState(true);
+const CookiesConsent = ({ setShowConsent }: Props) => {
   const [openModal, setOpenModal] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  //   check if user has already consented to cookies
   useEffect(() => {
-    const consent = localStorage.getItem("cookie_consent");
-    if (!consent) {
-      setCloseAll(false);
-    }
+    // Trigger the animation on mount
+    const timeout = setTimeout(() => setMounted(true), 10); // small delay ensures DOM is rendered
+    return () => clearTimeout(timeout);
   }, []);
 
   const handleAction = (choice: "accepted" | "declined" | "managed") => {
+    let consentData;
     if (choice === "accepted") {
-      localStorage.setItem(
-        "cookie_consent",
-        JSON.stringify({
-          necessary: true,
-          advertising: true,
-          tracking: true,
-        })
-      );
-      setCloseAll(true);
+      consentData = {
+        necessary: true,
+        advertising: true,
+        tracking: true,
+        location: true,
+      };
+      setShowConsent(false);
+
+      toast.success("Cookie Preference Saved", {
+        description: "You can update it anytime. Thanks",
+        duration: 4000,
+      });
     } else if (choice === "declined") {
-      localStorage.setItem(
-        "cookie_consent",
-        JSON.stringify({
-          necessary: false,
-          advertising: false,
-          tracking: false,
-        })
-      );
-      setCloseAll(true);
+      consentData = {
+        necessary: false,
+        advertising: false,
+        tracking: false,
+        location: false,
+      };
+      setShowConsent(false);
+      toast.success("Cookie Preference Saved", {
+        description: "You can update it anytime. Thanks",
+        duration: 4000,
+      });
     } else {
       setOpenModal(true); // open the mgmt modal
     }
-  };
 
-  if (closeAll) return null;
+    // save to cookie
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + 60); // Expire in 60 days
+
+    document.cookie = `cookie_consent=${JSON.stringify(
+      consentData
+    )}; expires=${expiryDate.toUTCString()}; path=/;`;
+  };
 
   return (
     <section className=" fixed inset-0 z-50 flex justify-center items-center ">
       {/* Overlay */}
       <div className=" fixed inset-0 bg-black/15 w-screen h-screen backdrop-blur-sm " />
-      <section className=" fixed right-10 bottom-10 w-[600px] h-fit bg-white 0 p-6  z-60 rounded-xl  shadow-black/60 shadow-lg">
+      <section
+        className={`fixed right-10 bottom-10 w-[600px] h-fit bg-white 0 p-6  z-60 rounded-xl  shadow-black/60 shadow-lg transition-transform duration-[1500ms] ease-in-out transform  ${
+          mounted ? "translate-x-0" : "translate-x-[110%]"
+        }`}
+      >
         <h2 className=" font-semibold mb-6 text-2xl text-left">
           We use cookies
         </h2>
@@ -98,11 +115,14 @@ const CookiesConsent = (props: Props) => {
       </section>
 
       {/* open modal */}
-      {openModal ? (
+      {openModal && (
         <div className=" w-screen h-screen bg-black/15 backdrop-blur-sm z-100 flex justify-center items-center">
-          <ConsentModal setOpen={setOpenModal} setCloseAll={setCloseAll} />
+          <ConsentModal
+            setOpen={setOpenModal}
+            setShowConsent={setShowConsent}
+          />
         </div>
-      ) : null}
+      )}
     </section>
   );
 };

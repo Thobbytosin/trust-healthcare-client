@@ -1,4 +1,4 @@
-import { DoneOutlinedIcon } from "../../../app/icons/icons";
+import { DoneOutlinedIcon } from "@/icons/icons";
 import React from "react";
 
 type Props = {

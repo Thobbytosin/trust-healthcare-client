@@ -15,79 +15,32 @@ export function getInitials(name: string) {
   }
 }
 
-export async function reverseGeocode(latitude: number, longitude: number) {
-  const url = `${process.env.NEXT_PUBLIC_LOCATION_URL}?lat=${latitude}&lon=${longitude}&format=json`;
+export function getCookie(name: string): string | undefined {
+  if (typeof document === "undefined") return;
 
-  try {
-    const response = await fetch(url, {
-      headers: {
-        "User-Agent": "TrustHealthCare/1.0 (thobbytosin11@gmail.com)",
-        "Accept-Language": "en", // Optional: for language preference
-      },
-    });
-    const data = await response.json();
+  const value = `; ${document.cookie}`;
 
-    // console.log("Reverse Geocode Data:", data);
+  const parts = value.split(`; ${name}=`);
 
-    // const city =
-    //   data.address.county ||
-    //   data.address.city ||
-    //   data.address.town ||
-    //   data.address.village ||
-    //   "Unknown";
-    const location = data.display_name || "Unknown";
-
-    return data.display_name || "Unknown";
-  } catch (error) {
-    console.error("Error during reverse geocoding:", error);
-    return null;
+  if (parts.length >= 2) {
+    const part = parts.pop();
+    if (part) return part.split(";").shift();
   }
+
+  return undefined;
 }
 
-// export async function fetchLocation() {
-//   if (!navigator.geolocation) {
-//     console.log("Geolocation is not supported on this browser");
-//     return;
-//   }
+export function getAccessToken(name: string): string | undefined {
+  if (typeof document === "undefined") return;
 
-//   //   get coordinates
-//   const location = navigator.geolocation.getCurrentPosition(
-//     async (position) => {
-//       const { latitude, longitude } = position.coords;
+  const value = `; ${document.cookie}`;
 
-//       // console.log("Coordinates:", latitude, longitude);
+  const parts = value.split(`; ${name}=`);
 
-//       // get address
-//       const addressData = await reverseGeocode(latitude, longitude);
-//       // console.log(addressData);
-//       return addressData;
-//     },
-//     (error) => {
-//       console.log("Error getting Location:", error);
-//     }
-//   );
+  if (parts.length >= 2) {
+    const part = parts.pop();
+    if (part) return part.split(";").shift();
+  }
 
-//   return location;
-// }
-
-export function fetchLocation() {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      console.log("Geolocation is not supported on this browser");
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-        // get address
-        const address = await reverseGeocode(latitude, longitude);
-        resolve(address);
-      },
-      (error) => {
-        console.log("Error getting Location:", error);
-        reject(error);
-      }
-    );
-  });
+  return undefined;
 }

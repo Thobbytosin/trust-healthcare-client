@@ -19,6 +19,8 @@ const eslintConfig = [
       "@typescript-eslint/no-require-imports": "off",
       "react-hooks/rules-of-hooks": "off",
       "react-hooks/exhaustive-deps": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-expressions": "off",
     },
   },
 ];

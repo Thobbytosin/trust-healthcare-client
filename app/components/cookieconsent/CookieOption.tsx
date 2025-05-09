@@ -48,14 +48,18 @@ const CookieOption = ({ label, active, description, onToggle }: Props) => {
                         ? "Necessary Cookie"
                         : label === "tracking"
                         ? "Tracking Cookie"
-                        : "Advertising Cookie"
+                        : label === "advertising"
+                        ? "Advertising Cookie"
+                        : "Location Cookie"
                     }`
                   : `Enable ${
                       label === "necessary"
                         ? "Necessary Cookie"
                         : label === "tracking"
                         ? "Tracking Cookie"
-                        : "Advertising Cookie"
+                        : label === "advertising"
+                        ? "Advertising Cookie"
+                        : "Location Cookie"
                     }`}
                 {/* triangle */}
                 <div className="absolute top-full left-6 -translate-x-1/2 w-0 h-0 border-l-6 border-r-6 border-t-8 border-l-transparent border-r-transparent border-t-black" />

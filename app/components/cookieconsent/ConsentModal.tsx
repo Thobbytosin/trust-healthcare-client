@@ -5,26 +5,28 @@ import { toast } from "sonner";
 
 type Props = {
   setOpen: (value: boolean) => void;
-  setCloseAll: (value: boolean) => void;
+  setShowConsent: (value: boolean) => void;
 };
 
 const cookiesOptions = [
   { id: 1, name: "Necessary Cookies" },
   { id: 2, name: "Tracking Cookies" },
   { id: 3, name: "Advertising Cookies" },
+  { id: 4, name: "Location Cookies" },
 ];
 
 const CookieOption = dynamic(() => import("./CookieOption"), {
   ssr: false,
 });
 
-const ConsentModal = ({ setOpen, setCloseAll }: Props) => {
+const ConsentModal = ({ setOpen, setShowConsent }: Props) => {
   const [activeCookie, setActiveCookie] = useState(1);
   const [hasChanged, setHasChanged] = useState(false);
   const [cookiePreference, setCookiePreference] = useState({
     necessary: true,
     advertising: true,
     tracking: true,
+    location: true,
   });
 
   const handleToggle = (key: keyof typeof cookiePreference) => {
@@ -37,10 +39,17 @@ const ConsentModal = ({ setOpen, setCloseAll }: Props) => {
   };
 
   const handleSave = () => {
-    localStorage.setItem("cookie_consent", JSON.stringify(cookiePreference));
+    // save to cookie
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + 60); // Expire in 60 days
+
+    document.cookie = `cookie_consent=${JSON.stringify(
+      cookiePreference
+    )}; expires=${expiryDate.toUTCString()}; path=/;`;
+
     setHasChanged(false);
     setOpen(false);
-    setCloseAll(true);
+    setShowConsent(false);
 
     toast.success("Cookie Preference Updated", {
       description: "Your preferences has been updated. Thanks",
@@ -104,12 +113,21 @@ const ConsentModal = ({ setOpen, setCloseAll }: Props) => {
           onToggle={() => handleToggle("tracking")}
         />
       )}
+
       {activeCookie === 3 && (
         <CookieOption
           description={`These cookies are used to show advertising that is likely to be of interest to you based on your browsing habits. These cookies, as served by our content and/or advertising providers, may combine information they collected from our website with other information they have independently collected relating to your web browser's activities across their network of websites.${" "} \n\ If you choose to remove or disable these targeting or advertising cookies, you will still see adverts but they may not be relevant to you.`}
           label="advertising"
           active={cookiePreference.advertising}
           onToggle={() => handleToggle("advertising")}
+        />
+      )}
+      {activeCookie === 4 && (
+        <CookieOption
+          description={`We value your privacy. To improve your experience, we request access to your location only if you allow it. This helps us show results near you. We'd like to use your location to help you find doctors and hospitals tailored to your needs, right around you. Your data stays private — we only use your location if you allow it`}
+          label="location"
+          active={cookiePreference.location}
+          onToggle={() => handleToggle("location")}
         />
       )}
 

@@ -1,7 +1,8 @@
-import { useMutateData } from "../../../app/hooks/useApi";
-import React, { FormEvent, useState } from "react";
+import React, { useState } from "react";
 import Loader from "../global/loaders/Loader";
 import { toast } from "sonner";
+import { useMutateData } from "@/hooks/useApi";
+import { FORGOTPASSWORD } from "@/config/user.endpoints";
 
 type Props = {
   setMode: (value: string) => void;
@@ -15,8 +16,7 @@ const ForgotPassword = ({ setMode }: Props) => {
   const { mutate: forgotPassword, isPending } = useMutateData({
     method: "POST",
     mutationKey: ["forgotPassword"],
-    url: "/user/forgot-password",
-    skipAuthRefresh: true,
+    url: FORGOTPASSWORD,
   });
   const [form, setForm] = useState<ForgotForm>({ email: "" });
 
