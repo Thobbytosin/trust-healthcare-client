@@ -1,8 +1,14 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 import { getCookie } from "./helpers";
 import { SERVER_URI } from "@/config/api";
+import { isServerOnline } from "./isServerOnline";
 
 const axiosInstance = axios.create({
+  baseURL: SERVER_URI,
+  withCredentials: true,
+});
+
+const bareAxios = axios.create({
   baseURL: SERVER_URI,
   withCredentials: true,
 });
@@ -27,6 +33,13 @@ const isAccessTokenExpiringSoon = () => {
 // for outgoing requests
 axiosInstance.interceptors.request.use(async (config) => {
   const customConfig = config as CustomAxiosRequestConfig;
+
+  // check server
+  const online = await isServerOnline();
+  if (!online) {
+    return Promise.reject(new Error("Server is offline"));
+  }
+
   const consent = getCookie("cookie_consent");
 
   // sets the cookie consent in all request headers
@@ -62,6 +75,12 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config as CustomAxiosRequestConfig;
+
+    // check server
+    const online = await isServerOnline();
+    if (!online) {
+      return Promise.reject(new Error("Server is offline"));
+    }
 
     // check for skip auth refresh
     if (originalRequest?.skipAuthRefresh) {

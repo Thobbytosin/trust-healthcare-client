@@ -1,3 +1,5 @@
+import { DoctorsBackendResponse } from "@/types/doctor.types";
+
 export function getInitials(name: string) {
   if (!name) return "";
 
@@ -43,4 +45,26 @@ export function getAccessToken(name: string): string | undefined {
   }
 
   return undefined;
+}
+
+export function fetchMatchedSpecialization(
+  data: DoctorsBackendResponse | undefined,
+  currentSpecialization: string
+) {
+  // compare specialization values
+  const dataResultArray = data?.doctors?.flatMap((d) => d.specialization);
+  const queryArray = currentSpecialization?.split(" ");
+
+  // convert to lowercase
+  const dataResultArrayLower = dataResultArray?.map((item) =>
+    item.toLowerCase()
+  );
+  const queryArrayLower = queryArray?.map((item) => item.toLowerCase());
+
+  // find matched value
+  const matchedSpecialalization = queryArrayLower?.find((item) =>
+    dataResultArrayLower?.includes(item)
+  );
+
+  return matchedSpecialalization;
 }
