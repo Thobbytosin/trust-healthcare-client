@@ -18,8 +18,8 @@ export async function GET(req: NextRequest) {
   if (!API_KEY) {
     return NextResponse.json({ message: "Missing API key" }, { status: 500 });
   }
-  // 6.455740927242403, 3.3834410443473377
-  const url = `${BASE_URL}?q=${6.5609794}+${3.3302665}&key=${API_KEY}&pretty=1`;
+  // 6.4299529,3.4162174
+  const url = `${BASE_URL}?q=${lat}+${lon}&key=${API_KEY}&pretty=1`;
 
   try {
     const response = await fetch(url);

@@ -1,33 +1,18 @@
 import ToolTip from "../../ui/Tooltip";
 import { SearchOutlinedIcon } from "@/icons/icons";
-import React, {
-  FC,
-  FormEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, FormEvent, useCallback, useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useTooltip from "@/hooks/useTooltip";
 import { useSearch } from "@/hooks/useSearch";
-import debounce from "lodash.debounce";
 
-type Props = {
-  handlePageParamsChange: (
-    type: "filter" | "search" | "specialization" | "sortBy",
-    parameter: any,
-    defaultPageNum?: number
-  ) => any;
-};
+type Props = {};
 
-const SpecializationForm: FC<Props> = ({ handlePageParamsChange }) => {
+const SpecializationForm: FC<Props> = ({}) => {
   const suggestionListRef = useRef<HTMLUListElement>(null);
   const { actions, searchState } = useSearch();
   const {
     setSearchForm,
     setPageQuery,
-    setSearchTrigger,
     setAllSuggestions,
     setShowSuggestionsList,
     resetAll,
@@ -38,7 +23,23 @@ const SpecializationForm: FC<Props> = ({ handlePageParamsChange }) => {
   const showSpecializationTooltip = useTooltip("specialization");
   const router = useRouter();
   const pathname = usePathname();
-  const params = useSearchParams();
+  const queryParams = useSearchParams();
+
+  const handlePageParamsChange = (
+    type: "specialization",
+    parameter: any,
+    defaultPageNum = 1
+  ) => {
+    let newParams = new URLSearchParams(queryParams?.toString());
+
+    if (type === "specialization") {
+      newParams = new URLSearchParams();
+      newParams.set("page", defaultPageNum.toString());
+      newParams.set("specialization", parameter?.toLowerCase());
+    }
+
+    router.push(`${pathname}?${newParams}`);
+  };
 
   useEffect(() => {
     resetAll();
@@ -60,9 +61,14 @@ const SpecializationForm: FC<Props> = ({ handlePageParamsChange }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  let debounceTimeout: NodeJS.Timeout | null = null;
   // Handle fetch suggestions
-  const fetchSuggestions = useCallback(
-    debounce(async (term: string) => {
+  const fetchSuggestions = useCallback((term: string) => {
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+
+    debounceTimeout = setTimeout(async () => {
       const stored = localStorage.getItem("search_suggestions");
       const suggestions: string[] = stored ? JSON.parse(stored) : [];
 
@@ -73,9 +79,8 @@ const SpecializationForm: FC<Props> = ({ handlePageParamsChange }) => {
 
       setAllSuggestions(filtered);
       setShowSuggestionsList(true);
-    }, 2000),
-    []
-  );
+    }, 2000);
+  }, []);
 
   // to fetchSuggestions
   useEffect(() => {
@@ -144,11 +149,9 @@ const SpecializationForm: FC<Props> = ({ handlePageParamsChange }) => {
         saveSuggestions(query);
       }
     }
-
-    setSearchTrigger(Date.now()); // to always trigger the useeffect
   };
 
-  const currentSpecialization = params.get("specialization");
+  const currentSpecialization = queryParams.get("specialization");
 
   return (
     <>

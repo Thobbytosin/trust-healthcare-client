@@ -9,20 +9,34 @@ import {
 import ToolTip from "../../ui/Tooltip";
 import { useSearch } from "../../../hooks/useSearch";
 import useTooltip from "@/hooks/useTooltip";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-type Props = {
-  handlePageParamsChange: (
-    type: "filter" | "search" | "specialization",
-    parameter: any,
-    defaultPageNum?: number
-  ) => any;
-};
+type Props = {};
 
-const SelectLocation: FC<Props> = ({ handlePageParamsChange }) => {
+const SelectLocation: FC<Props> = () => {
+  const queryParams = useSearchParams() || null;
+  const router = useRouter();
+  const pathname = usePathname();
   const { actions, searchState } = useSearch();
   const { searchForm } = searchState;
-  const { setPageQuery, setSearchForm, setUserLocationSearched } = actions;
+  const { setPageQuery, setSearchForm } = actions;
   const showLocationTooltip = useTooltip("location-select");
+
+  const handlePageParamsChange = (
+    type: "search",
+    parameter: any,
+    defaultPageNum = 1
+  ) => {
+    let newParams = new URLSearchParams(queryParams?.toString());
+
+    if (type === "search") {
+      newParams = new URLSearchParams();
+      newParams.set("page", defaultPageNum.toString());
+      newParams.set("search", parameter?.toLowerCase());
+    }
+
+    router.push(`${pathname}?${newParams}`);
+  };
 
   return (
     <div className=" relative w-full md:w-[190px] lg:w-[270px] h-fit  bg-gray-100  rounded-md">
@@ -34,8 +48,6 @@ const SelectLocation: FC<Props> = ({ handlePageParamsChange }) => {
           setPageQuery(1); // always set page to 1
 
           handlePageParamsChange("search", value);
-
-          setUserLocationSearched(false);
         }}
       >
         <SelectTrigger
