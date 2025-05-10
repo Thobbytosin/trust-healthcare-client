@@ -13,7 +13,6 @@ export type SearchAction =
   | { type: "SET_SORT_BY"; payload: string | undefined }
   | { type: "SET_SEARCH_QUERY"; payload: string | undefined }
   | { type: "SET_PAGE_QUERY"; payload: number | undefined }
-  | { type: "SET_SEARCH_TRIGGER"; payload: number }
   | { type: "SET_TYPING_TRIGGER"; payload: number | boolean }
   | { type: "RESET_SEARCH_FORM" }
   | { type: "SET_ALL_SUGGESTIONS"; payload: string[] }
@@ -30,7 +29,6 @@ export interface SearchState {
   sortBy: string | undefined;
   searchQuery: string | undefined;
   pageQuery: number | undefined;
-  searchTrigger: number;
   allSuggestions: string[];
   showSuggestionList: boolean;
   typingTrigger: number | boolean;

@@ -1,26 +1,32 @@
-import { useEffect } from "react";
+import { useCallback } from "react";
 import { useSearch } from "./useSearch";
 import { getCookie } from "@/utils/helpers";
 
 export default function useUserLocation() {
   const { actions, searchState } = useSearch();
-  const { setUserLocation, setUserLocationError, setUserLocationLoading } =
-    actions;
+  const {
+    setUserLocation,
+    setUserLocationError,
+    setUserLocationLoading,
+    setUserLocationSearched,
+  } = actions;
   const { userLocation, userLocationLoading, userLocationError } = searchState;
 
-  useEffect(() => {
-    const consent = getCookie("cookie_consent") || "";
-    const parsedConsents = JSON.parse(consent);
+  const fetchUserLocation = useCallback(
+    async (onSuccess?: (loc: string) => void) => {
+      const consent = getCookie("cookie_consent") || "";
+      const parsedConsents = JSON.parse(consent);
 
-    const hasLocationConsent = parsedConsents?.location;
+      const hasLocationConsent = parsedConsents?.location;
 
-    if (!hasLocationConsent) {
-      return setUserLocationError("Location permission denied");
-    }
+      if (!hasLocationConsent) {
+        setUserLocationSearched(true);
+        return setUserLocationError("Location permission denied");
+      }
 
-    const getLocation = async () => {
       if (!navigator.geolocation) {
-        console.log("Geolocation is not supported on this browser");
+        setUserLocationSearched(true);
+        setUserLocationError("Geolocation is not supported on this browser");
         setUserLocationLoading(false);
         return;
       }
@@ -44,6 +50,7 @@ export default function useUserLocation() {
               userAproxLocation =
                 data?.road + ", " + data?.town + ", " + data?.city;
               setUserLocation(userAproxLocation);
+              onSuccess?.(userAproxLocation); // call this callback
             } else {
               setUserLocationError(data?.message);
             }
@@ -56,18 +63,19 @@ export default function useUserLocation() {
 
         // error
         (err) => {
+          setUserLocationSearched(true);
           setUserLocationError(
             "Location permission denied or unavailable at the moment."
           );
           setUserLocationLoading(false);
         }
       );
-    };
-
-    getLocation();
-  }, []);
+    },
+    []
+  );
 
   return {
+    fetchUserLocation,
     loading: userLocationLoading,
     location: userLocation,
     error: userLocationError,

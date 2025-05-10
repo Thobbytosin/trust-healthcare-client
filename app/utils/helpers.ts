@@ -49,7 +49,7 @@ export function getAccessToken(name: string): string | undefined {
 
 export function fetchMatchedSpecialization(
   data: DoctorsBackendResponse | undefined,
-  currentSpecialization: string
+  currentSpecialization: string | null
 ) {
   // compare specialization values
   const dataResultArray = data?.doctors?.flatMap((d) => d.specialization);
@@ -66,5 +66,5 @@ export function fetchMatchedSpecialization(
     dataResultArrayLower?.includes(item)
   );
 
-  return matchedSpecialalization;
+  return matchedSpecialalization || null;
 }

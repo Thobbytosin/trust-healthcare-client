@@ -14,10 +14,6 @@ export function useSearchReducer() {
       dispatch({ type: "SET_FILTER_VALUE", payload: value });
     },
 
-    setSearchTrigger: (value: number) => {
-      dispatch({ type: "SET_SEARCH_TRIGGER", payload: value });
-    },
-
     setTypingTrigger: (value: number | boolean) => {
       dispatch({ type: "SET_TYPING_TRIGGER", payload: value });
     },
