@@ -2,7 +2,12 @@ import Link from "next/link";
 import { styles } from "@/styles/styles";
 import React, { FC, useState } from "react";
 import Image from "next/image";
-import { CloseIcon, ExpandMoreOutlinedIcon, MenuIcon } from "@/icons/icons";
+import {
+  CloseIcon,
+  MenuIcon,
+  NotificationsIcon,
+  SettingsIcon,
+} from "@/icons/icons";
 import { getInitials } from "@/utils/helpers";
 import { useAuthStore } from "@/store/useAuthStore";
 
@@ -57,21 +62,33 @@ const NavMobile: FC<Props> = ({ setMode, setOpenModal }) => {
 
       <div className=" flex items-center gap-12">
         {user && Object.keys(user).length > 0 ? (
-          <button
-            aria-label="User Account"
-            className=" cursor-pointer flex items-center "
-          >
-            <div className=" relative p-0.5 rounded-full bg-gradient-to-r from-primary to-secondary">
-              <div className="rounded-full w-8 h-8 bg-black flex justify-center items-center ">
-                <h3 className=" text-white text-center">
-                  {getInitials(user.name)}
-                </h3>
-                <div className="online-indicator w-2 h-2 bg-green-500 rounded-full absolute right-0 top-1" />
+          <div className=" flex items-center gap-8">
+            <div className=" flex items-center gap-6">
+              <div className=" text-gray-500 cursor-pointer relative">
+                <span className=" absolute top-0.5 right-0.5 flex justify-center items-center bg-red-500 rounded-full w-2 h-2 border-1 border-white "></span>
+                <NotificationsIcon fontSize="small" color="inherit" />
+              </div>
+
+              <div className=" text-gray-500 cursor-pointer">
+                <SettingsIcon fontSize="small" color="inherit" />
               </div>
             </div>
 
-            <ExpandMoreOutlinedIcon fontSize="small" />
-          </button>
+            <button
+              aria-label="User Account"
+              className=" cursor-pointer flex items-center "
+            >
+              <div className="relative p-0.5 rounded-full bg-gradient-to-r from-primary to-secondary">
+                <div className="rounded-full w-8 h-8 bg-black flex justify-center items-center ">
+                  <h3 className=" text-white text-center">
+                    {getInitials(user.name)}
+                  </h3>
+                </div>
+
+                <div className="online-indicator w-2 h-2 bg-green-500 border-1 border-white rounded-full absolute right-0 bottom-1" />
+              </div>
+            </button>
+          </div>
         ) : null}
         <button
           title="Menu"
