@@ -8,7 +8,7 @@ import { toast } from "sonner";
 type Props = {
   handleClick: (() => void) | undefined;
   setLoading?: (value: boolean) => void;
-  loading: boolean;
+  loading: boolean | undefined;
 };
 
 const UserInactivity = ({ handleClick, loading, setLoading }: Props) => {

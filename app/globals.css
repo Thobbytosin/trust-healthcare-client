@@ -59,7 +59,7 @@ input[type="number"] {
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 /* track */
@@ -184,4 +184,106 @@ input[type="number"] {
       transform: translateX(100%);
     }
   }
+}
+
+@keyframes borderAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-border {
+  background: linear-gradient(90deg, #01a400, #4200ff, #01a400);
+  background-size: 200% 200%;
+  animation: borderAnimation 3s linear infinite;
+  box-shadow: 0 0 0 2px transparent;
+}
+
+.animate-border::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: inherit;
+  border-radius: inherit;
+  z-index: -1;
+  filter: blur(5px);
+  opacity: 0.7;
+}
+
+@keyframes spin-border {
+  to {
+    --angle: 360deg;
+  }
+}
+
+@property --angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.spinning-border {
+  position: relative;
+  border: 4px solid transparent; /* Invisible by default */
+  border-radius: 9999px;
+}
+
+.spinning-border::before {
+  content: "";
+  position: absolute;
+  inset: -4px; /* Match border thickness */
+  border-radius: inherit;
+  padding: 4px; /* Match border thickness */
+  background: conic-gradient(
+    from var(--angle),
+    #3b82f6,
+    /* Color 1 (blue) */ #4200ff,
+    /* Color 2 (pink) */ #01a400 /* Loop back to color 1 */
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: spin-border 2s linear infinite;
+}
+
+.chat-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* track */
+.chat-scrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* handle */
+.chat-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 3px; /* Rounded corners */
+
+  background: var(--color-gray-200);
+  transition: all 10.3s ease;
+}
+
+.textarea-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.textarea-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 3px; /* Rounded corners */
+
+  background: var(--color-gray-200);
+  transition: all 10.3s ease;
+}
+
+.textarea-scrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+  margin: 10px 0;
 }
