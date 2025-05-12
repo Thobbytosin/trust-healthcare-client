@@ -43,16 +43,10 @@ const Doctor = ({ doctorId }: Props) => {
       <RevealWrapper key={"doctor"} variants={fadeInDown} animate>
         {/* blue header */}
         <div className=" bg-primary h-[80px] md:h-[100px] w-full mt-20 rounded-b-xl" />
+
+        <div></div>
       </RevealWrapper>
     </main>
-    // <section>
-    //   <RevealWrapper key={"doctor"} variants={fadeInDown} animate>
-    //     {/* blue header */}
-    //     <div className=" bg-primary h-[80px] md:h-[100px] w-full mt-20 rounded-b-xl" />
-
-    //     <h1>Doctor Page</h1>
-    //   </RevealWrapper>
-    // </section>
   );
 };
 

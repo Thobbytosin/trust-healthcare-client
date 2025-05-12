@@ -76,10 +76,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: "Doctor | Trust Healthcare",
       description:
         "View doctor details and book appointments at Trust Healthcare.",
-      icons: {
-        icon: "/logo.png", //Path relative to /public
-        shortcut: "/logo.png",
-      },
+
       openGraph: {
         images: [
           {

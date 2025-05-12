@@ -24,6 +24,8 @@ import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import ExpandMoreOutlinedIcon from "@mui/icons-material/ExpandMoreOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import VerifiedIcon from "@mui/icons-material/Verified";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 export {
   MenuIcon,
@@ -52,4 +54,6 @@ export {
   ExpandMoreOutlinedIcon,
   SearchOutlinedIcon,
   VerifiedIcon,
+  NotificationsIcon,
+  SettingsIcon,
 };
