@@ -14,7 +14,10 @@ const AiChatWidget = (props: Props) => {
       {open && (
         <>
           {/* overlay */}
-          <div className=" bg-white/70 fixed inset-0 z-50 w-screen h-screen" />
+          <div
+            onClick={() => setOpen(false)}
+            className=" bg-white/70 fixed inset-0 z-50 w-screen h-screen"
+          />
 
           {/* card */}
           <div className=" fixed top-[5%] left-[5%] w-[90%] md:left-[30%] md:w-[40%] h-[90%] bg-white shadow-lg shadow-black/30 z-60 rounded-3xl flex flex-col ">
