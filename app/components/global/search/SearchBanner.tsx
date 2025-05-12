@@ -3,25 +3,38 @@ import { useSearch } from "@/hooks/useSearch";
 import { DoneOutlinedIcon } from "@/icons/icons";
 import { useSearchParams } from "next/navigation";
 import React from "react";
+import { useFetchDoctors } from "@/hooks/useFetchDoctors";
+import LocationBanner from "@/components/ui/banners/location/LocationBanner";
+import LocationBannerError from "@/components/ui/banners/location/LocationBannerError";
+import UserLocationBannerError from "@/components/ui/banners/userlocation/UserLocationBannerError";
+import UserLocationBanner from "@/components/ui/banners/userlocation/UserLocationBanner";
+import SpecialtyBannerError from "@/components/ui/banners/specialty/SpecialtyBannerError";
+import SpecialtyBanner from "@/components/ui/banners/specialty/SpecialtyBanner";
+import FilterBanner from "@/components/ui/banners/filter/FilterBanner";
+import FilterBannerError from "@/components/ui/banners/filter/FilterBannerError";
+import { fetchMatchedSpecialization } from "@/utils/helpers";
 
-type Props = {
-  loading: boolean;
-  data: DoctorsBackendResponse | undefined;
-};
+type Props = {};
 
-const SearchBanner = ({ loading, data }: Props) => {
+const SearchBanner = (props: Props) => {
   const params = useSearchParams();
-  const totalDoctors = data?.results || 0;
+  const { data, isLoading: loading } = useFetchDoctors(params);
   const resultsLength = data?.doctors?.length || 0;
 
   const currentSearch = params.get("search");
   const currentLocation = params.get("location");
   const currentSpecialization = params.get("specialization");
   const currentFilterValue = params.get("filter");
-  // const currentFilterValue = params.get("filter");
+
   const { searchState } = useSearch();
   const { searchForm, filterValue, typingTrigger, userLocation } = searchState;
   const { location, specialization } = searchForm;
+
+  // useful when specialization has more than a word
+  const matchedSpecialization = fetchMatchedSpecialization(
+    data,
+    currentSpecialization
+  );
 
   if (loading)
     return (
@@ -35,65 +48,25 @@ const SearchBanner = ({ loading, data }: Props) => {
       {/* for location results */}
       {!typingTrigger && currentSearch && location?.trim() !== "" ? (
         resultsLength >= 1 ? (
-          <>
-            <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-              Great! <span className=" text-primary">{resultsLength}</span>{" "}
-              <span className=" text-primary">
-                {resultsLength > 1 ? "doctors" : "doctor"}
-              </span>{" "}
-              found in{" "}
-              <span className=" text-primary capitalize">{currentSearch}</span>{" "}
-              available for you.
-            </h2>
-            <p className="text-[#787887] max-w-[80%] md:min-w-full mx-auto  md:text-left text-center font-light mt-1 text-xs md:text-sm flex items-center gap-2">
-              <span className="hidden md:w-[18px] md:h-[18px] rounded-full border border-[#787887] text-xs md:text-sm md:flex justify-center items-center">
-                <DoneOutlinedIcon fontSize="inherit" />
-              </span>
-              <span>
-                Book appointments with minimum wait-time & verified doctor
-                details
-              </span>
-            </p>
-          </>
+          <LocationBanner
+            key={"location-banner"}
+            currentSearch={currentSearch}
+            resultsLength={resultsLength}
+          />
         ) : (
-          <>
-            <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-              Sorry! No doctor found in{" "}
-              <span className=" text-red-500 capitalize">{location}</span> at
-              this time.
-            </h2>
-          </>
+          <LocationBannerError
+            key={"location-banner-error"}
+            location={location}
+          />
         )
       ) : null}
 
       {/* for user location results */}
       {!typingTrigger && currentLocation && userLocation?.trim() !== "" ? (
         resultsLength >= 1 ? (
-          <>
-            <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-              Great! <span className=" text-primary">{resultsLength}</span>{" "}
-              <span className=" text-primary">
-                {resultsLength > 1 ? "doctors" : "doctor"}
-              </span>{" "}
-              found near you.
-            </h2>
-            <p className="text-[#787887] max-w-[80%] md:min-w-full mx-auto  md:text-left text-center font-light mt-1 text-xs md:text-sm flex items-center gap-2">
-              <span className="hidden md:w-[18px] md:h-[18px] rounded-full border border-[#787887] text-xs md:text-sm md:flex justify-center items-center">
-                <DoneOutlinedIcon fontSize="inherit" />
-              </span>
-              <span>
-                Book appointments with minimum wait-time & verified doctor
-                details
-              </span>
-            </p>
-          </>
+          <UserLocationBanner results={resultsLength} />
         ) : (
-          <>
-            <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-              Sorry! <span className=" text-red-500">No doctor</span> found near
-              your location at this time.
-            </h2>
-          </>
+          <UserLocationBannerError />
         )
       ) : null}
 
@@ -102,69 +75,21 @@ const SearchBanner = ({ loading, data }: Props) => {
       currentSpecialization &&
       specialization?.trim() !== "" ? (
         resultsLength >= 1 ? (
-          <>
-            <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-              Great! <span className=" text-primary">{resultsLength}</span>{" "}
-              <span className=" text-primary">
-                {resultsLength > 1 ? "doctors" : "doctor"}
-              </span>{" "}
-              specialized in{" "}
-              <span className=" text-primary capitalize">
-                {currentSpecialization}
-              </span>{" "}
-              available for you.
-            </h2>
-            <p className="text-[#787887] max-w-[80%] md:min-w-full mx-auto  md:text-left text-center font-light mt-1 text-xs md:text-sm flex items-center gap-2">
-              <span className="hidden md:w-[18px] md:h-[18px] rounded-full border border-[#787887] text-xs md:text-sm md:flex justify-center items-center">
-                <DoneOutlinedIcon fontSize="inherit" />
-              </span>
-              <span>
-                Book appointments with minimum wait-time & verified doctor
-                details
-              </span>
-            </p>
-          </>
+          <SpecialtyBanner
+            currentSpecialization={matchedSpecialization}
+            results={resultsLength}
+          />
         ) : (
-          <>
-            <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-              Sorry! No registered doctor specialized in{" "}
-              <span className=" text-red-500 capitalize">{specialization}</span>{" "}
-              yet at this time.
-            </h2>
-          </>
+          <SpecialtyBannerError specialization={specialization} />
         )
       ) : null}
 
       {/* for filter results */}
       {!typingTrigger && currentFilterValue && filterValue?.trim() !== "" ? (
         resultsLength >= 1 ? (
-          <>
-            <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-              Great! <span className=" text-primary">{resultsLength}</span>{" "}
-              <span className=" text-primary">
-                {resultsLength > 1 ? "doctors" : "doctor"}
-              </span>{" "}
-              are <span className=" text-primary capitalize">available</span>{" "}
-              right now.
-            </h2>
-            <p className="text-[#787887] max-w-[80%] md:min-w-full mx-auto  md:text-left text-center font-light mt-1 text-xs md:text-sm flex items-center gap-2">
-              <span className="hidden md:w-[18px] md:h-[18px] rounded-full border border-[#787887] text-xs md:text-sm md:flex justify-center items-center">
-                <DoneOutlinedIcon fontSize="inherit" />
-              </span>
-              <span>
-                Book appointments with minimum wait-time & verified doctor
-                details
-              </span>
-            </p>
-          </>
+          <FilterBanner results={resultsLength} />
         ) : (
-          <>
-            <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-              Sorry! No doctor is{" "}
-              <span className=" text-red-500 capitalize">available</span> at
-              this time.
-            </h2>
-          </>
+          <FilterBannerError />
         )
       ) : null}
 
@@ -176,7 +101,7 @@ const SearchBanner = ({ loading, data }: Props) => {
       currentFilterValue === null ? (
         <>
           <h2 className=" text-text-primary text-center md:text-left text-lg md:text-xl font-medium">
-            Over {totalDoctors - 2} doctors available for you.
+            Verified doctors available for you.
           </h2>
           <p className="text-[#787887] max-w-[80%] md:min-w-full mx-auto  md:text-left text-center font-light mt-1 text-xs md:text-sm flex items-center gap-2">
             <span className="hidden md:w-[18px] md:h-[18px] rounded-full border border-[#787887] text-xs md:text-sm md:flex justify-center items-center">

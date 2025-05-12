@@ -9,20 +9,39 @@ import {
 import { useSearch } from "@/hooks/useSearch";
 import useTooltip from "@/hooks/useTooltip";
 import ToolTip from "@/components/ui/Tooltip";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
-type Props = {
-  handlePageParamsChange: (
-    type: "filter" | "search" | "specialization" | "sortBy",
-    parameter: any,
-    defaultPageNum?: number
-  ) => any;
-};
+type Props = {};
 
-const SortSearch = ({ handlePageParamsChange }: Props) => {
+const SortSearch = (props: Props) => {
   const { actions, searchState } = useSearch();
-  const { setSortBy, setPageQuery, setSearchTrigger } = actions;
+  const { setSortBy, setPageQuery } = actions;
   const { sortBy } = searchState;
   const showSortTooltip = useTooltip("sort");
+  const router = useRouter();
+  const pathname = usePathname();
+  const queryParams = useSearchParams();
+
+  const handlePageParamsChange = (
+    type: "sortBy",
+    parameter: any,
+    defaultPageNum = 1
+  ) => {
+    let newParams = new URLSearchParams(queryParams?.toString());
+
+    if (type === "sortBy") {
+      newParams = new URLSearchParams();
+      newParams.set("page", defaultPageNum.toString());
+      newParams.set("sortBy", parameter?.toLowerCase());
+    }
+
+    router.push(`${pathname}?${newParams}`);
+
+    toast.success("Doctors List Sorted", {
+      duration: 4000,
+    });
+  };
 
   return (
     <div className=" w-full relative flex items-center gap-2 ">
@@ -36,8 +55,6 @@ const SortSearch = ({ handlePageParamsChange }: Props) => {
             setPageQuery(1); // always set page to 1
 
             handlePageParamsChange("sortBy", value);
-
-            setSearchTrigger(Date.now()); // to always trigger the useeffect
           }}
         >
           <SelectTrigger

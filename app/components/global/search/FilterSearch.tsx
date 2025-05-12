@@ -9,20 +9,34 @@ import {
 import { useSearch } from "@/hooks/useSearch";
 import useTooltip from "@/hooks/useTooltip";
 import ToolTip from "@/components/ui/Tooltip";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-type Props = {
-  handlePageParamsChange: (
-    type: "filter" | "search" | "specialization" | "sortBy",
-    parameter: any,
-    defaultPageNum?: number
-  ) => any;
-};
+type Props = {};
 
-const FilterSearch = ({ handlePageParamsChange }: Props) => {
+const FilterSearch = (props: Props) => {
   const { actions, searchState } = useSearch();
   const { filterValue } = searchState;
-  const { setFilterValue, setUserLocationSearched, setPageQuery } = actions;
+  const { setFilterValue, setPageQuery } = actions;
   const showFilterTooltip = useTooltip("filter");
+  const router = useRouter();
+  const pathname = usePathname();
+  const queryParams = useSearchParams();
+
+  const handlePageParamsChange = (
+    type: "filter",
+    parameter: any,
+    defaultPageNum = 1
+  ) => {
+    let newParams = new URLSearchParams(queryParams?.toString());
+
+    if (type === "filter") {
+      newParams = new URLSearchParams();
+      newParams.set("page", defaultPageNum.toString());
+      newParams.set("filter", parameter?.toLowerCase());
+    }
+
+    router.push(`${pathname}?${newParams}`);
+  };
 
   return (
     <div className=" relative w-full flex items-center gap-2 ">
@@ -32,7 +46,7 @@ const FilterSearch = ({ handlePageParamsChange }: Props) => {
           value={filterValue}
           onValueChange={(value: string) => {
             setFilterValue(value);
-            setUserLocationSearched(false);
+
             if (value === "available") {
               setPageQuery(1); // always set page to 1
 
