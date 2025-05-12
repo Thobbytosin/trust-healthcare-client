@@ -16,7 +16,7 @@ type Props = {
   auth?: boolean;
   handlePress?: () => void;
   setLoading?: (value: boolean) => void;
-  loading: boolean;
+  loading?: boolean;
 };
 
 const Modal: FC<Props> = ({

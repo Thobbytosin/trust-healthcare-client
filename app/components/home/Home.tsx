@@ -13,6 +13,7 @@ import { getCookie } from "@/utils/helpers";
 import LazyLoad from "../global/lazyLoad/LazyLoad";
 import Services from "./Services";
 import { useFetchDoctorsFree } from "@/hooks/useFetchDoctorsFree";
+import AiChatWidget from "../ai/AiChatWidget";
 
 type Props = {};
 
@@ -90,6 +91,8 @@ const Home = (props: Props) => {
       <LazyLoad importFunc={() => import("./NewsLetter")} />
 
       <Footer />
+
+      <AiChatWidget />
 
       {/* cookies consent */}
       {showConsent && <CookiesConsent setShowConsent={setShowConsent} />}
