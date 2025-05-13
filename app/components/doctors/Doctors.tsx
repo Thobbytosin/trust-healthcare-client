@@ -13,7 +13,7 @@ const Doctors = (props: Props) => {
     <section className="min-h-screen bg-gray-200">
       <RevealWrapper key={"find-doctors"} variants={fadeInDown} animate>
         {/* blue header */}
-        <div className=" bg-primary h-[80px] md:h-[100px] w-full mt-20 rounded-b-xl" />
+        <div className=" bg-primary h-[80px] md:h-[100px] w-full mt-20 rounded-b-2xl" />
         {/* SEARCH HEADER */}
         <SearchHeader key={"search-header"} />
 

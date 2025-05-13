@@ -13,26 +13,16 @@ type Props = {
 };
 
 // SE0
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata | null> {
   try {
     const { id } = await params;
     // set cookie manually since this SSR
     const cookieStore = await cookies();
-    const refreshToken = cookieStore.get("refresh_token")?.value;
-    const accessToken = cookieStore.get("access_token")?.value;
     const consent = cookieStore.get("cookie_consent")?.value;
 
-    // fetch the doctor
-    const response = await fetch(`${SERVER_URI}/${REFRESHTOKEN}`, {
-      method: "GET",
-      cache: "no-store",
-      headers: {
-        Cookie: `access_token=${refreshToken}`,
-        "Content-Type": "application/json",
-        "x-cookie-consent": consent || "",
-      },
-    });
-
+    const accessToken = cookieStore.get("access_token")?.value;
     // fetch the doctor
     const res = await fetch(`${SERVER_URI}/doctor/get-doctor/${id}`, {
       method: "GET",

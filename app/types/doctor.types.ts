@@ -68,7 +68,7 @@ export interface IDoctor {
   specialization: string[];
   workExperience: { hospital: string; role: string; duration: string }[];
   yearsOfExperience: number;
-  education: string[];
+  education: { institution: string; graduationYear: string; course: string }[];
   hospital: string;
   clinicAddress: string;
   licenseNumber: string;
@@ -89,7 +89,7 @@ export interface IDoctor {
   thumbnail: { id: string; url: string };
   image: string;
   verificationStatus: "Processing" | "Verified" | "Failed";
-  uploadedBy: "user" | "admin";
-  userId: string;
+  uploadedBy: "doctor" | "admin";
+  uploadedById: string;
   available: boolean;
 }

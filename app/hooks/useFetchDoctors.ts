@@ -15,7 +15,7 @@ export const useFetchDoctors = (queryParams: URLSearchParams | null) => {
     useFetchData<DoctorsBackendResponse>({
       method: "GET",
       url: `${GETALLDOCTORS}?${queryString}`,
-      queryKey: [`${queryKey || "doctors"}`],
+      queryKey: [`doctors, ${queryKey}`],
       enabled: canFetchUser,
     });
 

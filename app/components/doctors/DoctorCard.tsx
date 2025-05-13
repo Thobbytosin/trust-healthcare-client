@@ -3,6 +3,7 @@ import Ratings from "../ui/Ratings";
 import Image from "next/image";
 import { VerifiedIcon } from "@/icons/icons";
 import { useRouter } from "next/navigation";
+import ButtonLoader from "../global/loaders/ButtonLoader";
 
 type Props = {
   doctor: any;
@@ -11,10 +12,14 @@ type Props = {
 const DoctorCard: FC<Props> = ({ doctor }) => {
   const router = useRouter();
   const [showMoreText, setShowMoreText] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const toggleShowMore = () => setShowMoreText(!showMoreText);
 
   const handleNavigate = async (doctorId: string) => {
+    setTimeout(() => {
+      setLoading(true);
+    }, 1000);
     router.push(`/doctor/${doctorId}`);
   };
 
@@ -119,12 +124,16 @@ const DoctorCard: FC<Props> = ({ doctor }) => {
           )}
 
           {doctor.available ? (
-            <button
-              onClick={() => handleNavigate(doctor.id)}
-              className=" cursor-pointer transition-all hover:bg-gray-200 hover:text-text-primary rounded-lg text-center bg-primary text-white py-3 mt-4 px-8 text-xs"
-            >
-              Book an Appointment!
-            </button>
+            loading ? (
+              <ButtonLoader />
+            ) : (
+              <button
+                onClick={() => handleNavigate(doctor.id)}
+                className=" cursor-pointer transition-all hover:bg-gray-200 hover:text-text-primary rounded-lg text-center bg-primary text-white py-3 mt-4 px-8 text-xs"
+              >
+                Book an Appointment!
+              </button>
+            )
           ) : (
             <button
               disabled

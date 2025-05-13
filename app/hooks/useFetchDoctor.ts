@@ -9,10 +9,10 @@ export const useFetchDoctor = (doctorId: string) => {
   const canFetchUser: boolean = useServerStatus();
   const setDoctor = useDoctorsStore((state) => state.setDoctor);
 
-  const { data, error } = useFetchData<DoctorBackendSuccessResponse>({
+  const { data, isLoading } = useFetchData<DoctorBackendSuccessResponse>({
     method: "GET",
     url: `${GETDOCTOR}/${doctorId}`,
-    queryKey: [`${doctorId}`],
+    queryKey: [`doctor, ${doctorId}`],
     enabled: canFetchUser,
   });
 
@@ -22,5 +22,5 @@ export const useFetchDoctor = (doctorId: string) => {
     }
   }, [data]);
 
-  return { error };
+  return { loading: isLoading };
 };
