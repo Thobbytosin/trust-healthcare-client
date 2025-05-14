@@ -3,19 +3,19 @@ import React, { useEffect, useState } from "react";
 import Header from "../global/header/Header";
 import Doctors from "./Doctors";
 import LandingPageLoader from "../global/loaders/LandingPageLoader";
+import { useFetchDoctors } from "@/hooks/useFetchDoctors";
 
 type Props = {};
 
 const FindDoctors = (props: Props) => {
-  const [loading, setLoading] = useState(true);
+  const { isLoading: loading } = useFetchDoctors(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
+    setMounted(true);
   }, []);
+
+  if (!mounted) return null;
 
   if (loading) {
     return <LandingPageLoader />;

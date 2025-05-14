@@ -18,7 +18,6 @@ export function useFetchData<T>({
   queryKey,
   method,
   enabled = false,
-  staleTime = 1000 * 60 * 5, // Default: 5 minutes
   skipAuthRefresh = false,
 }: FetchOptions) {
   return useQuery<T, any>({
@@ -38,13 +37,11 @@ export function useFetchData<T>({
         }
       } catch (error: any) {
         if (axios?.isAxiosError(error) && error.response) {
-          // throw new Error(error.response.data?.message || "API request failed");
           console.error(error.response.data?.message || "API request failed");
         }
-        // throw new Error("Something went wrong"); // generic error message
       }
     },
-    staleTime,
+    staleTime: 1000 * 60 * 5,
     enabled,
     retry: 1, // Retry once on failure
   });

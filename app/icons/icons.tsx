@@ -27,6 +27,7 @@ import VerifiedIcon from "@mui/icons-material/Verified";
 import SendIcon from "@mui/icons-material/Send";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import SettingsIcon from "@mui/icons-material/Settings";
+import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 
 export {
   MenuIcon,
@@ -58,4 +59,5 @@ export {
   SendIcon,
   NotificationsIcon,
   SettingsIcon,
+  WorkspacePremiumIcon,
 };
