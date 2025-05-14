@@ -9,7 +9,7 @@ import { useDoctorsStore } from "@/store/useDoctorsStore";
 import LandingPageLoader from "../global/loaders/LandingPageLoader";
 import { usePathname, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { getCookie } from "@/utils/helpers";
+import { getCookie, getDistanceFromLatLonInKm } from "@/utils/helpers";
 import LazyLoad from "../global/lazyLoad/LazyLoad";
 import Services from "./Services";
 import { useFetchDoctorsFree } from "@/hooks/useFetchDoctorsFree";

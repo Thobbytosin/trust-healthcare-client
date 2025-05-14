@@ -63,12 +63,13 @@ const MeetDoctors = ({ doctors }: Props) => {
             {doctors.map((doctor, index) => (
               <div
                 key={index}
-                className={`bg-white w-[302px] lg:w-[394px] h-[447px] shadow shadow-black/20 rounded-md flex flex-col justify-center items-center ${
-                  doctor.available ? "" : "opacity-50 cursor-not-allowed"
-                }`}
+                className={`bg-white w-[302px] lg:w-[394px] h-[447px] shadow shadow-black/20 rounded-md flex flex-col justify-center items-center`}
               >
                 <div className=" w-[80%] h-[90%]  flex flex-col lg:justify-between ">
-                  <div>
+                  <div
+                    className=" cursor-pointer"
+                    onClick={() => handleBtnNavigate(doctor.id)}
+                  >
                     {/* available indicator */}
                     <div className="w-fit flex justify-center items-center px-2 py-0.5 bg-[#EDEDED] rounded-full gap-2 ">
                       <div
