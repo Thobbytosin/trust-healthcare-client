@@ -2,6 +2,7 @@
 import dynamic from "next/dynamic";
 import React, { ComponentType, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import ButtonLoader from "../loaders/ButtonLoader";
 
 interface Props {
   importFunc: () => Promise<{ default: ComponentType<any> }>;
@@ -11,7 +12,7 @@ interface Props {
 
 export default function LazyLoad({
   importFunc,
-  placeholder = <div></div>,
+  placeholder,
   props = {},
 }: Props) {
   const { ref, inView } = useInView({

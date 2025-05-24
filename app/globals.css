@@ -287,3 +287,11 @@ input[type="number"] {
   background-color: transparent;
   margin: 10px 0;
 }
+
+.education-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.slot-scrollbar::-webkit-scrollbar {
+  display: none;
+}

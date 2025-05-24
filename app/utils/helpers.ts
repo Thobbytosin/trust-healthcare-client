@@ -68,3 +68,21 @@ export function fetchMatchedSpecialization(
 
   return matchedSpecialalization || null;
 }
+
+export function getNextSevenDays() {
+  const days = [];
+
+  for (let i = 0; i < 7; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() + i);
+
+    days.push({
+      name: date.toLocaleDateString("en-Us", { weekday: "long" }),
+      date: date.getDate(),
+      month: date.toLocaleDateString("en-US", { month: "short" }),
+      year: date.getFullYear(),
+    });
+  }
+
+  return days;
+}
