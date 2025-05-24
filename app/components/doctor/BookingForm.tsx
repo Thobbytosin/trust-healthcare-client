@@ -35,6 +35,8 @@ const BookingForm = ({ doctor }: Props) => {
   const [sortAvailableDays, setSortAvailableDays] = useState<string[]>([]);
   const [dates, setDates] = useState<any[]>([]);
 
+  const [activeSlot, setActiveSlot] = useState();
+
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
