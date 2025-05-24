@@ -69,6 +69,7 @@ export function fetchMatchedSpecialization(
   return matchedSpecialalization || null;
 }
 
+<<<<<<< HEAD
 export function getDistanceFromLatLonInKm(
   lat1: number,
   lon1: number,
@@ -87,4 +88,22 @@ export function getDistanceFromLatLonInKm(
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c; // Distance in km
+=======
+export function getNextSevenDays() {
+  const days = [];
+
+  for (let i = 0; i < 7; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() + i);
+
+    days.push({
+      name: date.toLocaleDateString("en-Us", { weekday: "long" }),
+      date: date.getDate(),
+      month: date.toLocaleDateString("en-US", { month: "short" }),
+      year: date.getFullYear(),
+    });
+  }
+
+  return days;
+>>>>>>> doctor
 }

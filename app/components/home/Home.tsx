@@ -14,6 +14,7 @@ import LazyLoad from "../global/lazyLoad/LazyLoad";
 import Services from "./Services";
 import { useFetchDoctorsFree } from "@/hooks/useFetchDoctorsFree";
 import AiChatWidget from "../ai/AiChatWidget";
+import ButtonLoader from "../global/loaders/ButtonLoader";
 
 type Props = {};
 
@@ -49,7 +50,7 @@ const Home = (props: Props) => {
 
     if (searchParams.get("authError") === "true") {
       toast.error("Session has expired", {
-        description: "Refresh page to proceed. Thanks",
+        description: "You are not currently logged in.",
         duration: 4000,
       });
 
@@ -82,13 +83,23 @@ const Home = (props: Props) => {
       <LazyLoad
         importFunc={() => import("./MeetDoctors")}
         props={{ doctors }}
+        placeholder={<ButtonLoader />}
       />
 
-      <LazyLoad importFunc={() => import("./Testimonials")} />
+      <LazyLoad
+        importFunc={() => import("./Testimonials")}
+        placeholder={<ButtonLoader />}
+      />
 
-      <LazyLoad importFunc={() => import("./VideoSection")} />
+      <LazyLoad
+        importFunc={() => import("./VideoSection")}
+        placeholder={<ButtonLoader />}
+      />
 
-      <LazyLoad importFunc={() => import("./NewsLetter")} />
+      <LazyLoad
+        importFunc={() => import("./NewsLetter")}
+        placeholder={<ButtonLoader />}
+      />
 
       <Footer />
 

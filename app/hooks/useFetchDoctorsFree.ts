@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDoctorsStore } from "../store/useDoctorsStore";
 import { useFetchData } from "./useApi";
 import { DOCTORSLANDINGPAGE } from "@/config/doctor.endpoints";
-import { useServerStatus } from "./useServerStatus";
+import { isServerOnline } from "@/utils/isServerOnline";
 
 interface BackendSuccessResponse {
   success: boolean;
@@ -12,7 +12,23 @@ interface BackendSuccessResponse {
 }
 
 export const useFetchDoctorsFree = () => {
-  const canFetchUser: boolean = useServerStatus();
+  const hasBeenAuthenticated =
+    typeof window !== "undefined" &&
+    typeof document !== "undefined" &&
+    document.cookie.includes("cookie_consent");
+  const [isOnline, setIsOnline] = useState(false);
+
+  useEffect(() => {
+    const checkServer = async () => {
+      if (hasBeenAuthenticated) {
+        const online = await isServerOnline();
+        setIsOnline(online);
+      }
+    };
+
+    checkServer();
+  }, [hasBeenAuthenticated]);
+
   const setDoctors = useDoctorsStore((state) => state.setDoctors);
 
   const { data, error, isLoading } = useFetchData<BackendSuccessResponse>({
@@ -20,7 +36,7 @@ export const useFetchDoctorsFree = () => {
     queryKey: ["getDoctors"],
     url: DOCTORSLANDINGPAGE,
     skipAuthRefresh: true, //token not needed
-    enabled: canFetchUser,
+    enabled: hasBeenAuthenticated && isOnline,
   });
 
   useEffect(() => {
