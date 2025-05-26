@@ -28,6 +28,10 @@ import SendIcon from "@mui/icons-material/Send";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import SettingsIcon from "@mui/icons-material/Settings";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
+import WbSunnyIcon from "@mui/icons-material/WbSunny";
+import WbTwilightIcon from "@mui/icons-material/WbTwilight";
+import GrainIcon from "@mui/icons-material/Grain";
+import EventBusyIcon from "@mui/icons-material/EventBusy";
 
 export {
   MenuIcon,
@@ -60,4 +64,8 @@ export {
   NotificationsIcon,
   SettingsIcon,
   WorkspacePremiumIcon,
+  WbSunnyIcon,
+  WbTwilightIcon,
+  GrainIcon,
+  EventBusyIcon,
 };

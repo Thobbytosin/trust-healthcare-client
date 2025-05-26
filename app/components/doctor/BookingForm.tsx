@@ -1,8 +1,16 @@
 import { useBooking } from "@/hooks/useBooking";
+import { useFetchAvailableDaySlots } from "@/hooks/useFetchAvailableSlots";
+import {
+  EventBusyIcon,
+  GrainIcon,
+  WbSunnyIcon,
+  WbTwilightIcon,
+} from "@/icons/icons";
 import { styles } from "@/styles/styles";
 import { IDoctor } from "@/types/doctor.types";
 import { getNextSevenDays } from "@/utils/helpers";
 import React, { KeyboardEvent, useEffect, useRef, useState } from "react";
+import ButtonLoader from "../global/loaders/ButtonLoader";
 
 const appointmentTypes = ["Hospital Visitation", "Online Consultation"];
 const daysOfWeek = [
@@ -14,6 +22,17 @@ const daysOfWeek = [
   "Friday",
   "Saturday",
 ];
+const dailySessions = [
+  { label: "Morning", icon: <GrainIcon color="inherit" fontSize="inherit" /> },
+  {
+    label: "Afternoon",
+    icon: <WbSunnyIcon color="inherit" fontSize="inherit" />,
+  },
+  {
+    label: "Evening",
+    icon: <WbTwilightIcon color="inherit" fontSize="inherit" />,
+  },
+];
 
 type Props = {
   doctor: IDoctor;
@@ -21,48 +40,71 @@ type Props = {
 
 const BookingForm = ({ doctor }: Props) => {
   const { bookingActions } = useBooking();
+  const [activeDateSlot, setActiveDateSlot] = useState<string>("");
 
+  const { data, loading } = useFetchAvailableDaySlots(
+    doctor.id,
+    activeDateSlot
+  );
   const todayDate = new Date().getDate();
   const currentMonth = new Date().toLocaleDateString("en-US", {
     month: "short",
   });
 
-  const today: number = new Date().getDay();
-  const tomorrow = (today + 1) % 7;
+  const todayIndex: number = new Date().getDay();
+  const tomorrowIndex = (todayIndex + 1) % 7;
+  const todayName = daysOfWeek[todayIndex];
+  const tomorrowName = daysOfWeek[tomorrowIndex];
 
   const [activeDay, setActiveDay] = useState<number>(0);
-  const [notActiveDay, setNotActiveDay] = useState<boolean>(false);
-  const [sortAvailableDays, setSortAvailableDays] = useState<string[]>([]);
-  const [dates, setDates] = useState<any[]>([]);
-
-  const [activeSlot, setActiveSlot] = useState();
+  const [todayNotAvailable, setTodayNotAvailable] = useState<boolean>(false);
+  const [sortedAvailableDays, setSortedAvailableDays] = useState<string[]>([]);
+  const [weeklyDates, setWeeklyDates] = useState<any[]>([]);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const days = getNextSevenDays();
-    setDates(days);
-    const sortDays = doctor?.availableDays?.sort((a, b) => {
+    if (!doctor) return;
+
+    const oneWeekFromToday = getNextSevenDays();
+    setWeeklyDates(oneWeekFromToday);
+
+    const sortedDays = [...(doctor?.availableDays || [])].sort((a, b) => {
       const aIndex = daysOfWeek.indexOf(a);
       const bIndex = daysOfWeek.indexOf(b);
 
-      const aDistance = (aIndex - today + 7) % 7;
-      const bDistance = (bIndex - today + 7) % 7;
+      const aDistance = (aIndex - todayIndex + 7) % 7;
+      const bDistance = (bIndex - todayIndex + 7) % 7;
 
       return aDistance - bDistance;
     });
 
-    setSortAvailableDays(sortDays);
+    setSortedAvailableDays(sortedDays);
 
-    const checkToday = sortDays?.find(
-      (day, i) => day.toLowerCase() === daysOfWeek[today].toLowerCase()
+    // check if the today is part of the doctor days
+    const isTodayAvailable = sortedDays?.some(
+      (day) => day.toLowerCase() === daysOfWeek[todayIndex].toLowerCase()
     );
 
-    if (checkToday) {
-      setActiveDay(0);
-    } else {
-      setActiveDay(-1);
-      setNotActiveDay(true);
+    setTodayNotAvailable(!isTodayAvailable);
+
+    const findSlotDate = (dayName: string) => {
+      const dayData = oneWeekFromToday.find((d) => d.name === dayName);
+      if (!dayData) return;
+      return `${dayData?.year}-${String(dayData?.monthInteger + 1).padStart(
+        2,
+        "0"
+      )}-${dayData?.date}`;
+    };
+
+    // order is important
+    const activeDate =
+      findSlotDate(todayName) || findSlotDate(tomorrowName) || sortedDays[0]
+        ? findSlotDate(sortedDays[0])
+        : null;
+
+    if (activeDate) {
+      setActiveDateSlot(activeDate);
     }
   }, [doctor]);
 
@@ -71,16 +113,16 @@ const BookingForm = ({ doctor }: Props) => {
 
     if (e.key === "ArrowLeft") {
       containerRef.current.scrollBy({ left: -200, behavior: "smooth" });
-      setActiveDay((prev) =>
-        activeDay === 0 ? sortAvailableDays?.length - 1 : prev - 1
-      );
+      setActiveDay((prev) => (activeDay === 0 ? 0 : prev - 1));
     } else if (e.key === "ArrowRight") {
       containerRef.current.scrollBy({
-        left: activeDay === sortAvailableDays?.length - 1 ? 0 : 200,
+        left: activeDay === sortedAvailableDays?.length - 1 ? 0 : 200,
         behavior: "smooth",
       });
       setActiveDay((prev) =>
-        activeDay === sortAvailableDays?.length - 1 ? 0 : prev + 1
+        activeDay === sortedAvailableDays?.length - 1
+          ? sortedAvailableDays?.length - 1
+          : prev + 1
       );
     }
   };
@@ -101,9 +143,31 @@ const BookingForm = ({ doctor }: Props) => {
     }
   };
 
+  const handleClickSlot = async (day: string, index: number) => {
+    setActiveDay(index);
+
+    const halfLength = Math.floor(sortedAvailableDays.length / 2);
+    if (index < halfLength) {
+      resetScroll("left");
+    } else {
+      resetScroll("right");
+    }
+
+    const oneWeekFromToday = getNextSevenDays();
+    const dayData = oneWeekFromToday.find((d) => d.name === day);
+    if (!dayData) return;
+    const selectedDate = `${dayData?.year}-${String(
+      dayData?.monthInteger + 1
+    ).padStart(2, "0")}-${dayData?.date}`;
+
+    setActiveDateSlot(selectedDate);
+  };
+
+  console.log("AVAILABLE SLOTS", data);
+
   return (
     <>
-      <form className=" w-full flex flex-col space-y-8">
+      <form className=" flex-1  flex flex-col space-y-8">
         {/* appointment type */}
         <div>
           <label htmlFor="appointmentType" className={styles.bookingLabel}>
@@ -160,8 +224,9 @@ const BookingForm = ({ doctor }: Props) => {
             onKeyDown={handleKeyDown}
             className=" w-full overflow-y-hidden slot-scrollbar mt-4 focus:outline-0"
           >
+            {/* doctor available days */}
             <div className=" flex items-center min-w-max">
-              {notActiveDay ? (
+              {todayNotAvailable ? (
                 <div className=" shrink-0 py-4 px-6 cursor-not-allowed opacity-30 ">
                   <p className=" text-sm font-medium">
                     <span>Today</span>
@@ -172,18 +237,11 @@ const BookingForm = ({ doctor }: Props) => {
                 </div>
               ) : null}
 
-              {sortAvailableDays?.map((day, i) => (
+              {sortedAvailableDays?.map((day, i) => (
                 <div
                   key={i}
-                  onClick={() => {
-                    if (i === 0) {
-                      resetScroll("left");
-                    } else if (i === sortAvailableDays.length - 1) {
-                      resetScroll("right");
-                    }
-                    setActiveDay(i);
-                  }}
-                  className={`shrink-0 py-4 px-6 cursor-pointer ${
+                  onClick={() => handleClickSlot(day, i)}
+                  className={`shrink-0 p-4  cursor-pointer ${
                     activeDay === i
                       ? "border-b-4 border-primary text-primary rounded-lg bg-gray-200/80"
                       : ""
@@ -191,15 +249,16 @@ const BookingForm = ({ doctor }: Props) => {
                 >
                   <p className=" text-sm font-medium">
                     <span>
-                      {day.toLowerCase() === daysOfWeek[today].toLowerCase()
+                      {day.toLowerCase() ===
+                      daysOfWeek[todayIndex].toLowerCase()
                         ? "Today"
                         : day.toLowerCase() ===
-                          daysOfWeek[tomorrow].toLowerCase()
+                          daysOfWeek[tomorrowIndex].toLowerCase()
                         ? "Tomorrow"
                         : day}
                     </span>
 
-                    {dates?.map((date, index) => (
+                    {weeklyDates?.map((date, index) => (
                       <span
                         className=" block text-center text-primary font-normal text-xs"
                         key={index}
@@ -211,6 +270,60 @@ const BookingForm = ({ doctor }: Props) => {
                 </div>
               ))}
             </div>
+          </div>
+          {/* selected day time slot */}
+          <div className=" w-full bg-gray-100 min-h-fit mt-6">
+            {loading ? (
+              <ButtonLoader />
+            ) : (
+              <>
+                {dailySessions.map((session, i) => {
+                  const doctorSession = data?.availableSlots?.slots.find(
+                    (s: any) => s.label === session.label
+                  );
+
+                  return (
+                    <div
+                      key={i}
+                      className=" w-full rounded-lg p-4 border-b-4 border-white"
+                    >
+                      <div
+                        className={`${
+                          !doctorSession?.label
+                            ? "opacity-50 text-gray-500 line-through cursor-not-allowed"
+                            : "text-primary"
+                        } flex items-center gap-1  text-xs font-medium`}
+                      >
+                        <span>{session.icon}</span>
+                        <span>{session.label}</span>
+                      </div>
+
+                      <div className=" mt-4 w-full flex flex-wrap  gap-4">
+                        {doctorSession?.availableSlots?.length ? (
+                          doctorSession?.availableSlots?.map(
+                            (slot: string, i: number) => (
+                              <div
+                                key={i}
+                                className="border border-gray-500 text-black rounded-md text-[11px] py-2 text-center w-[110px] cursor-pointer transition-all duration-500 hover:bg-primary hover:text-white hover:border-none"
+                              >
+                                {slot}
+                              </div>
+                            )
+                          )
+                        ) : (
+                          <p className=" text-xs text-red-500">
+                            <span>
+                              <EventBusyIcon fontSize="inherit" />
+                            </span>
+                            <span> Doctor not available</span>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </>
+            )}
           </div>
         </div>
       </form>

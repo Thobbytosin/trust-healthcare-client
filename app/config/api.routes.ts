@@ -17,6 +17,7 @@ export const API_DOCTOR_PATHS = {
   DOCTORSLANDINGPAGE: "/doctor/get-some-doctors-free",
   GETDOCTOR: "/doctor/get-doctor",
   GETALLDOCTORS: "/doctor/get-all-doctors",
+  GETDOCTORAVAILABLEDAYSLOTS: "/doctor/available-slots",
 };
 
 export const API_SUGGESTION_PATHS = {

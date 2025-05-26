@@ -15,6 +15,10 @@ export interface DoctorBackendSuccessResponse {
   message: string;
   doctor: any;
 }
+export interface AvailableSlotsSuccessResponse {
+  success: boolean;
+  availableSlots: any;
+}
 
 interface Review {
   patientId: number;
