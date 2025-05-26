@@ -80,6 +80,7 @@ export function getNextSevenDays() {
       name: date.toLocaleDateString("en-Us", { weekday: "long" }),
       date: date.getDate(),
       month: date.toLocaleDateString("en-US", { month: "short" }),
+      monthInteger: date.getMonth(),
       year: date.getFullYear(),
     });
   }

@@ -58,7 +58,7 @@ const Doctor = ({ doctorId }: Props) => {
     return <LandingPageLoader />;
   }
 
-  console.log(doctor.timeSlots);
+  // console.log(doctor);
 
   return (
     <main className=" min-h-screen bg-gray-200 pb-20">
@@ -263,7 +263,7 @@ const Doctor = ({ doctorId }: Props) => {
           </section>
 
           <aside
-            className={`  flex-1 sticky top-20 h-fit bg-white rounded-2xl ${styles.bookingPadding} overflow-hidden `}
+            className={` flex-1 sticky top-20 h-fit bg-white rounded-2xl ${styles.bookingPadding} overflow-hidden `}
           >
             <BookingForm doctor={doctor} />
           </aside>
