@@ -7,6 +7,7 @@ interface FetchOptions {
   url: string;
   method: "GET";
   queryKey: (string | number)[];
+  headers?: Record<string, string>;
   enabled?: boolean;
   staleTime?: number;
   skipAuthRefresh?: boolean;
@@ -17,6 +18,7 @@ export function useFetchData<T>({
   url,
   queryKey,
   method,
+  headers,
   enabled = false,
   skipAuthRefresh = false,
 }: FetchOptions) {
@@ -30,6 +32,13 @@ export function useFetchData<T>({
           withCredentials: true,
           skipAuthRefresh,
         };
+
+        // set headers
+        if (headers) {
+          config.headers = {
+            ...headers,
+          };
+        }
 
         const response = await axiosInstance(config);
         if (response) {
@@ -52,14 +61,14 @@ interface MutationOptions {
   mutationKey: (string | number)[];
   url: string;
   method: "POST" | "PUT" | "DELETE";
-  headers?: boolean;
+  headers?: Record<string, string>;
   skipAuthRefresh?: boolean;
 }
 
 export function useMutateData<T>({
   url,
   method,
-  headers = false,
+  headers,
   mutationKey,
   skipAuthRefresh = true,
 }: MutationOptions) {
@@ -77,7 +86,7 @@ export function useMutateData<T>({
       // Optionally add custom headers if needed
       if (headers) {
         config.headers = {
-          ...(typeof headers === "object" ? headers : {}),
+          ...headers,
         };
       }
 

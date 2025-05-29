@@ -3,8 +3,6 @@ import React from "react";
 import Doctor from "../../../app/components/doctor/Doctor";
 import { cookies } from "next/headers";
 import { SERVER_URI } from "@/config/api";
-import { IDoctor } from "@/types/doctor.types";
-import { REFRESHTOKEN } from "@/config/auth.endpoints";
 
 type Props = {
   params: {
@@ -22,37 +20,37 @@ export async function generateMetadata({
     const cookieStore = await cookies();
     const consent = cookieStore.get("cookie_consent")?.value;
 
-    const accessToken = cookieStore.get("access_token")?.value;
-    // fetch the doctor
-    const res = await fetch(`${SERVER_URI}/doctor/get-doctor/${id}`, {
+    const tr_host_x = cookieStore.get("tr_host_x")?.value;
+    // fetch the doctor tags
+    const res = await fetch(`${SERVER_URI}/doctor/meta-tags/${id}`, {
       method: "GET",
       cache: "no-store",
       headers: {
-        Cookie: `access_token=${accessToken}`,
+        Cookie: `tr_host_x=${tr_host_x}`,
         "Content-Type": "application/json",
         "x-cookie-consent": consent || "",
       },
     });
 
     const data = await res.json();
-    const doctor: IDoctor = data?.doctor;
+    const doctor: { name: string; specialty: string[] } = data?.tags;
 
     return {
-      title: `${doctor?.name} - ${doctor?.specialization[0]} | Trust Healthcare`,
-      description: `${doctor?.name} is a certified ${doctor?.specialization[0]} at Trust Healthcare. Book an appointment online and receive expert medical care.`,
-      keywords: `doctor, ${doctor?.specialization}, ${doctor?.name}, Trust Healthcare, book appointment, online consultation`,
+      title: `${doctor?.name} - ${doctor?.specialty[0]} | Trust Healthcare`,
+      description: `${doctor?.name} is a certified ${doctor?.specialty[0]} at Trust Healthcare. Book an appointment online and receive expert medical care.`,
+      keywords: `doctor, ${doctor?.specialty}, ${doctor?.name}, Trust Healthcare, book appointment, online consultation`,
       authors: [{ name: "Trust Healthcare Team" }],
       icons: {
         icon: "/logo.png", //Path relative to /public
         shortcut: "/logo.png",
       },
       alternates: {
-        canonical: `https://trusthealthcare.com/doctors/${doctor?.email}`,
+        canonical: `https://trusthealthcare.com/doctors/${doctor?.name}`,
       },
       openGraph: {
-        title: `${doctor?.name} - ${doctor?.specialization} | Trust Healthcare`,
-        description: `Consult with ${doctor?.name}, an expert ${doctor?.specialization} at Trust Healthcare.`,
-        url: `https://trusthealthcare.com/doctors/${doctor?.email}`,
+        title: `${doctor?.name} - ${doctor?.specialty[0]} | Trust Healthcare`,
+        description: `Consult with ${doctor?.name}, an expert ${doctor?.specialty[0]} at Trust Healthcare.`,
+        url: `https://trusthealthcare.com/doctors/${doctor?.name}`,
         siteName: "Trust Healthcare",
         images: [
           {
@@ -67,8 +65,8 @@ export async function generateMetadata({
       },
       twitter: {
         card: "summary_large_image",
-        title: `${doctor?.name} - ${doctor?.specialization} | Trust Healthcare`,
-        description: `Book an appointment with ${doctor?.name}, a leading ${doctor?.specialization} at Trust Healthcare.`,
+        title: `${doctor?.name} - ${doctor?.specialty[0]} | Trust Healthcare`,
+        description: `Book an appointment with ${doctor?.name}, a leading ${doctor?.specialty[0]} at Trust Healthcare.`,
         // images: [doctor.image],
       },
       metadataBase: new URL("https://trusthealthcare.com"),

@@ -87,3 +87,66 @@ export function getNextSevenDays() {
 
   return days;
 }
+
+export function getDaysInAMonth(
+  year: number,
+  month: number,
+  isCurrentMonth: boolean,
+  doctorAvailableDays: string[]
+) {
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  const today = new Date();
+  const startDay = isCurrentMonth ? today.getDate() : 1;
+  const numberOfDaysInMonth = new Date(year, month + 1, 0).getDate();
+  const result: {
+    date: number;
+    dayName: string;
+    fullDate: string;
+    isAvailable: boolean;
+  }[] = [];
+
+  for (let day = startDay; day <= numberOfDaysInMonth; day++) {
+    const dateObj = new Date(year, month, day);
+    const yyyy = dateObj.getFullYear();
+    const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const dd = String(dateObj.getDate()).padStart(2, "0");
+
+    result.push({
+      date: day,
+      dayName: daysOfWeek[dateObj.getDay()],
+      fullDate: `${yyyy}-${mm}-${dd}`,
+      isAvailable: doctorAvailableDays?.includes(daysOfWeek[dateObj.getDay()]),
+    });
+  }
+
+  return result;
+}
+
+export function getFullDate(day: Date) {
+  const yyyy = day.getFullYear();
+  const mm = String(day.getMonth() + 1).padStart(2, "0");
+  const dd = String(day.getDate()).padStart(2, "0");
+  const fullDate = `${yyyy}-${mm}-${dd}`;
+
+  return fullDate;
+}
+
+export function formattedDate(dateString: string) {
+  const date = new Date(dateString);
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = date.toLocaleString("en-US", { month: "long" });
+  const dayOfWeek = date.toLocaleString("en-US", { weekday: "long" });
+  const year = date.getFullYear(); // 2025
+
+  return { day, month, dayOfWeek, year };
+}

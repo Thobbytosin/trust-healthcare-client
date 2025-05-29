@@ -1,6 +1,6 @@
 export const styles = {
-  paddingX: "sm:px-10 px-6 py-4",
-  bookingPadding: "sm:p-6",
+  paddingX: "sm:px-10 px-8",
+  bookingPadding: "p-6",
   paddingLeft: "sm:pl-0 pl-6",
   paddingY: "py-4 ",
   paddingBottom: "pb-10 ",
@@ -10,5 +10,9 @@ export const styles = {
   mainSection: "mt-30 sm:px-10 px-6",
   footer: "mt-40 mb-10 sm:mx-10 mx-6 ",
 
-  bookingLabel: "text-sm font-semibold",
+  bookingLabel: "xl:text-sm text-xs font-semibold",
+  doctorBioSubheading: "md:text-2xl text-lg font-semibold text-primary",
+  sectionDivider: "h-0.5  ${styles.marginX} bg-slate-200 my-10",
+  paragraph:
+    "mt-2 md:mt-3 text-xs md:text-sm text-grayey font-normal leading-6 text-wrap text-justify",
 };

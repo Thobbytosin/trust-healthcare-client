@@ -33,12 +33,8 @@ const UserInactivityTracker = (props: Props) => {
         setShowModal(true);
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
-    // if (data) {
-    //   console.log("TIMEOUT");
-    //   setShowModal(true);
-    // }
   }, [canFetchUser]);
 
   useInactivityTimer({
