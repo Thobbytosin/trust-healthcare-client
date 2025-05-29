@@ -56,7 +56,7 @@ const SearchBanner = (props: Props) => {
         ) : (
           <LocationBannerError
             key={"location-banner-error"}
-            location={location}
+            location={location || currentSearch}
           />
         )
       ) : null}

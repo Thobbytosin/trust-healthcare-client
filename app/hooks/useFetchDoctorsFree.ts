@@ -13,9 +13,9 @@ interface BackendSuccessResponse {
 
 export const useFetchDoctorsFree = () => {
   const hasBeenAuthenticated =
-    typeof window !== "undefined" &&
     typeof document !== "undefined" &&
-    document.cookie.includes("cookie_consent");
+    document?.cookie.includes("cookie_consent");
+
   const [isOnline, setIsOnline] = useState(false);
 
   useEffect(() => {

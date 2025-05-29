@@ -3,10 +3,7 @@ import { useEffect, useState } from "react";
 
 export const useServerStatus = () => {
   const hasBeenAuthenticated =
-    typeof window !== "undefined" &&
-    typeof document !== "undefined" &&
-    document.cookie.includes("cookie_consent") &&
-    document.cookie.includes("has_logged_in");
+    typeof document !== "undefined" && document.cookie.includes("_xur_cr-host");
 
   const [canFetchUser, setCanFetchUser] = useState(false);
 

@@ -1,4 +1,4 @@
-import axios, { InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 import { getCookie } from "./helpers";
 import { SERVER_URI } from "@/config/api";
 import { isServerOnline } from "./isServerOnline";
@@ -16,6 +16,7 @@ const bareAxios = axios.create({
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
   skipAuthRefresh?: boolean;
+  headers: any;
 }
 // check token expiry
 const isAccessTokenExpiringSoon = () => {
@@ -43,9 +44,10 @@ axiosInstance.interceptors.request.use(async (config) => {
   const consent = getCookie("cookie_consent");
 
   // sets the cookie consent in all request headers
-  if (consent) {
-    customConfig.headers.set("x-cookie-consent", consent);
-  }
+  customConfig.headers = {
+    ...(customConfig.headers || {}),
+    ...(consent ? { "x-cookie-consent": consent } : {}),
+  };
 
   // refresh only if route needs refresh and access token is expiring soon
   if (!customConfig.skipAuthRefresh && isAccessTokenExpiringSoon()) {
@@ -88,26 +90,28 @@ axiosInstance.interceptors.response.use(
     }
 
     // check for token expiration
-    if (error.response?.status === 403 && !originalRequest._retry) {
-      originalRequest._retry = true; // to avoid infinte loops
+    if (error.response?.status === 401 || error.response?.status === 400) {
+      if (!originalRequest._retry) {
+        originalRequest._retry = true; // to avoid infinte loops
+        try {
+          console.log(
+            "ORIGINAL REQUEST FAILED SO I AM REFRSHING THE TOKEN AND RECALLING THE FAILED REQUEST AGAIN"
+          );
 
-      try {
-        console.log(
-          "ORIGINAL REQUEST FAILED SO I AM REFRSHING THE TOKEN AND RECALLING THE FAILED REQUEST AGAIN"
-        );
-        await axiosInstance.get("/auth/refresh-tokens", {
-          skipAuthRefresh: true,
-        } as CustomAxiosRequestConfig); // refresh
+          await axiosInstance.get("/auth/refresh-tokens", {
+            skipAuthRefresh: true,
+          } as CustomAxiosRequestConfig); // refresh
 
-        // set new expiry
-        localStorage.setItem(
-          "access_token_expiry",
-          (Date.now() + 30 * 60 * 1000).toString()
-        );
+          // set new expiry
+          localStorage.setItem(
+            "access_token_expiry",
+            (Date.now() + 30 * 60 * 1000).toString()
+          );
 
-        return axiosInstance(originalRequest); // resend original request
-      } catch (refreshError) {
-        return Promise.reject(refreshError);
+          return axiosInstance(originalRequest); // resend original request
+        } catch (refreshError) {
+          return Promise.reject(refreshError);
+        }
       }
     }
 
