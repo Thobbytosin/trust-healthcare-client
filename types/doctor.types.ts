@@ -63,7 +63,7 @@ interface Appointment {
   reminderSentCount: number;
 }
 
-export interface IDoctor {
+export type IDoctor = {
   id: string;
   name: string;
   email: string;
@@ -73,8 +73,12 @@ export interface IDoctor {
   workExperience: { hospital: string; role: string; duration: string }[];
   yearsOfExperience: number;
   education: { institution: string; graduationYear: string; course: string }[];
+<<<<<<< HEAD
+  hospital: { name: string; address: string }[];
+=======
   hospital: string;
   clinicAddress: string;
+>>>>>>> doctor
   licenseNumber: string;
   certifications: string[];
   availableDays: string[];
@@ -96,4 +100,4 @@ export interface IDoctor {
   uploadedBy: "doctor" | "admin";
   uploadedById: string;
   available: boolean;
-}
+};
