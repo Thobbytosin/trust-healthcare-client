@@ -1,5 +1,5 @@
+import NotFound from "@/components/404/NotFound";
 import { Metadata } from "next";
-import NotFound from "./components/404/NotFound";
 
 export const metadata: Metadata = {
   title: "404 - Page Not Found | Trust Healthcare",

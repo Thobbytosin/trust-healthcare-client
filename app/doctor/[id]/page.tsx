@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import React from "react";
-import Doctor from "../../../app/components/doctor/Doctor";
 import { cookies } from "next/headers";
 import { SERVER_URI } from "@/config/api";
+import Doctor from "@/components/doctor/Doctor";
 
 type Props = {
   params: {
