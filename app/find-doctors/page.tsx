@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import FindDoctors from "../components/doctors/FindDoctors";
+import FindDoctors from "@/components/doctors/FindDoctors";
 
 // SE0
 export const metadata: Metadata = {
