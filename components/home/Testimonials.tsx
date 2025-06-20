@@ -94,6 +94,7 @@ const Testimonials = (props: Props) => {
                       src={testimonial.image}
                       alt="user_image"
                       fill
+                      sizes="(max-width: 768px) 74px, 74px"
                       className=" w-full h-full object-cover"
                     />
                   </div>

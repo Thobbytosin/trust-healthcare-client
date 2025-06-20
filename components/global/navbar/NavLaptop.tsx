@@ -97,7 +97,6 @@ const NavLaptop: FC<Props> = ({ setOpenModal, setMode, activeIndex }) => {
           alt="trust_healthcare_logo"
           width={30}
           height={30}
-          className=" w-auto h-auto"
         />
         <h1 className="text-[14px] md:text-[16px] lg:text-[18px] font-semibold">
           <span className=" text-primary ">Trust</span> HealthCare

@@ -1,5 +1,5 @@
 "use client";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import NavLaptop from "../navbar/NavLaptop";
 import NavMobile from "../navbar/NavMobile";
 import Modal from "../../ui/Modal";
@@ -12,8 +12,15 @@ const Header: FC<Props> = ({ activeIndex }) => {
   const [sticky, setSticky] = useState<"top" | "hide" | "show">("top");
   const [openModal, setOpenModal] = useState(false);
   const [mode, setMode] = useState("signup");
+  const [isMounted, setIsMounted] = useState(false);
 
-  if (typeof window !== "undefined") {
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
+
+  if (isMounted && typeof window !== "undefined") {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 220) {
         setSticky("show");
