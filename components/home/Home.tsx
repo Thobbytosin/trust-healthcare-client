@@ -66,16 +66,14 @@ const Home = (props: Props) => {
     }
   }, [isMounted, searchParams, pathname]);
 
-  if (!isMounted) return null;
-
-  if (doctorsLoading) {
+  if (!isMounted || doctorsLoading) {
     return <LandingPageLoader />;
   }
 
   return (
     <main>
       {/* Don't render Header until data is loaded */}
-      {!doctorsLoading && <Header />}
+      <Header />
 
       <Hero />
 
