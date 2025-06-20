@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import Header from "../global/header/Header";
 import Hero from "./Hero";

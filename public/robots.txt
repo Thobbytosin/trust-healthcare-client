@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://trusthealthcare.com
+
+# Sitemaps
+Sitemap: https://trusthealthcare.com/sitemap.xml

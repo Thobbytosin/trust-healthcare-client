@@ -1,27 +1,25 @@
-import { Metadata } from "next";
+import { Metadata, ResolvingMetadata } from "next";
 import React from "react";
 import { cookies } from "next/headers";
 import { SERVER_URI } from "@/config/api";
 import Doctor from "@/components/doctor/Doctor";
 
-type Props = {
-  params: {
-    id: string;
-  };
+type PageProps = {
+  params: Promise<{ id: string }>;
 };
 
-// SE0
-export async function generateMetadata({
-  params,
-}: Props): Promise<Metadata | null> {
+// 🧠 generateMetadata is static but can use cookies()
+export async function generateMetadata(
+  { params }: PageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { id } = await params;
+
   try {
-    const { id } = await params;
-    // set cookie manually since this SSR
     const cookieStore = await cookies();
     const consent = cookieStore.get("cookie_consent")?.value;
-
     const tr_host_x = cookieStore.get("tr_host_x")?.value;
-    // fetch the doctor tags
+
     const res = await fetch(`${SERVER_URI}/doctor/meta-tags/${id}`, {
       method: "GET",
       cache: "no-store",
@@ -35,22 +33,27 @@ export async function generateMetadata({
     const data = await res.json();
     const doctor: { name: string; specialty: string[] } = data?.tags;
 
+    const title = `${doctor.name} - ${doctor.specialty[0]} | Trust Healthcare`;
+    const description = `${doctor.name} is a certified ${doctor.specialty[0]} at Trust Healthcare. Book an appointment online and receive expert medical care.`;
+
     return {
-      title: `${doctor?.name} - ${doctor?.specialty[0]} | Trust Healthcare`,
-      description: `${doctor?.name} is a certified ${doctor?.specialty[0]} at Trust Healthcare. Book an appointment online and receive expert medical care.`,
-      keywords: `doctor, ${doctor?.specialty}, ${doctor?.name}, Trust Healthcare, book appointment, online consultation`,
+      title,
+      description,
+      keywords: `doctor, ${doctor.specialty.join(", ")}, ${
+        doctor.name
+      }, Trust Healthcare`,
       authors: [{ name: "Trust Healthcare Team" }],
       icons: {
-        icon: "/logo.png", //Path relative to /public
+        icon: "/logo.png",
         shortcut: "/logo.png",
       },
       alternates: {
-        canonical: `https://trusthealthcare.com/doctors/${doctor?.name}`,
+        canonical: `https://trusthealthcare.com/doctors/${doctor.name}`,
       },
       openGraph: {
-        title: `${doctor?.name} - ${doctor?.specialty[0]} | Trust Healthcare`,
-        description: `Consult with ${doctor?.name}, an expert ${doctor?.specialty[0]} at Trust Healthcare.`,
-        url: `https://trusthealthcare.com/doctors/${doctor?.name}`,
+        title,
+        description,
+        url: `https://trusthealthcare.com/doctors/${doctor.name}`,
         siteName: "Trust Healthcare",
         images: [
           {
@@ -65,20 +68,20 @@ export async function generateMetadata({
       },
       twitter: {
         card: "summary_large_image",
-        title: `${doctor?.name} - ${doctor?.specialty[0]} | Trust Healthcare`,
-        description: `Book an appointment with ${doctor?.name}, a leading ${doctor?.specialty[0]} at Trust Healthcare.`,
-        // images: [doctor.image],
+        title,
+        description,
+        images: ["/logo.png"],
       },
       metadataBase: new URL("https://trusthealthcare.com"),
     };
   } catch (error) {
-    console.error("Failed to fetch doctor for metadata:", error);
+    console.error("Failed to fetch metadata for doctor:", error);
     return {
       title: "Doctor | Trust Healthcare",
       description:
         "View doctor details and book appointments at Trust Healthcare.",
       icons: {
-        icon: "/logo.png", //Path relative to /public
+        icon: "/logo.png",
         shortcut: "/logo.png",
       },
       openGraph: {
@@ -102,7 +105,8 @@ export async function generateMetadata({
   }
 }
 
-export default async function DoctorPage({ params }: Props) {
+// ✅ Main page
+export default async function DoctorPage({ params }: PageProps) {
   const { id } = await params;
 
   return <Doctor doctorId={id} />;

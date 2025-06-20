@@ -73,12 +73,8 @@ export type IDoctor = {
   workExperience: { hospital: string; role: string; duration: string }[];
   yearsOfExperience: number;
   education: { institution: string; graduationYear: string; course: string }[];
-<<<<<<< HEAD
   hospital: { name: string; address: string }[];
-=======
-  hospital: string;
   clinicAddress: string;
->>>>>>> doctor
   licenseNumber: string;
   certifications: string[];
   availableDays: string[];
