@@ -4,6 +4,14 @@ import { styles } from "@/styles/styles";
 import Image from "next/image";
 import Ratings from "../ui/Ratings";
 import RevealWrapper from "../ui/RevealWrapper";
+import user1 from "@/public/assets/testi1.jpg";
+import user2 from "@/public/assets/testi2.jpg";
+import user3 from "@/public/assets/testi3.jpg";
+import user4 from "@/public/assets/testi4.jpg";
+import user5 from "@/public/assets/testi5.jpg";
+import user6 from "@/public/assets/testi6.jpg";
+import user7 from "@/public/assets/testi7.jpg";
+import user8 from "@/public/assets/testi8.jpg";
 
 type Props = {};
 
@@ -11,56 +19,56 @@ const testimonials = [
   {
     id: 1,
     name: "John Doe",
-    image: "https://randomuser.me/api/portraits/men/45.jpg",
+    image: user1,
     feedback: "Great service! Highly recommended.",
     ratings: 4.2,
   },
   {
     id: 2,
     name: "Jane Smith",
-    image: "https://randomuser.me/api/portraits/women/45.jpg",
+    image: user2,
     feedback: "Very professional and helpful.",
     ratings: 4,
   },
   {
     id: 3,
     name: "Samuel Johnson",
-    image: "https://randomuser.me/api/portraits/men/4.jpg",
+    image: user3,
     feedback: "Amazing experience!",
     ratings: 3.9,
   },
   {
     id: 4,
     name: "Grace Williams",
-    image: "https://randomuser.me/api/portraits/women/3.jpg",
+    image: user4,
     feedback: "Reliable and trustworthy service.",
     ratings: 5,
   },
   {
     id: 5,
     name: "Donna Meadow",
-    image: "https://randomuser.me/api/portraits/women/18.jpg",
+    image: user5,
     feedback: "Reliable and trustworthy service.",
     ratings: 4.4,
   },
   {
     id: 6,
     name: "Phil Henry",
-    image: "https://randomuser.me/api/portraits/men/33.jpg",
+    image: user6,
     feedback: "Reliable and trustworthy service.",
     ratings: 4.1,
   },
   {
     id: 7,
     name: "Kenneth Joe",
-    image: "https://randomuser.me/api/portraits/men/48.jpg",
+    image: user7,
     feedback: "Reliable and trustworthy service.",
     ratings: 5,
   },
   {
     id: 8,
     name: "Kimberly Ann O.",
-    image: "https://randomuser.me/api/portraits/women/54.jpg",
+    image: user8,
     feedback: "Reliable and trustworthy service.",
     ratings: 3.5,
   },

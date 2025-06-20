@@ -16,6 +16,8 @@ import Services from "./Services";
 import { useFetchDoctorsFree } from "@/hooks/useFetchDoctorsFree";
 import AiChatWidget from "../ai/AiChatWidget";
 import ButtonLoader from "../global/loaders/ButtonLoader";
+import SectionLoader from "../global/loaders/SectionLoader";
+import NewsLetter from "./NewsLetter";
 
 type Props = {};
 
@@ -84,23 +86,20 @@ const Home = (props: Props) => {
       <LazyLoad
         importFunc={() => import("./MeetDoctors")}
         props={{ doctors }}
-        placeholder={<ButtonLoader />}
+        placeholder={<SectionLoader />}
       />
 
       <LazyLoad
         importFunc={() => import("./Testimonials")}
-        placeholder={<ButtonLoader />}
+        placeholder={<SectionLoader />}
       />
 
       <LazyLoad
         importFunc={() => import("./VideoSection")}
-        placeholder={<ButtonLoader />}
+        placeholder={<SectionLoader />}
       />
 
-      <LazyLoad
-        importFunc={() => import("./NewsLetter")}
-        placeholder={<ButtonLoader />}
-      />
+      <NewsLetter />
 
       <Footer />
 
