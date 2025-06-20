@@ -28,14 +28,16 @@ const Home = (props: Props) => {
   const { loading: doctorsLoading } = useFetchDoctorsFree();
   const [showConsent, setShowConsent] = useState(false);
   const doctors = useDoctorsStore((state) => state.doctors);
-  const [isMounted, setIsMounted] = useState(false); // Track if component is mounted
+  const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true); // Set to true once the component is mounted
-  }, []);
+    if (typeof window !== "undefined" && !doctorsLoading) {
+      setShouldRender(true);
+    }
+  }, [doctorsLoading]);
 
   useEffect(() => {
-    if (!isMounted) return;
+    if (!shouldRender) return;
     if (typeof window === "undefined") return;
 
     const consent = getCookie("cookie_consent");
@@ -44,11 +46,11 @@ const Home = (props: Props) => {
       setShowConsent(true);
       return;
     }
-  }, [isMounted]);
+  }, [shouldRender]);
 
   // for middleware error
   useEffect(() => {
-    if (!isMounted) return;
+    if (!shouldRender) return;
     if (typeof window === "undefined") return;
 
     if (searchParams.get("authError") === "true") {
@@ -64,9 +66,9 @@ const Home = (props: Props) => {
       // const newUrl = `${pathname}?${newParams.toString()}`;
       window.history.replaceState({}, "", "/");
     }
-  }, [isMounted, searchParams, pathname]);
+  }, [shouldRender, searchParams, pathname]);
 
-  if (!isMounted || doctorsLoading) {
+  if (!shouldRender) {
     return <LandingPageLoader />;
   }
 
