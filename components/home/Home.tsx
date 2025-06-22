@@ -25,6 +25,14 @@ import { User } from "@/types/user.types";
 type Props = {};
 
 const Home = () => {
+  const f = async () => {
+    await fetch(`/api/set-cookie`, {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+    });
+  };
+  f();
   // for protected route nextjs middleware
   const setUser = useAuthStore((state) => state.setUser);
   const user = useAuthStore((state) => state.user);
