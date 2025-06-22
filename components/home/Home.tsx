@@ -19,11 +19,15 @@ import ButtonLoader from "../global/loaders/ButtonLoader";
 import SectionLoader from "../global/loaders/SectionLoader";
 import NewsLetter from "./NewsLetter";
 import { useServerStatus } from "@/hooks/useServerStatus";
+import { useAuthStore } from "@/store/useAuthStore";
+import { User } from "@/types/user.types";
 
 type Props = {};
 
-const Home = (props: Props) => {
+const Home = () => {
   // for protected route nextjs middleware
+  const setUser = useAuthStore((state) => state.setUser);
+  const user = useAuthStore((state) => state.user);
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { loading: doctorsLoading } = useFetchDoctorsFree();
@@ -33,6 +37,14 @@ const Home = (props: Props) => {
   const { error: serverError } = useServerStatus({
     checkInterval: 10000,
   });
+
+  // console.log("USER:", user);
+
+  useEffect(() => {
+    if (user) {
+      setUser(user);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (typeof window !== "undefined" && !doctorsLoading && !serverError) {

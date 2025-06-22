@@ -8,11 +8,6 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-const bareAxios = axios.create({
-  baseURL: SERVER_URI,
-  withCredentials: true,
-});
-
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
   skipAuthRefresh?: boolean;

@@ -5,6 +5,7 @@ export const API_AUTH_PATHS = {
   VERIFICATION: "/auth/account-verification",
   RESENDVERIFICATIONCODE: "/auth/resend-verification-code",
   CLEARACCESSTOKEN: "/auth/clear-access-token",
+  VALIDATETOKEN: "/auth/validate-token",
 };
 
 export const API_USER_PATHS = {

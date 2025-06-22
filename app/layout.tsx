@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import AppProvider from "@/providers/AppProvider";
 import AuthIntializer from "@/providers/AuthIntializer";
 import UserInactivityTracker from "@/providers/UserInactivityTracker";
+import { fetchUser } from "@/lib/fetchUser";
 
 export const metadata: Metadata = {
   title: "Trust Healthcare - Quality Medical Care You Can Rely On",
@@ -46,16 +47,18 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://trusthealthcare.com"),
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await fetchUser();
+
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body className=" font-poppins min-h-screen ">
         <AppProvider>
-          <AuthIntializer />
+          <AuthIntializer user={user} />
           <UserInactivityTracker />
           {children}
         </AppProvider>
