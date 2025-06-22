@@ -5,7 +5,7 @@ import { GETALLDOCTORS } from "@/config/doctor.endpoints";
 import { useServerStatus } from "./useServerStatus";
 
 export const useFetchDoctors = (queryParams: URLSearchParams | null) => {
-  const canFetchUser: boolean = useServerStatus();
+  const { isOnline, isLoading: serverStatusLoading } = useServerStatus();
 
   const queryString = useMemo(() => queryParams?.toString(), [queryParams]);
 
@@ -16,7 +16,7 @@ export const useFetchDoctors = (queryParams: URLSearchParams | null) => {
       method: "GET",
       url: `${GETALLDOCTORS}?${queryString}`,
       queryKey: [`doctors, ${queryKey}`],
-      enabled: canFetchUser,
+      enabled: !serverStatusLoading && isOnline,
     });
 
   return { data, error, isLoading, isSuccess };

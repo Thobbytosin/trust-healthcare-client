@@ -11,9 +11,10 @@ type Props = {};
 
 const UserInactivityTracker = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
-  const canFetchUser = useServerStatus();
   const [loading, setLoading] = useState(false);
   const consent = getCookie("cookie_consent");
+  const { isOnline, isLoading: serverStatusLoading } = useServerStatus();
+  const canFetchUser = !serverStatusLoading && isOnline;
 
   const handleInactivity = useCallback(async () => {
     if (!canFetchUser) return;
@@ -38,7 +39,7 @@ const UserInactivityTracker = (props: Props) => {
   }, [canFetchUser]);
 
   useInactivityTimer({
-    enabled: canFetchUser,
+    enabled: !canFetchUser,
     onTimeout: handleInactivity,
     timeout: 35 * 60 * 1000, // in minutes
   });
