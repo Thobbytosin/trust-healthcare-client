@@ -11,6 +11,9 @@ export interface LoginResponse {
   message: string;
   user: User;
   expiresAt: string;
+  accessToken: string;
+  loggedInToken: string;
+  refreshToken: string;
 }
 
 export interface AccessTokenClearResponse {

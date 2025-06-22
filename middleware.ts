@@ -16,9 +16,9 @@ export function middleware(request: NextRequest) {
   }
 
   //   get access token
-  const tr_host_x = request.cookies.get("tr_host_x")?.value;
+  const TR_HOST_X = request.cookies.get("TR_HOST_X")?.value;
 
-  if (!tr_host_x) {
+  if (!TR_HOST_X) {
     // redirect to home page if there is no token
     const homeUrl = new URL("/", request.url);
     homeUrl.searchParams.set("authError", "true");
