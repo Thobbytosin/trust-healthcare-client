@@ -27,45 +27,66 @@ const isAccessTokenExpiringSoon = () => {
 };
 
 // for outgoing requests
-axiosInstance.interceptors.request.use(async (config) => {
-  const customConfig = config as CustomAxiosRequestConfig;
+axiosInstance.interceptors.request.use(
+  async (config) => {
+    const customConfig = config as CustomAxiosRequestConfig;
 
-  // check server
-  const online = await isServerOnline();
-  if (!online) {
-    return Promise.reject(new Error("Server is offline"));
-  }
-
-  const consent = getCookie("cookie_consent");
-
-  // sets the cookie consent in all request headers
-  customConfig.headers = {
-    ...(customConfig.headers || {}),
-    ...(consent ? { "x-cookie-consent": consent } : {}),
-  };
-
-  // refresh only if route needs refresh and access token is expiring soon
-  if (!customConfig.skipAuthRefresh && isAccessTokenExpiringSoon()) {
-    try {
-      console.log(
-        "THE ACCESS TOKEN IS EXPIRING SOON SO I AM CALLING THE REFRESH TOKEN"
-      );
-      await axiosInstance.get("/auth/refresh-tokens", {
-        skipAuthRefresh: true,
-      } as CustomAxiosRequestConfig);
-
-      // set new expiry
-      localStorage.setItem(
-        "access_token_expiry",
-        (Date.now() + 30 * 60 * 1000).toString() // since access token expires every 30 mins
-      );
-    } catch (error) {
-      console.error("Failed to refresh token proactively", error);
+    // check server
+    const online = await isServerOnline();
+    if (!online) {
+      return Promise.reject(new Error("Server is offline"));
     }
-  }
 
-  return customConfig;
-});
+    const consent = getCookie("cookie_consent");
+
+    // sets the cookie consent in all request headers
+    customConfig.headers = {
+      ...(customConfig.headers || {}),
+      ...(consent ? { "x-cookie-consent": consent } : {}),
+    };
+
+    // refresh only if route needs refresh and access token is expiring soon
+    if (!customConfig.skipAuthRefresh && isAccessTokenExpiringSoon()) {
+      try {
+        console.log(
+          "THE ACCESS TOKEN IS EXPIRING SOON SO I AM CALLING THE REFRESH TOKEN"
+        );
+
+        // 1. Call refresh route and get tokens
+        const refreshResponse = await axiosInstance.get(
+          "/auth/refresh-tokens",
+          {
+            skipAuthRefresh: true,
+          } as CustomAxiosRequestConfig
+        );
+
+        const { accessToken, refreshToken, loggedInToken, expiresAt } =
+          refreshResponse.data;
+
+        // 2. Send tokens to your cookie API route
+        await fetch(
+          "https://trust-healthcare-client.vercel.app/api/set-cookies",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ accessToken, refreshToken, loggedInToken }),
+          }
+        );
+
+        // 3. Update expiry tracking
+        localStorage.setItem("access_token_expiry", expiresAt);
+      } catch (error) {
+        console.error("Failed to refresh token proactively", error);
+      }
+    }
+
+    return customConfig;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // for incoming responses
 axiosInstance.interceptors.response.use(
@@ -89,22 +110,41 @@ axiosInstance.interceptors.response.use(
       if (!originalRequest._retry) {
         originalRequest._retry = true; // to avoid infinte loops
         try {
-          console.log(
-            "ORIGINAL REQUEST FAILED SO I AM REFRSHING THE TOKEN AND RECALLING THE FAILED REQUEST AGAIN"
+          console.log("Refreshing tokens...");
+
+          // 1. Call refresh route and get new tokens
+          const refreshResponse = await axiosInstance.get(
+            "/auth/refresh-tokens",
+            {
+              skipAuthRefresh: true,
+            } as CustomAxiosRequestConfig
           );
 
-          await axiosInstance.get("/auth/refresh-tokens", {
-            skipAuthRefresh: true,
-          } as CustomAxiosRequestConfig); // refresh
+          const { accessToken, refreshToken, loggedInToken, expiresAt } =
+            refreshResponse.data;
 
-          // set new expiry
-          localStorage.setItem(
-            "access_token_expiry",
-            (Date.now() + 30 * 60 * 1000).toString()
+          // 2. Set new cookies via your API route
+          await fetch(
+            "https://trust-healthcare-client.vercel.app/api/set-cookies",
+            {
+              method: "POST",
+              body: JSON.stringify({
+                accessToken,
+                refreshToken,
+                loggedInToken,
+              }),
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+            }
           );
 
-          return axiosInstance(originalRequest); // resend original request
+          // 3. Optionally update expiry tracking in localStorage
+          localStorage.setItem("access_token_expiry", expiresAt);
+
+          // 4. Retry original request
+          return axiosInstance(originalRequest);
         } catch (refreshError) {
+          console.error("Token refresh failed:", refreshError);
           return Promise.reject(refreshError);
         }
       }
@@ -115,3 +155,9 @@ axiosInstance.interceptors.response.use(
 );
 
 export default axiosInstance;
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiZDM2NWM2YWItMDI4Ni00NjdhLWI5NmUtODI0NDRkYTA1YTcyIiwibmFtZSI6IkZhbG9kZSBUb2JpIiwiZW1haWwiOiJnYWJyaWVsdG9iaWxvYmExMUBnbWFpbC5jb20iLCJhdmF0YXIiOm51bGwsInJvbGUiOlsidXNlciJdLCJ2ZXJpZmllZCI6dHJ1ZSwibGFzdExvZ2luIjoiMjAyNS0wNi0yMlQyMjoxMjozMy4xNjRaIiwibGFzdFBhc3N3b3JkUmVzZXQiOm51bGwsImRvY3RvcklkIjpudWxsLCJzaWduZWRJbkFzIjoidXNlciJ9LCJpYXQiOjE3NTA2MzIxOTQsImV4cCI6MTc1MTA2NDE5NH0.kyLx7s9atz0pgzVxIu3Yrrm4dA6SAP9qrwfsk6h7HhE
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiZDM2NWM2YWItMDI4Ni00NjdhLWI5NmUtODI0NDRkYTA1YTcyIiwibmFtZSI6IkZhbG9kZSBUb2JpIiwiZW1haWwiOiJnYWJyaWVsdG9iaWxvYmExMUBnbWFpbC5jb20iLCJhdmF0YXIiOm51bGwsInJvbGUiOlsidXNlciJdLCJ2ZXJpZmllZCI6dHJ1ZSwibGFzdExvZ2luIjoiMjAyNS0wNi0yMlQyMjoxMjozMy4xNjRaIiwibGFzdFBhc3N3b3JkUmVzZXQiOm51bGwsImRvY3RvcklkIjpudWxsLCJzaWduZWRJbkFzIjoidXNlciJ9LCJpYXQiOjE3NTA2MzIyNjAsImV4cCI6MTc1MTA2NDI2MH0.nDg9DmfVdn71GG4FSJcwfZXWCyPETOBZWGudzWxYVWQ
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiZDM2NWM2YWItMDI4Ni00NjdhLWI5NmUtODI0NDRkYTA1YTcyIiwibmFtZSI6IkZhbG9kZSBUb2JpIiwiZW1haWwiOiJnYWJyaWVsdG9iaWxvYmExMUBnbWFpbC5jb20iLCJhdmF0YXIiOm51bGwsInJvbGUiOlsidXNlciJdLCJ2ZXJpZmllZCI6dHJ1ZSwibGFzdExvZ2luIjoiMjAyNS0wNi0yMlQyMjoxMjozMy4xNjRaIiwibGFzdFBhc3N3b3JkUmVzZXQiOm51bGwsImRvY3RvcklkIjpudWxsLCJzaWduZWRJbkFzIjoidXNlciJ9LCJpYXQiOjE3NTA2MzIzMDcsImV4cCI6MTc1MTA2NDMwN30.yP_Gig9lX3s-TLkZmIkZGD2IClPWYvjl6tw8H60dY_w

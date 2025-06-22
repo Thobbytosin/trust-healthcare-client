@@ -55,7 +55,7 @@ const Doctor = ({ doctorId }: Props) => {
     return <LandingPageLoader />;
   }
 
-  // console.log(doctor);
+  console.log(doctor);
 
   return (
     <main className=" min-h-screen bg-gray-200 pb-20">

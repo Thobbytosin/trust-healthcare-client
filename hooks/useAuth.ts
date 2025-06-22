@@ -5,7 +5,7 @@ import { VALIDATETOKEN } from "@/config/auth.endpoints";
 
 export const useAuthValidate = () => {
   const { isOnline, isLoading: serverStatusLoading } = useServerStatus();
-  const loggedInToken = getCookie("_xur_cr-host");
+  const loggedInToken = getCookie("_XUR_CR_HOST");
 
   const { data, error } = useFetchData({
     method: "GET",
