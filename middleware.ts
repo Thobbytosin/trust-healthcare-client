@@ -4,7 +4,7 @@ const protectedPaths = ["/profile", "/admin", "/doctor", "/find-doctors"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  console.log("Middleware cookies:", request.cookies.getAll());
+  // console.log("Middleware cookies:", request.cookies.getAll());
 
   // run check only on the selected routes
   const isProtected = protectedPaths.some((route) =>

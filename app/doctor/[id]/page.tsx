@@ -3,6 +3,7 @@ import React from "react";
 import { cookies } from "next/headers";
 import { SERVER_URI } from "@/config/api";
 import Doctor from "@/components/doctor/Doctor";
+import { fetchDoctor } from "@/lib/fetchDoctor";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -18,13 +19,13 @@ export async function generateMetadata(
   try {
     const cookieStore = await cookies();
     const consent = cookieStore.get("cookie_consent")?.value;
-    const tr_host_x = cookieStore.get("tr_host_x")?.value;
+    const TR_HOST_X = cookieStore.get("TR_HOST_X")?.value;
 
     const res = await fetch(`${SERVER_URI}/doctor/meta-tags/${id}`, {
       method: "GET",
       cache: "no-store",
       headers: {
-        Cookie: `tr_host_x=${tr_host_x}`,
+        Cookie: `TR_HOST_X=${TR_HOST_X}`,
         "Content-Type": "application/json",
         "x-cookie-consent": consent || "",
       },
@@ -75,7 +76,7 @@ export async function generateMetadata(
       metadataBase: new URL("https://trusthealthcare.com"),
     };
   } catch (error) {
-    console.error("Failed to fetch metadata for doctor:", error);
+    console.log("Failed to fetch metadata for doctor:", error);
     return {
       title: "Doctor | Trust Healthcare",
       description:
@@ -107,6 +108,9 @@ export async function generateMetadata(
 
 export default async function DoctorPage({ params }: PageProps) {
   const { id } = await params;
+  const doctor = await fetchDoctor(id);
+  console.log("DOCTOR", doctor);
 
-  return <Doctor doctorId={id} />;
+  return <div>Doctor Page</div>;
+  // return <Doctor doctorId={id} />;
 }

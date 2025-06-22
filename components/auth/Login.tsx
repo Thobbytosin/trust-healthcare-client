@@ -47,22 +47,11 @@ const Login: FC<Props> = ({ setMode, setOpenModal }) => {
 
         setUser(user);
 
-        await fetch(
-          "https://trust-healthcare-client.vercel.app/api/set-cookies",
-          {
-            method: "POST",
-            body: JSON.stringify({ accessToken, refreshToken, loggedInToken }),
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-          }
-        );
-
-        // Send tokens to cookie setter route
-        await fetch("/api/auth/set-cookies", {
+        await fetch("/api/set-cookies", {
           method: "POST",
-          body: JSON.stringify({ data, refreshToken }),
+          body: JSON.stringify({ accessToken, refreshToken, loggedInToken }),
           headers: { "Content-Type": "application/json" },
-          credentials: "include", // Important for cookies
+          credentials: "include",
         });
 
         localStorage.setItem("access_token_expiry", expiresAt);

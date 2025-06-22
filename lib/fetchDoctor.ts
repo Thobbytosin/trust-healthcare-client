@@ -1,0 +1,27 @@
+// lib/fetchUser.ts
+import { SERVER_URI } from "@/config/api";
+import axios from "axios";
+import { cookies } from "next/headers";
+
+export const fetchDoctor = async (doctorId: string) => {
+  try {
+    const cookieStore = await cookies();
+    const consent = cookieStore.get("cookie_consent")?.value;
+    const tr_host_x = cookieStore.get("TR_HOST_X")?.value;
+
+    const res = await axios.get(`${SERVER_URI}/doctor/get-doctor/${doctorId}`, {
+      headers: {
+        Cookie: `TR_HOST_X=${tr_host_x}`,
+        "Content-Type": "application/json",
+        "x-cookie-consent": consent || "",
+      },
+      withCredentials: true,
+    });
+
+    console.log(res.data.doctor);
+    return res.data.doctor;
+  } catch (err: any) {
+    console.log("Error fetching doctor:", err.response?.data || err.message);
+    return null; // fallback to avoid crashing layout
+  }
+};

@@ -64,15 +64,12 @@ axiosInstance.interceptors.request.use(
           refreshResponse.data;
 
         // 2. Send tokens to your cookie API route
-        await fetch(
-          "https://trust-healthcare-client.vercel.app/api/set-cookies",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ accessToken, refreshToken, loggedInToken }),
-          }
-        );
+        await fetch("/api/set-cookies", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ accessToken, refreshToken, loggedInToken }),
+        });
 
         // 3. Update expiry tracking
         localStorage.setItem("access_token_expiry", expiresAt);
@@ -124,19 +121,16 @@ axiosInstance.interceptors.response.use(
             refreshResponse.data;
 
           // 2. Set new cookies via your API route
-          await fetch(
-            "https://trust-healthcare-client.vercel.app/api/set-cookies",
-            {
-              method: "POST",
-              body: JSON.stringify({
-                accessToken,
-                refreshToken,
-                loggedInToken,
-              }),
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
-            }
-          );
+          await fetch("/api/set-cookies", {
+            method: "POST",
+            body: JSON.stringify({
+              accessToken,
+              refreshToken,
+              loggedInToken,
+            }),
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          });
 
           // 3. Optionally update expiry tracking in localStorage
           localStorage.setItem("access_token_expiry", expiresAt);
