@@ -18,6 +18,7 @@ import AiChatWidget from "../ai/AiChatWidget";
 import ButtonLoader from "../global/loaders/ButtonLoader";
 import SectionLoader from "../global/loaders/SectionLoader";
 import NewsLetter from "./NewsLetter";
+import { useServerStatus } from "@/hooks/useServerStatus";
 
 type Props = {};
 
@@ -29,9 +30,12 @@ const Home = (props: Props) => {
   const [showConsent, setShowConsent] = useState(false);
   const doctors = useDoctorsStore((state) => state.doctors);
   const [shouldRender, setShouldRender] = useState(false);
+  const { error: serverError } = useServerStatus({
+    checkInterval: 10000,
+  });
 
   useEffect(() => {
-    if (typeof window !== "undefined" && !doctorsLoading) {
+    if (typeof window !== "undefined" && !doctorsLoading && !serverError) {
       setShouldRender(true);
     }
   }, [doctorsLoading]);
@@ -67,6 +71,16 @@ const Home = (props: Props) => {
       window.history.replaceState({}, "", "/");
     }
   }, [shouldRender, searchParams, pathname]);
+
+  if (serverError) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <h1 className="text-xl font-semibold text-red-600">
+          🚨 Server is currently down. Please try again later.
+        </h1>
+      </div>
+    );
+  }
 
   if (!shouldRender) {
     return <LandingPageLoader />;

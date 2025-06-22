@@ -3,6 +3,7 @@ import { useDoctorsStore } from "../store/useDoctorsStore";
 import { useFetchData } from "./useApi";
 import { DOCTORSLANDINGPAGE } from "@/config/doctor.endpoints";
 import { isServerOnline } from "@/utils/isServerOnline";
+import { useServerStatus } from "./useServerStatus";
 
 interface BackendSuccessResponse {
   success: boolean;
@@ -12,38 +13,24 @@ interface BackendSuccessResponse {
 }
 
 export const useFetchDoctorsFree = () => {
-  const hasBeenAuthenticated =
-    typeof document !== "undefined" &&
-    document?.cookie.includes("cookie_consent");
-
-  const [isOnline, setIsOnline] = useState(false);
-
-  useEffect(() => {
-    const checkServer = async () => {
-      if (hasBeenAuthenticated) {
-        const online = await isServerOnline();
-        setIsOnline(online);
-      }
-    };
-
-    checkServer();
-  }, [hasBeenAuthenticated]);
+  const { isOnline, isLoading: serverStatusLoading } = useServerStatus();
 
   const setDoctors = useDoctorsStore((state) => state.setDoctors);
 
-  const { data, error, isLoading } = useFetchData<BackendSuccessResponse>({
-    method: "GET",
-    queryKey: ["getDoctors"],
-    url: DOCTORSLANDINGPAGE,
-    skipAuthRefresh: true, //token not needed
-    enabled: hasBeenAuthenticated && isOnline,
-  });
+  const { data, error, isLoading, isSuccess } =
+    useFetchData<BackendSuccessResponse>({
+      method: "GET",
+      queryKey: ["getDoctors"],
+      url: DOCTORSLANDINGPAGE,
+      skipAuthRefresh: true, //token not needed
+      enabled: !serverStatusLoading && isOnline,
+    });
 
   useEffect(() => {
-    if (data) {
+    if (data && isSuccess) {
       setDoctors(data.doctors); // refresh after success
     }
-  }, [data]);
+  }, [data, isSuccess]);
 
   return { error, loading: isLoading };
 };

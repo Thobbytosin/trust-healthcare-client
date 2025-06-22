@@ -8,7 +8,7 @@ const AuthIntializer = () => {
   if (error) {
     console.error("Auth initialization failed:", error);
   }
-  
+
   return null;
 };
 

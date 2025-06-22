@@ -27,7 +27,7 @@ const menuItems = [
 ];
 
 const NavLaptop: FC<Props> = ({ setOpenModal, setMode, activeIndex }) => {
-  const { user } = useAuthStore((state) => state);
+  const { user, userLoading } = useAuthStore((state) => state);
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const dropDownRef = useRef<HTMLUListElement>(null);
   const navRef = useRef<HTMLUListElement>(null);
@@ -194,7 +194,13 @@ const NavLaptop: FC<Props> = ({ setOpenModal, setMode, activeIndex }) => {
       </ul>
 
       {/* check if user has logged in */}
-      {user && Object.keys(user).length > 0 ? (
+      {userLoading ? (
+        // SKELETON
+        <div className="flex gap-4">
+          <div className="hidden md:block w-[100px] h-[30px] rounded-lg bg-gray-200 animate-pulse" />
+          <div className="hidden md:block w-[100px] h-[30px] rounded-lg bg-gray-200 animate-pulse" />
+        </div>
+      ) : user && Object.keys(user).length > 0 ? (
         <div className=" flex items-center gap-8">
           <div className=" flex items-center gap-6">
             <div className=" text-gray-500 cursor-pointer relative">

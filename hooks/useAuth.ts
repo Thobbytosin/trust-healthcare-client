@@ -4,11 +4,14 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { FETCHUSER } from "@/config/user.endpoints";
 import { UserBackendResponse } from "@/types/user.types";
 import { useServerStatus } from "./useServerStatus";
+import { getCookie } from "@/utils/helpers";
 
 export const useAuth = () => {
-  const canFetchUser: boolean = useServerStatus();
+  const { isOnline, isLoading: serverStatusLoading } = useServerStatus();
+  const loggedInToken = getCookie("_xur_cr-host");
 
   const setUser = useAuthStore((state) => state.setUser);
+  const setUserLoading = useAuthStore((state) => state.setUserLoading);
 
   const {
     data: userData,
@@ -19,8 +22,12 @@ export const useAuth = () => {
     method: "GET",
     url: FETCHUSER,
     queryKey: ["user"],
-    enabled: canFetchUser, // auto-fetch only if server is online and user is online
+    enabled: !serverStatusLoading && isOnline && !!loggedInToken,
   });
+
+  useEffect(() => {
+    setUserLoading(isLoading);
+  }, [isLoading]);
 
   useEffect(() => {
     if (isSuccess && userData) {

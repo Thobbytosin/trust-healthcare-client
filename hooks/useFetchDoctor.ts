@@ -6,14 +6,14 @@ import { GETDOCTOR } from "@/config/doctor.endpoints";
 import { useServerStatus } from "./useServerStatus";
 
 export const useFetchDoctor = (doctorId: string) => {
-  const canFetchUser: boolean = useServerStatus();
+  const { isOnline, isLoading: serverStatusLoading } = useServerStatus();
   const setDoctor = useDoctorsStore((state) => state.setDoctor);
 
   const { data, isLoading } = useFetchData<DoctorBackendSuccessResponse>({
     method: "GET",
     url: `${GETDOCTOR}/${doctorId}`,
     queryKey: [`doctor, ${doctorId}`],
-    enabled: canFetchUser,
+    enabled: !serverStatusLoading && isOnline,
   });
 
   useEffect(() => {

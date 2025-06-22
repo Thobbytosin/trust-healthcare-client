@@ -457,7 +457,9 @@ const SchedulePicker = ({ selectedSlots, setSelectedSlots }: Props) => {
           {selectedDate ? (
             <div className=" w-full bg-blue-100/50 min-h-fit mt-6">
               {loading ? (
-                <ButtonLoader />
+                <div className=" w-full py-20">
+                  <ButtonLoader />
+                </div>
               ) : (
                 <>
                   {/* daily 3 sessions */}

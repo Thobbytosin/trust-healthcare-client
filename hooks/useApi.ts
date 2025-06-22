@@ -23,7 +23,7 @@ export function useFetchData<T>({
   skipAuthRefresh = false,
 }: FetchOptions) {
   return useQuery<T, any>({
-    queryKey: [queryKey],
+    queryKey: queryKey,
     queryFn: async () => {
       try {
         const config: any = {
@@ -45,9 +45,12 @@ export function useFetchData<T>({
           return response.data;
         }
       } catch (error: any) {
-        // if (axios?.isAxiosError(error) && error.response) {
-        //   console.error(error.response.data?.message || "API request failed");
-        // }
+        if (axios?.isAxiosError(error) && error.response) {
+          console.log(
+            "Error Message:",
+            error.response.data?.message || "API request failed"
+          );
+        }
       }
     },
     staleTime: 1000 * 60 * 5,
@@ -73,7 +76,7 @@ export function useMutateData<T>({
   skipAuthRefresh = true,
 }: MutationOptions) {
   return useMutation<T, any, any>({
-    mutationKey: [mutationKey],
+    mutationKey: mutationKey,
     mutationFn: async (data: any) => {
       const config: any = {
         method,
@@ -96,10 +99,10 @@ export function useMutateData<T>({
     },
     onError: (error: any) => {
       if (axios.isAxiosError(error) && error.response) {
-        // console.error(
-        //   "Backend Error Details:",
-        //   error.response.data || "No error message from server"
-        // );
+        console.log(
+          "Backend Error Details:",
+          error.response.data || "No error message from server"
+        );
       }
     },
   });

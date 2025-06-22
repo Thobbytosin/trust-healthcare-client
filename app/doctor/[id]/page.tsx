@@ -105,7 +105,6 @@ export async function generateMetadata(
   }
 }
 
-// ✅ Main page
 export default async function DoctorPage({ params }: PageProps) {
   const { id } = await params;
 
