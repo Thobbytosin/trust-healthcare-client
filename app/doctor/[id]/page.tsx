@@ -111,6 +111,6 @@ export default async function DoctorPage({ params }: PageProps) {
   const doctor = await fetchDoctor(id);
   console.log("DOCTOR", doctor);
 
-  return <div>Doctor Page</div>;
-  // return <Doctor doctorId={id} />;
+  // return <div>Doctor Page</div>;
+  return <Doctor doctorId={id} />;
 }

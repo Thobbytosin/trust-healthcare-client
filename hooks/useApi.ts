@@ -40,7 +40,7 @@ export function useFetchData<T>({
           };
         }
 
-        const response = await axiosInstance(config);
+        const response = await axios(config);
         if (response) {
           return response.data;
         }
