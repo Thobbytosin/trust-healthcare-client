@@ -2,6 +2,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import axiosInstance from "@/utils/axiosInstance";
 import { SERVER_URI } from "@/config/api";
+import { getCookie } from "@/utils/helpers";
+
+const consent = getCookie("cookie_consent");
 
 interface FetchOptions {
   url: string;
@@ -29,16 +32,21 @@ export function useFetchData<T>({
         const config: any = {
           method,
           url: `${SERVER_URI}${url}`,
+          headers: {
+            ...(headers || {}),
+            "x-cookie-consent": consent,
+          },
           withCredentials: true,
           skipAuthRefresh,
         };
 
         // set headers
-        if (headers) {
-          config.headers = {
-            ...headers,
-          };
-        }
+        // if (headers) {
+        //   config.headers = {
+        //     ...(headers || {}),
+        //     "x-cookie-consent": consent,
+        //   };
+        // }
 
         const response = await axios(config);
         if (response) {
@@ -81,17 +89,23 @@ export function useMutateData<T>({
       const config: any = {
         method,
         url: `${SERVER_URI}${url}`,
+        headers: {
+          ...(headers || {}),
+          "x-cookie-consent": consent,
+        },
         data,
         withCredentials: true,
         skipAuthRefresh,
       };
 
       // Optionally add custom headers if needed
-      if (headers) {
-        config.headers = {
-          ...headers,
-        };
-      }
+      // if (headers) {
+      //   config.headers = {
+      //     ...(headers || {}),
+      //     "x-cookie-consent": consent,
+
+      //   };
+      // }
 
       const response = await axiosInstance(config);
 
