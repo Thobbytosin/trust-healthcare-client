@@ -24,7 +24,7 @@ type Props = {
 };
 
 const Doctor = ({ doctorId }: Props) => {
-  const { loading } = useFetchDoctor(doctorId);
+  const { loading, data } = useFetchDoctor(doctorId);
   // const [mounted, setMounted] = useState(false);
   const doctor = useDoctorsStore((state) => state.doctor);
   // const eduContainer = useRef<HTMLDivElement | null>(null);
@@ -56,6 +56,7 @@ const Doctor = ({ doctorId }: Props) => {
   // }
 
   console.log(doctor);
+  console.log(data);
 
   return (
     <div>DOCTOR COMP</div>

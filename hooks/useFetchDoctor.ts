@@ -22,5 +22,5 @@ export const useFetchDoctor = (doctorId: string) => {
     }
   }, [data]);
 
-  return { loading: isLoading };
+  return { loading: isLoading, data };
 };
