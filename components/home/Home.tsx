@@ -21,6 +21,7 @@ import NewsLetter from "./NewsLetter";
 import { useServerStatus } from "@/hooks/useServerStatus";
 import { useAuthStore } from "@/store/useAuthStore";
 import { User } from "@/types/user.types";
+import ServerStatusListener from "@/components/ui/ServerStatusListener";
 
 type Props = {};
 
@@ -34,7 +35,7 @@ const Home = () => {
   const [showConsent, setShowConsent] = useState(false);
   const doctors = useDoctorsStore((state) => state.doctors);
   const [shouldRender, setShouldRender] = useState(false);
-  const { error: serverError } = useServerStatus({
+  const { error: serverError, attempts } = useServerStatus({
     checkInterval: 10000,
   });
 
@@ -85,13 +86,7 @@ const Home = () => {
   }, [shouldRender, searchParams, pathname]);
 
   if (serverError) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
-        <h1 className="text-xl font-semibold text-red-600">
-          🚨 Server is currently down. Please try again later.
-        </h1>
-      </div>
-    );
+    return <ServerStatusListener RETRY_INTERVAL={10000} attempts={attempts} />;
   }
 
   if (!shouldRender) {

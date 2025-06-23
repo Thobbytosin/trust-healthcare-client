@@ -32,22 +32,19 @@ export function useFetchData<T>({
         const config: any = {
           method,
           url: `${SERVER_URI}${url}`,
-          headers: {
-            "x-cookie-consent": consent || "",
-          },
           withCredentials: true,
           skipAuthRefresh,
         };
 
         // set headers
-        // if (headers) {
-        //   config.headers = {
-        //     ...(headers || {}),
-        //     "x-cookie-consent": consent,
-        //   };
-        // }
+        if (headers) {
+          config.headers = {
+            ...(headers || {}),
+            "x-cookie-consent": consent,
+          };
+        }
 
-        const response = await axios(config);
+        const response = await axiosInstance(config);
         if (response) {
           return response.data;
         }
@@ -88,23 +85,18 @@ export function useMutateData<T>({
       const config: any = {
         method,
         url: `${SERVER_URI}${url}`,
-        headers: {
-          ...(headers || {}),
-          "x-cookie-consent": consent,
-        },
         data,
         withCredentials: true,
         skipAuthRefresh,
       };
 
       // Optionally add custom headers if needed
-      // if (headers) {
-      //   config.headers = {
-      //     ...(headers || {}),
-      //     "x-cookie-consent": consent,
-
-      //   };
-      // }
+      if (headers) {
+        config.headers = {
+          ...(headers || {}),
+          "x-cookie-consent": consent,
+        };
+      }
 
       const response = await axiosInstance(config);
 

@@ -48,9 +48,7 @@ axiosInstance.interceptors.request.use(
     // refresh only if route needs refresh and access token is expiring soon
     if (!customConfig.skipAuthRefresh && isAccessTokenExpiringSoon()) {
       try {
-        console.log(
-          "THE ACCESS TOKEN IS EXPIRING SOON SO I AM CALLING THE REFRESH TOKEN"
-        );
+        console.log("About to expire.. Refreshing Tokens....");
 
         // 1. Call refresh route and get tokens
         const refreshResponse = await axiosInstance.get(
@@ -107,7 +105,7 @@ axiosInstance.interceptors.response.use(
       if (!originalRequest._retry) {
         originalRequest._retry = true; // to avoid infinte loops
         try {
-          console.log("Refreshing tokens...");
+          console.log("Request Failed.. Refreshing tokens...");
 
           // 1. Call refresh route and get new tokens
           const refreshResponse = await axiosInstance.get(

@@ -5,6 +5,7 @@ import AppProvider from "@/providers/AppProvider";
 import AuthIntializer from "@/providers/AuthIntializer";
 import UserInactivityTracker from "@/providers/UserInactivityTracker";
 import { fetchUser } from "@/lib/fetchUser";
+import { useServerStatusUniversal } from "@/hooks/useServerStausUniversal";
 
 export const metadata: Metadata = {
   title: "Trust Healthcare - Quality Medical Care You Can Rely On",
@@ -53,6 +54,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const user = await fetchUser();
+  console.log("USER:", user);
 
   return (
     <html lang="en" suppressHydrationWarning={true}>

@@ -1,9 +1,14 @@
 // lib/fetchUser.ts
 import { SERVER_URI } from "@/config/api";
+import { useServerStatusUniversal } from "@/hooks/useServerStausUniversal";
 import axios from "axios";
 import { cookies } from "next/headers";
 
 export const fetchDoctor = async (doctorId: string) => {
+  const { isOnline } = await useServerStatusUniversal();
+
+  if (!isOnline) return null;
+
   try {
     const cookieStore = await cookies();
     const consent = cookieStore.get("cookie_consent")?.value;

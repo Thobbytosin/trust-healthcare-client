@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuthValidate } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 // import { useAuth } from "@/hooks/useAuth";
 import { useAuthStore } from "@/store/useAuthStore";
 import { User } from "@/types/user.types";
@@ -16,7 +16,8 @@ const AuthIntializer = ({ user }: { user: User | null }) => {
     setUserLoading(false);
   }, [user]);
 
-  const { error } = useAuthValidate();
+  // call only if server can find user data
+  const { error } = useAuth({ enabled: user === null });
   if (error) {
     console.log("Auth validation failed:", error);
   }

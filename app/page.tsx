@@ -1,7 +1,9 @@
 import LandingPageLoader from "@/components/global/loaders/LandingPageLoader";
 import Home from "@/components/home/Home";
 import { SERVER_URI } from "@/config/api";
+import { fetchDoctorsUnauth } from "@/lib/fetchDoctorsUnauth";
 import { fetchUser } from "@/lib/fetchUser";
+import { IDoctor } from "@/types/doctor.types";
 import axios from "axios";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
@@ -32,6 +34,8 @@ import { Suspense } from "react";
 // };
 
 export default async function LandingPage() {
+  const doctors: IDoctor[] | null = await fetchDoctorsUnauth();
+  console.log("DOCTORS:", doctors);
   // const user = await refreshTokens();
   // console.log("PAGE", user);
   return (

@@ -32,21 +32,22 @@ export const useServerStatus = (options?: { checkInterval?: number }) => {
         });
 
         wasOfflineRef.current = false;
+        consecutiveChecksRef.current = 0;
 
         intervalRef.current && clearInterval(intervalRef.current);
         intervalRef.current = null;
 
         window.location.reload();
       }
-      consecutiveChecksRef.current++; // increase consecutive success check by 1
+      // consecutiveChecksRef.current++; // increase consecutive success check by 1
       setError(null);
       setIsOnline(true);
     }
 
     // console.log("COUNTS", consecutiveChecksRef.current);
 
-    // Stop checking after 3 consecutive successes (5 because of the immediate check and first interval)
-    if (consecutiveChecksRef.current >= 5 && intervalRef.current) {
+    // Stop checking after 5 consecutive successes (5 because of the immediate check and first interval)
+    if (consecutiveChecksRef.current >= 7 && intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
@@ -77,5 +78,6 @@ export const useServerStatus = (options?: { checkInterval?: number }) => {
     isLoading,
     error,
     checkStatus,
+    attempts: consecutiveChecksRef.current,
   };
 };
