@@ -55,7 +55,7 @@ const Doctor = ({ doctorId }: Props) => {
   //   return <LandingPageLoader />;
   // }
 
-  console.log(doctor);
+  // console.log(doctor);
   console.log(data);
 
   return (

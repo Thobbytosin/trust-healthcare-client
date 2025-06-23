@@ -11,7 +11,7 @@ export const fetchDoctor = async (doctorId: string) => {
 
     const res = await axios.get(`${SERVER_URI}/doctor/get-doctor/${doctorId}`, {
       headers: {
-        Cookie: `TR_HOST_X=${tr_host_x}`,
+        Cookie: `tr_host_x=${tr_host_x}`,
         "Content-Type": "application/json",
         "x-cookie-consent": consent || "",
       },

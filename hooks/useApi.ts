@@ -33,8 +33,7 @@ export function useFetchData<T>({
           method,
           url: `${SERVER_URI}${url}`,
           headers: {
-            ...(headers || {}),
-            "x-cookie-consent": consent,
+            "x-cookie-consent": consent || "",
           },
           withCredentials: true,
           skipAuthRefresh,

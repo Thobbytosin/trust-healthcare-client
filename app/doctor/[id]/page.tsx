@@ -25,7 +25,7 @@ export async function generateMetadata(
       method: "GET",
       cache: "no-store",
       headers: {
-        Cookie: `TR_HOST_X=${TR_HOST_X}`,
+        Cookie: `tr_host_x=${TR_HOST_X}`,
         "Content-Type": "application/json",
         "x-cookie-consent": consent || "",
       },
