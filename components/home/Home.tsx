@@ -6,55 +6,32 @@ import Hero from "./Hero";
 import Search from "../global/search/Search";
 import CookiesConsent from "../cookieconsent/CookiesConsent";
 import Footer from "../global/footer/Footer";
-import { useDoctorsStore } from "@/store/useDoctorsStore";
 import LandingPageLoader from "../global/loaders/LandingPageLoader";
 import { usePathname, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { getCookie } from "@/utils/helpers";
 import LazyLoad from "../global/lazyLoad/LazyLoad";
 import Services from "./Services";
-import { useFetchDoctorsFree } from "@/hooks/useFetchDoctorsFree";
 import AiChatWidget from "../ai/AiChatWidget";
-import ButtonLoader from "../global/loaders/ButtonLoader";
 import SectionLoader from "../global/loaders/SectionLoader";
 import NewsLetter from "./NewsLetter";
 import { useServerStatus } from "@/hooks/useServerStatus";
-import { useAuthStore } from "@/store/useAuthStore";
-import { User } from "@/types/user.types";
 import ServerStatusListener from "@/components/ui/ServerStatusListener";
+import { IDoctor } from "@/types/doctor.types";
 
-type Props = {};
+type Props = {
+  doctors: IDoctor[] | null;
+};
 
-const Home = () => {
-  // for protected route nextjs middleware
-  const setUser = useAuthStore((state) => state.setUser);
-  const user = useAuthStore((state) => state.user);
+const Home = ({ doctors }: Props) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { loading: doctorsLoading } = useFetchDoctorsFree();
   const [showConsent, setShowConsent] = useState(false);
-  const doctors = useDoctorsStore((state) => state.doctors);
-  const [shouldRender, setShouldRender] = useState(false);
   const { error: serverError, attempts } = useServerStatus({
     checkInterval: 10000,
   });
 
-  // console.log("USER:", user);
-
   useEffect(() => {
-    if (user) {
-      setUser(user);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && !doctorsLoading && !serverError) {
-      setShouldRender(true);
-    }
-  }, [doctorsLoading]);
-
-  useEffect(() => {
-    if (!shouldRender) return;
     if (typeof window === "undefined") return;
 
     const consent = getCookie("cookie_consent");
@@ -63,11 +40,10 @@ const Home = () => {
       setShowConsent(true);
       return;
     }
-  }, [shouldRender]);
+  }, [doctors]);
 
   // for middleware error
   useEffect(() => {
-    if (!shouldRender) return;
     if (typeof window === "undefined") return;
 
     if (searchParams.get("authError") === "true") {
@@ -80,16 +56,15 @@ const Home = () => {
       const newParams = new URLSearchParams(searchParams.toString());
       newParams.delete("authError");
 
-      // const newUrl = `${pathname}?${newParams.toString()}`;
       window.history.replaceState({}, "", "/");
     }
-  }, [shouldRender, searchParams, pathname]);
+  }, [doctors, searchParams, pathname]);
 
   if (serverError) {
     return <ServerStatusListener RETRY_INTERVAL={10000} attempts={attempts} />;
   }
 
-  if (!shouldRender) {
+  if (!doctors) {
     return <LandingPageLoader />;
   }
 

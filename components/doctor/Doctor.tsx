@@ -24,7 +24,6 @@ type Props = {
 };
 
 const Doctor = ({ doctor }: Props) => {
-  // const { loading } = useFetchDoctor(doctorId);
   const setDoctor = useDoctorsStore((state) => state.setDoctor);
   const eduContainer = useRef<HTMLDivElement | null>(null);
 
@@ -53,8 +52,6 @@ const Doctor = ({ doctor }: Props) => {
   if (!doctor) {
     return <LandingPageLoader />;
   }
-
-  console.log("DOCTOR", doctor);
 
   return (
     <main className=" min-h-screen bg-gray-200 pb-20">

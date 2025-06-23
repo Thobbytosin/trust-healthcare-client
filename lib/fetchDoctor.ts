@@ -23,7 +23,6 @@ export const fetchDoctor = async (doctorId: string) => {
       withCredentials: true,
     });
 
-    console.log(res.data.doctor);
     return res.data.doctor;
   } catch (err: any) {
     console.log("Error fetching doctor:", err.response?.data || err.message);

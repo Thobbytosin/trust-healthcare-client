@@ -10,7 +10,7 @@ type PageProps = {
   params: Promise<{ id: string }>;
 };
 
-// 🧠 generateMetadata is static but can use cookies()
+// generateMetadata is static but can use cookies()
 export async function generateMetadata(
   { params }: PageProps,
   parent: ResolvingMetadata
@@ -110,7 +110,6 @@ export async function generateMetadata(
 export default async function DoctorPage({ params }: PageProps) {
   const { id } = await params;
   const doctor: IDoctor | null = await fetchDoctor(id);
-  console.log("DOCTOR", doctor);
 
   // return <div>Doctor Page</div>;
   return <Doctor doctor={doctor} />;
