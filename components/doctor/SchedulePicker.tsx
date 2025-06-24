@@ -264,6 +264,30 @@ const SchedulePicker = ({ selectedSlots, setSelectedSlots }: Props) => {
   const appointmentSession = selectedSlots?.[dateString]?.[doctor.id]?.session;
   const appointmentSlot = selectedSlots?.[dateString]?.[doctor.id]?.slot;
 
+  const slotTimeHasPassed = (slot: string): boolean => {
+    const isToday = selectedDate === todayFullDate;
+    if (!isToday) return false;
+
+    // parse slot start time
+    const slotStart = slot.split("-")[0].trim();
+
+    const [time, meridian] = slotStart.split(/(AM|PM)/i);
+    const [hourStr, minuteStr] = time.split(":");
+    let hr = parseInt(hourStr, 10);
+    const minute = parseInt(minuteStr || "0", 10);
+
+    if (meridian.toUpperCase() === "PM" && hr !== 12) hr += 12;
+    if (meridian.toUpperCase() === "AM" && hr === 12) hr = 0;
+
+    const now = new Date();
+    const slotDate = new Date();
+    slotDate.setHours(hr, minute, 0, 0);
+
+    const isPast = isToday && slotDate.getTime() < now.getTime();
+
+    return isPast;
+  };
+
   return (
     <>
       <div className=" w-full mt-3">
@@ -497,7 +521,8 @@ const SchedulePicker = ({ selectedSlots, setSelectedSlots }: Props) => {
 
                                 // check if the slot is selected and if a slot has been selected
                                 const isDisabled =
-                                  !isSelected && doctorSlotHasBennSelected;
+                                  (!isSelected && doctorSlotHasBennSelected) ||
+                                  slotTimeHasPassed(slot);
 
                                 return (
                                   <div

@@ -7,10 +7,6 @@ import { useServerStatus } from "./useServerStatus";
 import { getCookie } from "@/utils/helpers";
 
 export const useAuth = ({ enabled }: { enabled: boolean }) => {
-  if (!enabled) {
-    return { userData: null, error: null, userLoading: false };
-  }
-
   const setUser = useAuthStore((state) => state.setUser);
   const setUserLoading = useAuthStore((state) => state.setUserLoading);
 
@@ -26,18 +22,24 @@ export const useAuth = ({ enabled }: { enabled: boolean }) => {
     method: "GET",
     url: FETCHUSER,
     queryKey: ["user"],
-    enabled: !serverStatusLoading && isOnline && !!loggedInToken,
+    enabled: enabled && !serverStatusLoading && isOnline && !!loggedInToken,
   });
 
   useEffect(() => {
+    if (!enabled) return;
     setUserLoading(isLoading);
-  }, [isLoading]);
+  }, [enabled, isLoading]);
 
   useEffect(() => {
+    if (!enabled) return;
     if (isSuccess && userData) {
       setUser(userData.user);
     }
-  }, [isSuccess, userData]);
+  }, [enabled, isSuccess, userData]);
 
-  return { userData, error, userLoading: isLoading };
+  return {
+    userData: enabled ? userData : null,
+    error: enabled ? error : null,
+    userLoading: enabled ? isLoading : false,
+  };
 };

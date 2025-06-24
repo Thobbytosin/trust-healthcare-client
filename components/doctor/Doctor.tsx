@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import RevealWrapper, { fadeInDown } from "../ui/RevealWrapper";
 import Header from "../global/header/Header";
 import LandingPageLoader from "../global/loaders/LandingPageLoader";
-import { useFetchDoctor } from "@/hooks/useFetchDoctor";
 import { styles } from "@/styles/styles";
 import { useDoctorsStore } from "@/store/useDoctorsStore";
 import Image from "next/image";

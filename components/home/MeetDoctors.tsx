@@ -16,18 +16,18 @@ type Props = {
 
 const MeetDoctors = ({ doctors }: Props) => {
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingIndex, setLoadingInex] = useState<number | null>(null);
   const [currentId, setCurrentId] = useState<string | undefined>();
 
-  const handleBtnNavigate = async (id: string) => {
+  const handleBtnNavigate = async (id: string, index: number) => {
     router.prefetch(`/doctor/${id}`);
 
-    setLoading(true);
+    setLoadingInex(index);
     setCurrentId(id);
 
     setTimeout(() => {
       router.push(`/doctor/${id}`);
-      setLoading(false);
+      setLoadingInex(index);
       setCurrentId(undefined);
     }, 1000);
   };
@@ -65,64 +65,68 @@ const MeetDoctors = ({ doctors }: Props) => {
                 key={index}
                 className={`bg-white w-[302px] lg:w-[394px] h-[447px] shadow shadow-black/20 rounded-md flex flex-col justify-center items-center`}
               >
-                <div className=" w-[80%] h-[90%]  flex flex-col lg:justify-between ">
-                  <div
-                    className=" cursor-pointer"
-                    onClick={() => handleBtnNavigate(doctor.id)}
-                  >
-                    {/* available indicator */}
-                    <div className="w-fit flex justify-center items-center px-2 py-0.5 bg-[#EDEDED] rounded-full gap-2 ">
-                      <div
-                        className={`w-[8px] h-[8px] rounded-full ${
-                          doctor.available ? "bg-primary" : "bg-red-500"
-                        } `}
-                      />
-                      <h4 className=" text-xs text-text-primary">
-                        {doctor.available ? "Available" : "Not Available"}
-                      </h4>
-                    </div>
-
-                    {/* image card */}
-                    <div className="relative w-full flex justify-center items-center bg-primary rounded-3xl h-[140px] lg:h-[198px] mt-6 lg:mt-2">
-                      <div className=" absolute bottom-0 bg-blue-300/20 w-40 md:w-50 h-[60%] rounded-t-3xl">
-                        <Image
-                          src={doctor.image || ""}
-                          alt="doctor_image"
-                          width={100}
-                          height={100}
-                          className=" object-contain w-[100%] absolute -bottom-1 clippedImage "
+                {loadingIndex === index && doctor.id === currentId ? (
+                  <ButtonLoader />
+                ) : (
+                  <div className=" w-[80%] h-[90%]  flex flex-col lg:justify-between ">
+                    <div
+                      className=" cursor-pointer"
+                      onClick={() => handleBtnNavigate(doctor.id, index)}
+                    >
+                      {/* available indicator */}
+                      <div className="w-fit flex justify-center items-center px-2 py-0.5 bg-[#EDEDED] rounded-full gap-2 ">
+                        <div
+                          className={`w-[8px] h-[8px] rounded-full ${
+                            doctor.available ? "bg-primary" : "bg-red-500"
+                          } `}
                         />
+                        <h4 className=" text-xs text-text-primary">
+                          {doctor.available ? "Available" : "Not Available"}
+                        </h4>
+                      </div>
+
+                      {/* image card */}
+                      <div className="relative w-full flex justify-center items-center bg-primary rounded-3xl h-[140px] lg:h-[198px] mt-6 lg:mt-2">
+                        <div className=" absolute bottom-0 bg-blue-300/20 w-40 md:w-50 h-[60%] rounded-t-3xl">
+                          <Image
+                            src={doctor.image || ""}
+                            alt="doctor_image"
+                            width={100}
+                            height={100}
+                            className=" object-contain w-[100%] absolute -bottom-1 clippedImage "
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* doctor details */}
-                  <div className="lg:mt-0 mt-6 w-full flex flex-col justify-center items-center">
-                    <h3 className=" text-text-primary text-center text-lg">
-                      {doctor.name}
-                    </h3>
-                    <p className=" text-red-500 mt-1 text-center">
-                      {doctor.specialization.length > 1
-                        ? doctor.specialization.join(", ")
-                        : doctor.specialization[0]}
-                    </p>
-                    <div className=" mt-6 text-2xl">
-                      <Ratings
-                        color=" text-primary"
-                        rating={doctor.ratings || 0}
-                      />
-                    </div>
+                    {/* doctor details */}
+                    <div className="lg:mt-0 mt-6 w-full flex flex-col justify-center items-center">
+                      <h3 className=" text-text-primary text-center text-lg">
+                        {doctor.name}
+                      </h3>
+                      <p className=" text-red-500 mt-1 text-center">
+                        {doctor.specialization.length > 1
+                          ? doctor.specialization.join(", ")
+                          : doctor.specialization[0]}
+                      </p>
+                      <div className=" mt-6 text-2xl">
+                        <Ratings
+                          color=" text-primary"
+                          rating={doctor.ratings || 0}
+                        />
+                      </div>
 
-                    {/* button */}
-                    {doctor.available ? (
+                      {/* button */}
+                      {/* {doctor.available ? (
                       <div className=" w-full">
-                        {loading && currentId === doctor.id && <ButtonLoader />}
-                        {!loading && currentId !== doctor.id && (
+                        {loadingIndex === index && currentId === doctor.id ? (
+                          <ButtonLoader />
+                        ) : (
                           <button
                             type="button"
                             title="Book Appointment"
                             aria-label="Book Appointment"
-                            onClick={() => handleBtnNavigate(doctor.id)}
+                            onClick={() => handleBtnNavigate(doctor.id, index)}
                             className=" text-sm lg:text-base w-full text-center py-2 transition-all duration-700 border border-primary text-primary mt-3 cursor-pointer hover:bg-primary hover:text-white rounded-full hover:border-0"
                           >
                             Book Appointment
@@ -138,9 +142,10 @@ const MeetDoctors = ({ doctors }: Props) => {
                       >
                         Not Available
                       </button>
-                    )}
+                    )} */}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>

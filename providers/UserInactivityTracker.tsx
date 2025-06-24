@@ -39,9 +39,9 @@ const UserInactivityTracker = (props: Props) => {
   }, [canFetchUser]);
 
   useInactivityTimer({
-    enabled: !canFetchUser,
+    enabled: canFetchUser,
     onTimeout: handleInactivity,
-    timeout: 35 * 60 * 1000, // in minutes
+    timeout: 32 * 60 * 1000, // in minutes
   });
 
   const handleTryAgain = () => {

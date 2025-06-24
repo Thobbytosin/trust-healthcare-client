@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import React, { ComponentType, useEffect, useState } from "react";
+import React, { ComponentType, useEffect, useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 interface Props {
@@ -25,10 +25,14 @@ export default function LazyLoad({
     if (inView) setLoadComponent(true);
   }, [inView]);
 
-  const DynamicComponent = dynamic(importFunc, {
-    loading: () => <>{placeholder}</>,
-    ssr: false,
-  });
+  const DynamicComponent = useMemo(
+    () =>
+      dynamic(importFunc, {
+        loading: () => <>{placeholder}</>,
+        ssr: false,
+      }),
+    []
+  );
 
   return (
     <div ref={ref}>

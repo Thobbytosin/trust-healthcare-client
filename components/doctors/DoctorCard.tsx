@@ -38,7 +38,7 @@ const DoctorCard: FC<Props> = ({ doctor }) => {
 
       {/* details */}
       <div className="w-[70%] mt-2 px-3 lg:flex gap-4  h-full ">
-        <div className=" lg:max-w-[80%]">
+        <div className=" lg:max-w-[65%]">
           <h4 className=" text-text-primary text-lg md:text-xl font-medium relative">
             {doctor.name}
             <span className="  absolute -top-1 text-sm text-secondary">
@@ -116,11 +116,11 @@ const DoctorCard: FC<Props> = ({ doctor }) => {
         </div>
 
         {/* book appointment btn */}
-        <div className="mt-4 lg:mt-0 flex flex-col  lg:items-center justify-end">
+        <div className="mt-4 lg:mt-0 flex flex-col  lg:items-center justify-end w-[35%]">
           {doctor.available ? (
-            <p className=" text-secondary text-sm ">Available Today!</p>
+            <p className=" text-secondary text-xs ">Available Today!</p>
           ) : (
-            <p className=" text-red-500 text-sm ">Not Available Today!</p>
+            <p className=" text-red-500 text-xs ">Not Available Today!</p>
           )}
 
           {doctor.available ? (
@@ -129,15 +129,15 @@ const DoctorCard: FC<Props> = ({ doctor }) => {
             ) : (
               <button
                 onClick={() => handleNavigate(doctor.id)}
-                className=" cursor-pointer transition-all hover:bg-gray-200 hover:text-text-primary rounded-lg text-center bg-primary text-white py-3 mt-4 px-8 text-xs"
+                className=" cursor-pointer transition-all hover:bg-gray-200 hover:text-text-primary rounded-lg text-center bg-primary text-white py-3 mt-4 px-6 text-xs"
               >
-                Book an Appointment!
+                Book Session
               </button>
             )
           ) : (
             <button
               disabled
-              className=" opacity-50 cursor-not-allowed  rounded-lg text-center  bg-gray-400 text-white py-3 mt-4 px-8 text-xs"
+              className=" opacity-50 cursor-not-allowed  rounded-lg text-center  bg-gray-400 text-white py-3 mt-4 px-6 text-xs"
             >
               Unavailable
             </button>

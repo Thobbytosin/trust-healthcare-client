@@ -61,7 +61,7 @@ const SelectLocation: FC<Props> = () => {
           }
           className="w-full border border-gray-200 py-5 outline-none text-text-primary focus:outline-none ring-0 focus:ring-0  "
         >
-          <SelectValue placeholder="Select Your Location" />
+          <SelectValue placeholder="Search by Location" />
         </SelectTrigger>
         <SelectContent className=" mt-3 bg-white border-none text-text-primary">
           <SelectItem
