@@ -70,12 +70,12 @@ const Login: FC<Props> = ({ setMode, setOpenModal }) => {
   };
 
   return (
-    <section className=" w-full p-8 relative">
+    <section className=" w-full p-8 relative font-poppins">
       {isPending && <Loader />}
-      <h2 className=" text-text-primary text-lg md:text-2xl font-medium">
+      <h2 className=" text-text-primary text-lg md:text-2xl font-medium font-poppins">
         Welcome Back
       </h2>
-      <p className=" text-xs md:text-sm text-grayey font-light mb-8 md:mb-0">
+      <p className=" text-xs md:text-sm text-grayey font-light mb-8 md:mb-0 font-comfortaa">
         Sign in to access your account
       </p>
 

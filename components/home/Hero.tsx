@@ -58,7 +58,7 @@ const Hero = (props: Props) => {
               <span className="hidden lg:inline-block mr-2">
                 Book an appointment <ArrowRightAltIcon aria-hidden="true" />
               </span>
-              <span className="lg:hidden">Book appointment</span>
+              <span className="lg:hidden">Book session</span>
             </button>
 
             {/* watch videos cta */}
@@ -90,7 +90,7 @@ const Hero = (props: Props) => {
                 </div>
               </div>
               <h3 className="text-text-primary lg:text-base text-xs md:ml-0 ml-2 font-poppins">
-                Watch Video
+                Watch
               </h3>
             </a>
           </div>

@@ -17,22 +17,22 @@ const servicesData = [
   {
     id: 1,
     name: "Well Equipped Lab",
-    icon: <ScienceOutlinedIcon fontSize="large" />,
+    icon: <ScienceOutlinedIcon fontSize="medium" />,
   },
   {
     id: 1,
-    name: "Emergency Ambulance",
-    icon: <ElectricRickshawOutlinedIcon fontSize="large" />,
+    name: "Emergency",
+    icon: <ElectricRickshawOutlinedIcon fontSize="medium" />,
   },
   {
     id: 1,
     name: "Online Appointment",
-    icon: <BookOnlineOutlinedIcon fontSize="large" />,
+    icon: <BookOnlineOutlinedIcon fontSize="medium" />,
   },
   {
     id: 1,
     name: "Call Centre",
-    icon: <ContactSupportOutlinedIcon fontSize="large" />,
+    icon: <ContactSupportOutlinedIcon fontSize="medium" />,
   },
 ];
 
@@ -54,18 +54,16 @@ const Services = (props: Props) => {
           transition={{ duration: 0.8, ease: "easeOut" }} // Smooth animation
           viewport={{ amount: 0.2 }}
         >
-          <div className="grid gap-10 xl:grid-cols-4 lg:grid-cols-2 grid-cols-1  ">
+          <div className="grid gap-6 md:gap-10 lg:grid-cols-4 grid-cols-2 ">
             {servicesData.map((item, index) => (
               <motion.div
                 key={index}
                 aria-label={`${item} card`}
                 title={`${item.name} card`}
-                className=" w-[221px] h-[201px] md:w-[271px] md:h-[251px] shadow shadow-black/20 rounded-4xl bg-white transition-all duration-700 hover:bg-primary text-primary hover:text-white flex flex-col justify-center items-center gap-8"
+                className=" w-[160px] h-[140px] md:w-[221px] md:h-[201px] shadow shadow-black/20 rounded-4xl bg-white transition-all duration-700 hover:bg-primary text-primary hover:text-white flex flex-col justify-center items-center gap-8"
               >
                 {item.icon}
-                <p className=" md:text-base text-sm font-poppins">
-                  {item.name}
-                </p>
+                <p className=" md:text-sm text-xs font-poppins">{item.name}</p>
               </motion.div>
             ))}
           </div>

@@ -7,7 +7,7 @@ type Props = {
 
 const VerificationSuccess = ({ setMode }: Props) => {
   return (
-    <section className="md:h-fit h-[370px] flex justify-center items-center flex-col">
+    <section className="md:h-fit h-[370px] flex justify-center items-center flex-col  font-poppins">
       <div className=" w-20 h-20 border-2 border-secondary flex justify-center items-center text-secondary rounded-full">
         <DoneOutlinedIcon color="inherit" fontSize="large" />
       </div>

@@ -140,15 +140,15 @@ const Verification: FC<Props> = ({ setMode }) => {
   };
 
   return (
-    <section className=" w-full md:w-[80%] mx-auto p-8 flex flex-col justify-center items-center overflow-clip relative">
+    <section className=" w-full md:w-[80%] mx-auto p-8 flex flex-col justify-center items-center overflow-clip relative font-poppins">
       {isPending && <Loader />}
       {resendPending && <Loader />}
 
-      <h2 className=" text-text-primary text-center text-2xl font-medium mb-4">
+      <h2 className=" text-text-primary text-center text-2xl font-medium mb-4 ">
         Account Verification
       </h2>
       <Image src={phoneIcon} alt="phone-icon" width={100} height={100} />
-      <p className=" text-sm text-grayey font-light text-center mt-6">
+      <p className=" text-sm text-grayey font-light text-center mt-6 font-comfortaa">
         Enter the 6-digit verification code sent to your email.
       </p>
       <div className=" flex gap-2 justify-center  w-fit mt-6">
@@ -177,7 +177,7 @@ const Verification: FC<Props> = ({ setMode }) => {
         aria-label="Submit Verification"
         disabled={verificationLength !== 6}
         onClick={handleSubmit}
-        className={` w-full py-3 text-sm  text-center rounded-lg  mt-10 md:mt-6 transition-all duration-500  ${
+        className={` w-full py-3 text-sm  text-center rounded-lg  mt-10 md:mt-6 transition-all duration-500 font-poppins  ${
           verificationLength === 6
             ? "bg-primary text-white cursor-pointer hover:bg-transparent hover:text-primary border-primary hover:border"
             : " cursor-not-allowed bg-gray-200 text-text-primary opacity-80"
@@ -185,7 +185,7 @@ const Verification: FC<Props> = ({ setMode }) => {
       >
         Submit
       </button>
-      <p className=" text-center text-sm md:text-base mt-8">
+      <p className=" text-center text-sm md:text-base mt-8 font-comfortaa">
         Didn’t get the code?{" "}
         <button
           aria-label="Resend Button"
@@ -202,7 +202,7 @@ const Verification: FC<Props> = ({ setMode }) => {
         aria-label="Back to sign in"
         type="button"
         onClick={() => setMode("signup")}
-        className=" mt-4 cursor-pointer text-primary underline font-medium"
+        className=" mt-4 cursor-pointer text-primary underline font-medium font-poppins"
       >
         Back to Sign Up
       </button>

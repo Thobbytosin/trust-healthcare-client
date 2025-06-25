@@ -6,6 +6,7 @@ import AuthIntializer from "@/providers/AuthIntializer";
 import UserInactivityTracker from "@/providers/UserInactivityTracker";
 import { fetchUser } from "@/lib/fetchUser";
 import { Comfortaa, Poppins } from "next/font/google";
+import ViewportHeightSetter from "@/providers/ViewportHeightSetter";
 
 const comfortaa = Comfortaa({
   variable: "--font-comfortaa",
@@ -72,6 +73,7 @@ export default async function RootLayout({
       <body
         className={`${comfortaa.variable} ${poppins.variable} min-h-screen`}
       >
+        <ViewportHeightSetter />
         <AppProvider>
           <AuthIntializer user={user} />
           <UserInactivityTracker />

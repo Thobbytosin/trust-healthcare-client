@@ -35,7 +35,7 @@ const Search = (props: Props) => {
             aria-label="Doctor's Name"
             placeholder="Name of Doctor"
             onChange={handleChange}
-            className=" bg-[#DEDEDE] w-[160px] md:w-[180px] lg:w-[278px] lg:rounded-xl rounded-lg p-1.5 lg:p-3 lg:text-base text-xs outline-none focus:ring-1 focus:ring-primary focus:border-primary/50 text-[#5B5B5B]"
+            className=" bg-gray-200 w-full md:w-[180px] lg:w-[278px] lg:rounded-xl rounded-lg p-2 lg:p-3 lg:text-base text-xs outline-none focus:ring-1 focus:ring-primary focus:border-primary/50 text-[#5B5B5B]"
           />
           <select
             title="Speciality"
@@ -43,7 +43,7 @@ const Search = (props: Props) => {
             aria-label="Doctor's Speciality"
             //   value={form.speciality}
             onChange={handleChange}
-            className=" bg-[#dedede] w-[160px] md:w-[180px] lg:w-[278px] lg:rounded-xl rounded-lg p-1.5 lg:p-3 lg:text-base text-xs outline-none focus:ring-1 focus:ring-primary focus:border-primary/50 text-[#5B5B5B] ml-1 md:ml-3"
+            className=" mt-2 md:mt-0 bg-gray-200 w-full md:w-[180px] lg:w-[278px] lg:rounded-xl rounded-lg p-1.5 lg:p-3 lg:text-base text-xs outline-none focus:ring-1 focus:ring-primary focus:border-primary/50 text-[#5B5B5B] md:ml-3"
           >
             <option value="">Select Speciality</option>
             <option className=" bg-white" value="Cardiologist">

@@ -67,16 +67,19 @@ const Signup: FC<Props> = ({ setMode }) => {
   };
 
   return (
-    <section className=" w-full h-[580px] overflow-y-scroll md:overflow-hidden px-8 py-4 md:py-12 relative">
+    <section className=" w-full h-full md:overflow-hidden px-8 py-8 md:py-12 relative font-poppins">
       {isPending && <Loader />}
 
       <h2 className=" text-text-primary text-lg md:text-2xl font-medium">
         Register Your Account
       </h2>
-      <p className=" text-xs md:text-sm text-grayey font-light">
+      <p className=" text-xs md:text-sm text-grayey font-light font-comfortaa">
         Sign up to create a new account
       </p>
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={handleSubmit}
+        className=" overflow-y-scroll md:overflow-hidden h-[400px] md:h-fit "
+      >
         {/* first and last name */}
         <div className=" md:flex md:gap-10 justify-between mt-8 ">
           {/* first name */}
@@ -223,7 +226,7 @@ const Signup: FC<Props> = ({ setMode }) => {
 
         {/* password authentication options */}
         {isPasswordChanging ? (
-          <div className="mt-2">
+          <div className="mt-2 font-comfortaa">
             <span
               className={`block ${
                 form?.password?.length >= 8 ? "text-green-600" : "text-red-500"
@@ -337,18 +340,18 @@ const Signup: FC<Props> = ({ setMode }) => {
         >
           Sign Up
         </button>
+        <p className=" text-center text-text-primary font-normal md:text-base text-sm">
+          Already Have an Account?{" "}
+          <span
+            title="Log In"
+            aria-label="Log In"
+            onClick={() => setMode("login")}
+            className=" cursor-pointer text-primary font-medium transition-all duration-700 hover:underline"
+          >
+            Log In
+          </span>
+        </p>
       </form>
-      <p className=" text-center text-text-primary font-normal md:text-base text-sm">
-        Already Have an Account?{" "}
-        <span
-          title="Log In"
-          aria-label="Log In"
-          onClick={() => setMode("login")}
-          className=" cursor-pointer text-primary font-medium transition-all duration-700 hover:underline"
-        >
-          Log In
-        </span>
-      </p>
     </section>
   );
 };

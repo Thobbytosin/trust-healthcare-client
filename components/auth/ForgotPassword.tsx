@@ -46,13 +46,13 @@ const ForgotPassword = ({ setMode }: Props) => {
   };
 
   return (
-    <section className=" w-full md:w-[80%] mx-auto p-8 flex flex-col justify-center items-center overflow-clip relative">
+    <section className=" w-full md:w-[80%] mx-auto p-8 flex flex-col justify-center items-center overflow-clip relative font-poppins">
       {isPending && <Loader />}
 
       <h2 className=" text-text-primary text-center text-2xl font-medium ">
         Forgot Password
       </h2>
-      <p className=" text-sm text-grayey font-light text-center mt-1">
+      <p className=" text-sm text-grayey font-light text-center mt-1 font-comfortaa">
         Enter your email to help reset your password.
       </p>
       <form onSubmit={handleSubmit} className=" w-full mt-10">

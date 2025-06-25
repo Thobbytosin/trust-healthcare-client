@@ -71,17 +71,17 @@ const ResetPassword = ({ setMode }: Props) => {
   };
 
   return (
-    <section className=" w-full  mx-auto p-8 flex flex-col justify-center items-center overflow-clip relative">
+    <section className=" w-full  mx-auto p-8 flex flex-col justify-center items-center overflow-clip relative font-poppins">
       {isPending && <Loader />}
-      <h2 className=" text-text-primary text-center text-2xl font-medium ">
+      <h2 className=" text-text-primary text-center text-2xl font-medium font-poppins ">
         Reset Password
       </h2>
-      <p className=" text-sm text-grayey font-light text-center mt-1">
+      <p className=" text-sm text-grayey font-light text-center mt-1 font-comfortaa">
         Enter the reset code sent to your email and your new password to set a
         new password.
       </p>
 
-      <form onSubmit={handleReset} className=" w-full mt-6">
+      <form onSubmit={handleReset} className=" w-full mt-6 font-poppins">
         {/* reset code */}
         <div>
           <label
@@ -270,7 +270,7 @@ const ResetPassword = ({ setMode }: Props) => {
         aria-label="Back to sign in"
         type="button"
         onClick={() => setMode("login")}
-        className=" mt-2 cursor-pointer text-primary underline font-medium"
+        className=" mt-2 cursor-pointer text-primary underline font-medium font-poppins"
       >
         Back to Sign in
       </button>

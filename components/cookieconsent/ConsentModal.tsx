@@ -59,10 +59,10 @@ const ConsentModal = ({ setOpen, setShowConsent }: Props) => {
   return (
     <div className="w-[80%] h-[90vh] lg:h-[85vh] bg-white z-100 p-6 overflow-y-scroll">
       {/* NOTE */}
-      <h2 className=" font-semibold text-base lg:text-xl mb-2 lg:mb-4 ">
+      <h2 className=" font-semibold text-base lg:text-xl mb-2 lg:mb-4 font-poppins ">
         Your privacy is important to us
       </h2>
-      <p className=" mb-4 md:mb-6 text-[10px] md:text-xs leading-6 text-gray-400 text-justify">
+      <p className=" mb-4 md:mb-6 text-[10px] md:text-xs leading-6 text-gray-400 text-justify font-comfortaa">
         Cookies are very small text files that are stored on your computer when
         you visit a website. We use cookies for a variety of purposes and to
         enhance your online experience on our website (for example, to remember
@@ -73,7 +73,7 @@ const ConsentModal = ({ setOpen, setShowConsent }: Props) => {
         using parts of our website.
       </p>
 
-      <h2 className=" font-semibold text-sm lg:text-base mb-3 md:mb-4">
+      <h2 className=" font-semibold text-sm lg:text-base mb-3 md:mb-4 font-poppins">
         Manage your cookies preferences.
       </h2>
 
@@ -84,7 +84,7 @@ const ConsentModal = ({ setOpen, setShowConsent }: Props) => {
             title={`${cookie.name}-button`}
             key={index}
             onClick={() => setActiveCookie(cookie.id)}
-            className={`w-full cursor-pointer text-xs lg:text-sm py-1.5 font-medium px-4 mt-2 md:mt-0 ${
+            className={`w-full cursor-pointer text-xs lg:text-sm py-1.5 font-medium px-4 mt-2 md:mt-0 font-poppins ${
               activeCookie === cookie.id
                 ? "bg-primary text-white"
                 : " bg-gray-200"

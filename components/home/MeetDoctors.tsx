@@ -63,7 +63,7 @@ const MeetDoctors = ({ doctors }: Props) => {
             {doctors?.map((doctor, index) => (
               <div
                 key={index}
-                className={`bg-white w-[302px] lg:w-[394px] h-[447px] shadow shadow-black/20 rounded-md flex flex-col justify-center items-center`}
+                className={`bg-white w-[280px] md:w-[302px] lg:w-[394px] py-10 h-fit shadow shadow-black/20 rounded-md flex flex-col justify-center items-center`}
               >
                 {loadingIndex === index && doctor.id === currentId ? (
                   <ButtonLoader />
@@ -76,11 +76,11 @@ const MeetDoctors = ({ doctors }: Props) => {
                       {/* available indicator */}
                       <div className="w-fit flex justify-center items-center px-2 py-0.5 bg-[#EDEDED] rounded-full gap-2 ">
                         <div
-                          className={`w-[8px] h-[8px] rounded-full ${
+                          className={`md:w-[8px] md:h-[8px] w-[6px] h-[6px] rounded-full ${
                             doctor.available ? "bg-primary" : "bg-red-500"
                           } `}
                         />
-                        <h4 className=" text-xs text-text-primary">
+                        <h4 className=" text-[10px] md:text-xs text-text-primary">
                           {doctor.available ? "Available" : "Not Available"}
                         </h4>
                       </div>
@@ -100,11 +100,11 @@ const MeetDoctors = ({ doctors }: Props) => {
                     </div>
 
                     {/* doctor details */}
-                    <div className="lg:mt-0 mt-6 w-full flex flex-col justify-center items-center">
-                      <h3 className=" text-text-primary text-center text-lg">
+                    <div className=" w-full flex flex-col justify-center items-center">
+                      <h3 className=" text-text-primary text-center mt-2 font-medium text-base">
                         {doctor.name}
                       </h3>
-                      <p className=" text-red-500 mt-1 text-center">
+                      <p className=" text-red-500 mt-1 text-center text-xs font-comfortaa">
                         {doctor.specialization.length > 1
                           ? doctor.specialization.join(", ")
                           : doctor.specialization[0]}

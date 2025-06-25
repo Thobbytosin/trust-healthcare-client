@@ -15,7 +15,7 @@ import {
 import { useSidebarStore } from "@/store/useSidebarStore";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Modal from "@/components/ui/Modal";
 
@@ -69,15 +69,31 @@ const NavSidebar = ({ openSidebar, setOpenSidebar }: Props) => {
     null
   );
 
+  useEffect(() => {
+    if (openSidebar) {
+      document.documentElement.classList.add("sidebar-open");
+      document.body.classList.add("sidebar-open");
+    } else {
+      document.documentElement.classList.remove("sidebar-open");
+      document.body.classList.remove("sidebar-open");
+    }
+
+    // Clean up if component unmounts
+    return () => {
+      document.documentElement.classList.remove("sidebar-open");
+      document.body.classList.remove("sidebar-open");
+    };
+  }, [openSidebar]);
+
   return (
     <>
       <div
         id="sidebar"
-        className={`fixed w-full h-screen top-0 left-0 z-40 transition duration-500 bg-black/40 flex  ${
+        className={`fixed w-screen full-mobile-height full inset-0 z-40 transition duration-500 bg-black/40 flex  ${
           openSidebar ? "translate-x-[0%]" : "translate-x-[110%]"
         }`}
       >
-        <div className=" w-[50%] flex flex-col justify-between  bg-white h-full py-6 px-4 rounded-2xl">
+        <div className="flex flex-col justify-between  bg-white h-full py-6 px-4 rounded-2xl">
           <div>
             <div className=" mb-8 w-full flex justify-between items-center">
               {/* logo */}
@@ -203,7 +219,7 @@ const NavSidebar = ({ openSidebar, setOpenSidebar }: Props) => {
         </div>
 
         <div
-          className=" w-[50%] h-full  bg-transparent"
+          className=" w-[40%] h-full bg-transparent"
           onClick={handleCloseSidebar}
         />
       </div>

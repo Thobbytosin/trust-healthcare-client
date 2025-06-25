@@ -92,12 +92,12 @@ const Testimonials = (props: Props) => {
             {testimonials.map((testimonial, index) => (
               <div
                 key={index}
-                className=" w-[348px] h-[181px] bg-white shadow-lg shadow-black/10 rounded-lg flex items-start gap-6 p-6"
+                className=" w-[348px] h-[160px] md:min-h-[181px] bg-white shadow-lg shadow-black/10 rounded-lg flex items-start gap-6 p-6"
               >
                 {/* image profile */}
                 <div className=" relative basis-1/4 mr-4">
-                  <div className="absolute left-0 w-[74px] h-[74px] rounded-full bg-primary" />
-                  <div className="absolute left-3 z-10 w-[74px] h-[74px] rounded-full bg-gray-200 overflow-clip">
+                  <div className="absolute left-0 w-[68px] md:w-[74px] h-[68px] md:h-[74px] rounded-full bg-primary" />
+                  <div className="absolute left-3 z-10 w-[68px] md:w-[74px] h-[68px] md:h-[74px] rounded-full bg-gray-200 overflow-clip">
                     <Image
                       src={testimonial.image}
                       alt="user_image"
@@ -109,7 +109,7 @@ const Testimonials = (props: Props) => {
                 </div>
                 {/* user */}
                 <div className="basis-3/4">
-                  <h3 className=" font-medium text-text-primary text-lg font-poppins">
+                  <h3 className=" font-medium text-text-primary text-sm md:text-lg font-poppins ">
                     {testimonial.name}
                   </h3>
                   <div className=" mt-2">
@@ -119,7 +119,7 @@ const Testimonials = (props: Props) => {
                       rating={testimonial.ratings}
                     />
                   </div>
-                  <p className="text-text-primary font-light text-sm mt-4 font-comfortaa">
+                  <p className="text-text-primary font-light text-xs md:text-sm mt-4 font-comfortaa">
                     {testimonial.feedback}
                   </p>
                 </div>

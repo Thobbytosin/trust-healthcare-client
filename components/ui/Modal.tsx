@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import Login from "../auth/Login";
 import Signup from "../auth/Signup";
 import doctors from "@/public/assets/doctors.png";
@@ -28,11 +28,20 @@ const Modal: FC<Props> = ({
   loading,
   setLoading,
 }) => {
+  useEffect(() => {
+    document.documentElement.classList.add("modal-open");
+    document.body.classList.add("modal-open");
+
+    return () => {
+      document.documentElement.classList.remove("modal-open");
+      document.body.classList.remove("modal-open");
+    };
+  }, []);
   return (
     <section>
       <div
         onClick={() => auth && setOpenModal(false)}
-        className=" bg-black/50 fixed left-0 top-0 w-screen min-h-[300vh]  scrollbar-hide z-50"
+        className=" bg-black/50 fixed left-0 top-0 w-screen min-h-[300vh]  scrollbar-hide z-40"
       />
       <div
         className={`bg-white fixed top-[5%] h-[90%] left-[5%] w-[90%] xl:left-[15%] xl:w-[70%] md:left-[7.5%] md:max-w-[85%] z-50 rounded-3xl ${

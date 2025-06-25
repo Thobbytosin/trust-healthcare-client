@@ -13,8 +13,9 @@ const UserInactivityTracker = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const consent = getCookie("cookie_consent");
+  const loggedInToken = getCookie("_XUR_CR_HOST");
   const { isOnline, isLoading: serverStatusLoading } = useServerStatus();
-  const canFetchUser = !serverStatusLoading && isOnline;
+  const canFetchUser = !serverStatusLoading && isOnline && !!loggedInToken;
 
   const handleInactivity = useCallback(async () => {
     if (!canFetchUser) return;

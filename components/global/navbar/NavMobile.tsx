@@ -42,7 +42,6 @@ const NavMobile = () => {
 
       {/* SIDEBAR SHOULD SHOW ONLY WHEN TOGGLE */}
       {/* mobile sidebar */}
-
       <NavSidebar openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
     </nav>
   );

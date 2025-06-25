@@ -28,6 +28,22 @@ body {
   overflow-x: hidden;
 }
 
+html.modal-open,
+body.modal-open {
+  overflow: hidden !important;
+  height: 100%;
+  touch-action: none;
+  -webkit-overflow-scrolling: auto;
+}
+
+html.sidebar-open,
+body.sidebar-open {
+  overflow: hidden !important;
+  height: 100%;
+  touch-action: none;
+  -webkit-overflow-scrolling: auto;
+}
+
 /* to remove the input type number toggler  */
 
 /* chrome, safari, edge, opera */
@@ -295,4 +311,8 @@ input[type="number"] {
 
 .slot-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+.full-mobile-height {
+  height: calc(var(--vh, 1vh) * 100);
 }
