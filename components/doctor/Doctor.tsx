@@ -79,7 +79,7 @@ const Doctor = ({ doctor }: Props) => {
 
             {/* doctor profile */}
             {/* avatar */}
-            <div className=" absolute md:left-[5rem] left-[3rem] -mt-20 z-10">
+            <div className="  absolute md:left-[5rem] left-[3rem] -mt-20 z-10">
               <div className=" relative  rounded-full md:w-40 md:h-40 h-30 w-30 bg-gray-100 border-4 border-white overflow-hidden">
                 <Image
                   src={doctor.image}
@@ -92,7 +92,7 @@ const Doctor = ({ doctor }: Props) => {
 
             {/* content */}
             <div className=" w-full">
-              <div className="  flex flex-col space-y-2  mt-12 md:mt-10 md:ml-50 md:px-0 px-8">
+              <div className=" font-poppins flex flex-col space-y-2  mt-12 md:mt-10 md:ml-50 md:px-0 px-8">
                 {/* name */}
                 <h2 className=" text-lg md:text-2xl font-semibold">
                   {doctor.name}
@@ -183,7 +183,7 @@ const Doctor = ({ doctor }: Props) => {
                   treatment approaches.
                 </p>
 
-                <div className=" flex flex-col space-y-4 mt-4">
+                <div className=" flex flex-col space-y-4 mt-4 font-poppins">
                   {doctor.workExperience.map((ex, i) => (
                     <div
                       key={i}
@@ -220,7 +220,7 @@ const Doctor = ({ doctor }: Props) => {
                 </p>
 
                 {/* scroll buttons */}
-                <div className=" w-full flex items-center justify-end gap-4 mt-6">
+                <div className=" w-full flex items-center justify-end gap-4 mt-6 font-poppins">
                   <button
                     type="button"
                     disabled={doctor.education.length <= 1}
@@ -248,7 +248,7 @@ const Doctor = ({ doctor }: Props) => {
 
                 <div
                   ref={eduContainer}
-                  className=" w-full overflow-y-hidden flex space-x-4 mt-4 education-scrollbar"
+                  className=" w-full overflow-y-hidden flex space-x-4 mt-4 education-scrollbar font-poppins"
                 >
                   {doctor.education.map((edu, i) => (
                     <div

@@ -65,54 +65,56 @@ const CookiesConsent = ({ setShowConsent }: Props) => {
     <section className=" fixed inset-0 z-50 flex justify-center items-center ">
       {/* Overlay */}
       <div className=" fixed inset-0 bg-black/15 w-screen h-screen" />
-      <section
-        className={`fixed right-10 bottom-10 w-[600px] h-fit bg-white 0 p-6  z-60 rounded-xl  shadow-black/60 shadow-lg transition-transform duration-[1500ms] ease-in-out transform  ${
-          mounted ? "translate-x-0" : "translate-x-[110%]"
-        }`}
-      >
-        <h2 className=" font-semibold mb-6 text-2xl text-left">
-          We use cookies
-        </h2>
-        <p className=" text-sm  mb-2 md:mb-0  text-start text-black leading-8">
-          This website uses cookies and other tracking technologies to improve
-          your browsing experience for the following purposes: to enable basic
-          functionality of the website, to provide a better experience on the
-          website, to measure your interest in our products and services and to
-          personalize marketing interactions, to deliver ads that are more
-          relevant to you.
-        </p>
-        <div className="flex my-4 md:my-8 w-full justify-between">
-          <div className=" flex ">
+      {!openModal && (
+        <section
+          className={` w-[90%] md:w-[70%] mx-auto lg:w-[600px] h-fit bg-white 0 p-6  z-60 rounded-xl  shadow-black/60 shadow-lg transition-transform duration-[1500ms] ease-in-out transform  ${
+            mounted ? "translate-x-0" : "translate-x-[110%]"
+          }`}
+        >
+          <h2 className=" font-semibold mb-3 md:mb-6 text-lg lg:text-2xl text-left font-poppins">
+            We use cookies
+          </h2>
+          <p className="text-[10px] md:text-xs lg:text-sm  mb-2 md:mb-0  text-justify text-black leading-6 lg:leading-8 font-comfortaa">
+            This website uses cookies and other tracking technologies to improve
+            your browsing experience for the following purposes: to enable basic
+            functionality of the website, to provide a better experience on the
+            website, to measure your interest in our products and services and
+            to personalize marketing interactions, to deliver ads that are more
+            relevant to you.
+          </p>
+          <div className="flex my-4 md:my-8 w-full justify-between font-poppins">
+            <div className=" flex ">
+              <button
+                type="button"
+                title="Accept Cookies"
+                aria-label="accept cookies"
+                onClick={() => handleAction("accepted")}
+                className="cursor-pointer bg-primary hover:bg-primary/50 transition-all duration-400 text-white px-3 md:px-6 py-1.5 text-[10px]  md:text-xs lg:text-md"
+              >
+                Accept all
+              </button>
+              <button
+                type="button"
+                title="Decline Cookies"
+                aria-label="decline cookies"
+                onClick={() => handleAction("declined")}
+                className="cursor-pointer bg-gray-300 hover:bg-gray-600 hover:text-white transition-all duration-400 text-black  px-3 md:px-6 py-1.5 text-[10px]  md:text-xs md:text-md ml-2"
+              >
+                Reject all
+              </button>
+            </div>
             <button
               type="button"
-              title="Accept Cookies"
-              aria-label="accept cookies"
-              onClick={() => handleAction("accepted")}
-              className="cursor-pointer bg-primary hover:bg-primary/50 transition-all duration-400 text-white px-3 md:px-6 py-1.5  text-sm md:text-md"
+              title="Manage Cookies"
+              aria-label="manage cookies"
+              onClick={() => handleAction("managed")}
+              className="cursor-pointer text-primary underline transition-all duration-400  text-[10px]  md:text-xs md:text-md "
             >
-              Accept all
-            </button>
-            <button
-              type="button"
-              title="Decline Cookies"
-              aria-label="decline cookies"
-              onClick={() => handleAction("declined")}
-              className="cursor-pointer bg-gray-300 hover:bg-gray-600 hover:text-white transition-all duration-400 text-black  px-3 md:px-6 py-1.5 text-sm md:text-md ml-2"
-            >
-              Reject all
+              Manage Cookies
             </button>
           </div>
-          <button
-            type="button"
-            title="Manage Cookies"
-            aria-label="manage cookies"
-            onClick={() => handleAction("managed")}
-            className="cursor-pointer text-primary underline transition-all duration-400  text-sm md:text-md "
-          >
-            Manage Cookies
-          </button>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* open modal */}
       {openModal && (

@@ -9,7 +9,7 @@ type Props = {};
 
 const SearchHeader = (props: Props) => {
   return (
-    <div className=" bg-white w-[90%] lg:w-[80%] mx-auto -mt-[50px] shadow-md shadow-black/10 rounded-2xl min-h-fit p-6">
+    <div className=" bg-white w-[90%] lg:w-[80%] mx-auto -mt-[50px] shadow-md shadow-black/10 rounded-2xl min-h-fit p-6 font-poppins">
       {/* SEARCH FORM */}
       <div className=" w-full md:flex justify-between  ">
         {/* location */}

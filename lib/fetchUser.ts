@@ -14,6 +14,8 @@ export const fetchUser = async () => {
     const consent = cookieStore.get("cookie_consent")?.value;
     const tr_host_x = cookieStore.get("TR_HOST_X")?.value;
 
+    if (!consent) return null;
+
     const res = await axios.get(`${SERVER_URI}/user/me`, {
       headers: {
         Cookie: `tr_host_x=${tr_host_x}`,

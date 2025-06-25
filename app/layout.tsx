@@ -5,6 +5,19 @@ import AppProvider from "@/providers/AppProvider";
 import AuthIntializer from "@/providers/AuthIntializer";
 import UserInactivityTracker from "@/providers/UserInactivityTracker";
 import { fetchUser } from "@/lib/fetchUser";
+import { Comfortaa, Poppins } from "next/font/google";
+
+const comfortaa = Comfortaa({
+  variable: "--font-comfortaa",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+});
+
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "100", "200", "600", "800", "900", "700"],
+});
 
 export const metadata: Metadata = {
   title: "Trust Healthcare - Quality Medical Care You Can Rely On",
@@ -56,7 +69,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body className=" font-poppins min-h-screen ">
+      <body
+        className={`${comfortaa.variable} ${poppins.variable} min-h-screen`}
+      >
         <AppProvider>
           <AuthIntializer user={user} />
           <UserInactivityTracker />

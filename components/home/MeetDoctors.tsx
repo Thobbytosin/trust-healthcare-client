@@ -59,8 +59,8 @@ const MeetDoctors = ({ doctors }: Props) => {
           viewport={{ amount: 0.2 }}
           className=" flex justify-center items-center mt-10"
         >
-          <div className=" grid grid-cols-1 md:grid-cols-2 gap-10">
-            {doctors.map((doctor, index) => (
+          <div className=" grid grid-cols-1 md:grid-cols-2 gap-10 font-poppins">
+            {doctors?.map((doctor, index) => (
               <div
                 key={index}
                 className={`bg-white w-[302px] lg:w-[394px] h-[447px] shadow shadow-black/20 rounded-md flex flex-col justify-center items-center`}
@@ -152,7 +152,7 @@ const MeetDoctors = ({ doctors }: Props) => {
         </motion.div>
 
         {/* see more button */}
-        <div className=" w-full flex justify-center">
+        <div className=" w-full flex justify-center font-poppins">
           <button
             type="button"
             title="See More"

@@ -116,7 +116,7 @@ const DoctorCard: FC<Props> = ({ doctor }) => {
         </div>
 
         {/* book appointment btn */}
-        <div className="mt-4 lg:mt-0 flex flex-col  lg:items-center justify-end w-[35%]">
+        <div className="mt-4 lg:mt-0 flex flex-col  lg:items-center justify-end w-fit lg:w-[35%]">
           {doctor.available ? (
             <p className=" text-secondary text-xs ">Available Today!</p>
           ) : (

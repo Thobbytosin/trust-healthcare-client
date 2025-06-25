@@ -47,7 +47,7 @@ const Header: FC<Props> = ({ activeIndex }) => {
         setOpenModal={setOpenModal}
         setMode={setMode}
       />
-      <NavMobile setOpenModal={setOpenModal} setMode={setMode} />
+      <NavMobile />
       {openModal && (
         <Modal mode={mode} setOpenModal={setOpenModal} setMode={setMode} />
       )}

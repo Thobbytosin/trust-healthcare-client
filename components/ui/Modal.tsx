@@ -32,7 +32,7 @@ const Modal: FC<Props> = ({
     <section>
       <div
         onClick={() => auth && setOpenModal(false)}
-        className=" bg-black/50 fixed left-0 top-0 w-screen min-h-[300vh]  scrollbar-hide z-40"
+        className=" bg-black/50 fixed left-0 top-0 w-screen min-h-[300vh]  scrollbar-hide z-50"
       />
       <div
         className={`bg-white fixed top-[5%] h-[90%] left-[5%] w-[90%] xl:left-[15%] xl:w-[70%] md:left-[7.5%] md:max-w-[85%] z-50 rounded-3xl ${

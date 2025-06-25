@@ -15,7 +15,7 @@ const Footer = (props: Props) => {
   return (
     <RevealWrapper>
       <footer id="footer" className={styles.footer}>
-        <div className=" w-full flex lg:flex-row flex-col justify-between items-start my-6">
+        <div className=" w-full flex lg:flex-row flex-col justify-between items-center lg:items-start my-6">
           <div className=" basis-1/2">
             {/* logo */}
             <Link
@@ -29,26 +29,26 @@ const Footer = (props: Props) => {
                 width={40}
                 height={40}
               />
-              <h1 className="text-[14px] md:text-[16px] lg:text-[18px] font-semibold">
+              <h1 className="text-[14px] md:text-[16px] lg:text-[18px] font-semibold font-poppins">
                 <span className=" text-primary ">Trust</span> HealthCare
               </h1>
             </Link>
 
             {/* site description */}
-            <p className=" text-xs md:text-sm text-text-secondary mt-8 leading-6 font-light  lg:max-w-[80%]">
+            <p className=" text-xs md:text-sm text-text-secondary mt-8 leading-6 font-light  lg:max-w-[80%] font-comfortaa">
               Trust Healthcare provides top-quality medical care, telemedicine
               services, and expert consultations. Book an appointment with our
               certified doctors today.
             </p>
           </div>
-          <div className=" basis-1/2 flex md:flex-row flex-col gap-8 items-center md:items-start lg:mt-0 mt-8">
+          <div className=" basis-1/2 flex md:flex-row flex-col gap-8 items-center md:items-start lg:mt-0 mt-8 font-poppins">
             <div className=" md:w-[60%] ">
-              <h4 className=" text-text-primary font-semibold">
+              <h4 className=" text-text-primary font-semibold font-poppins">
                 Trust HealthCare
               </h4>
               <ul
                 aria-label="links wrapper"
-                className=" mt-6  md:text-start text-center"
+                className=" mt-6  md:text-start text-center font-poppins"
               >
                 <li
                   title="Home"
@@ -122,7 +122,7 @@ const Footer = (props: Props) => {
           </div>
         </div>
         <div className=" my-4 h-[2px] bg-gray-200 w-full mx-auto" />
-        <p className=" mt-6 ml-6 text-xs text-black  text-center">
+        <p className=" mt-6 ml-6 text-xs text-black  text-center font-poppins">
           &copy; {new Date().getFullYear()} Trust HealthCare, All Rights
           Reserved
         </p>

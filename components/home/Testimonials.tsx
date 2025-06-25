@@ -109,7 +109,7 @@ const Testimonials = (props: Props) => {
                 </div>
                 {/* user */}
                 <div className="basis-3/4">
-                  <h3 className=" font-medium text-text-primary text-lg">
+                  <h3 className=" font-medium text-text-primary text-lg font-poppins">
                     {testimonial.name}
                   </h3>
                   <div className=" mt-2">
@@ -119,7 +119,7 @@ const Testimonials = (props: Props) => {
                       rating={testimonial.ratings}
                     />
                   </div>
-                  <p className="text-text-primary font-light text-sm mt-4">
+                  <p className="text-text-primary font-light text-sm mt-4 font-comfortaa">
                     {testimonial.feedback}
                   </p>
                 </div>
@@ -152,7 +152,7 @@ const Testimonials = (props: Props) => {
                 </div>
                 {/* user */}
                 <div className="basis-3/4">
-                  <h3 className=" font-medium text-text-primary text-lg">
+                  <h3 className=" font-medium text-text-primary text-lg font-poppins">
                     {testimonial.name}
                   </h3>
                   <div className=" mt-2">
@@ -162,7 +162,7 @@ const Testimonials = (props: Props) => {
                       rating={testimonial.ratings}
                     />
                   </div>
-                  <p className="text-text-primary font-light text-sm mt-4">
+                  <p className="text-text-primary font-light text-sm mt-4 font-comfortaa">
                     {testimonial.feedback}
                   </p>
                 </div>

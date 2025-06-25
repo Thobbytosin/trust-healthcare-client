@@ -27,7 +27,7 @@ const BookingForm = ({}: Props) => {
     <>
       <form
         // onSubmit={handleBookAppointment}
-        className=" flex-1  flex flex-col space-y-8"
+        className=" flex-1  flex flex-col space-y-8 font-poppins"
       >
         {/* appointment type */}
         <div>
@@ -56,21 +56,6 @@ const BookingForm = ({}: Props) => {
             ))}
           </div>
         </div>
-
-        {/* appointment reason */}
-        {/* <div>
-          <label htmlFor="reason" className={styles.bookingLabel}>
-            Reason <span className=" text-red-500 ml-3">*</span>
-          </label>
-
-          <textarea
-            placeholder="State your reason.."
-            onChange={(e) =>
-              bookingActions.setAppointmentReason(e.target.value)
-            }
-            className=" mt-2 w-full p-2  focus:outline-0 focus:border focus:border-grayey min-h-[60px] leading-tight text-sm  resize-none border border-grayey rounded-lg "
-          />
-        </div> */}
 
         {/* appointment schedule picker */}
 

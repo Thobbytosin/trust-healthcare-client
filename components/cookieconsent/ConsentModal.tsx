@@ -8,10 +8,10 @@ type Props = {
 };
 
 const cookiesOptions = [
-  { id: 1, name: "Necessary Cookies" },
-  { id: 2, name: "Tracking Cookies" },
-  { id: 3, name: "Advertising Cookies" },
-  { id: 4, name: "Location Cookies" },
+  { id: 1, name: "Necessary " },
+  { id: 2, name: "Tracking " },
+  { id: 3, name: "Advertising " },
+  { id: 4, name: "Location " },
 ];
 
 const CookieOption = dynamic(() => import("./CookieOption"), {
@@ -57,12 +57,12 @@ const ConsentModal = ({ setOpen, setShowConsent }: Props) => {
   };
 
   return (
-    <div className="w-[80%] h-[90vh] lg:h-[85vh] bg-white z-100 p-6 lg:overflow-hidden overflow-y-scroll">
+    <div className="w-[80%] h-[90vh] lg:h-[85vh] bg-white z-100 p-6 overflow-y-scroll">
       {/* NOTE */}
-      <h2 className=" font-semibold text-base md:text-xl mb-3 md:mb-4 ">
+      <h2 className=" font-semibold text-base lg:text-xl mb-2 lg:mb-4 ">
         Your privacy is important to us
       </h2>
-      <p className=" mb-4 md:mb-6 text-xs lg:text-sm leading-6 text-gray-500">
+      <p className=" mb-4 md:mb-6 text-[10px] md:text-xs leading-6 text-gray-400 text-justify">
         Cookies are very small text files that are stored on your computer when
         you visit a website. We use cookies for a variety of purposes and to
         enhance your online experience on our website (for example, to remember
@@ -73,7 +73,7 @@ const ConsentModal = ({ setOpen, setShowConsent }: Props) => {
         using parts of our website.
       </p>
 
-      <h2 className=" font-semibold text-sm md:text-lg mb-3 md:mb-4">
+      <h2 className=" font-semibold text-sm lg:text-base mb-3 md:mb-4">
         Manage your cookies preferences.
       </h2>
 
@@ -84,7 +84,7 @@ const ConsentModal = ({ setOpen, setShowConsent }: Props) => {
             title={`${cookie.name}-button`}
             key={index}
             onClick={() => setActiveCookie(cookie.id)}
-            className={`w-full cursor-pointer lg:text-base text-sm py-1.5 font-medium px-3 mt-2 md:mt-0 ${
+            className={`w-full cursor-pointer text-xs lg:text-sm py-1.5 font-medium px-4 mt-2 md:mt-0 ${
               activeCookie === cookie.id
                 ? "bg-primary text-white"
                 : " bg-gray-200"
@@ -131,16 +131,16 @@ const ConsentModal = ({ setOpen, setShowConsent }: Props) => {
       )}
 
       {/*  */}
-      <div className=" w-full flex justify-between items-center mt-8">
+      <div className=" w-full flex gap-4 justify-end items-center mt-6">
         {/* save preferences */}
         <button
           title="Save Preferences"
           aria-label="Save Preferences"
           disabled={!hasChanged}
           onClick={handleSave}
-          className={`text-white  text-xs px-4 py-1.5 ${
+          className={`text-white text-[10px] md:text-xs px-4 py-1.5 ${
             hasChanged
-              ? "bg-primary cursor-pointer"
+              ? "bg-green-700 cursor-pointer"
               : " cursor-not-allowed bg-gray-400"
           } rounded-full`}
         >
@@ -151,7 +151,7 @@ const ConsentModal = ({ setOpen, setShowConsent }: Props) => {
           title="Close"
           aria-label="Close"
           onClick={() => setOpen(false)}
-          className=" bg-red-500 text-white cursor-pointer px-4 py-1 rounded-full w-fit text-center text-sm"
+          className=" bg-red-500 text-white cursor-pointer px-4 py-1 rounded-full w-fit text-center text-[10px] md:text-xs"
         >
           Close
         </button>

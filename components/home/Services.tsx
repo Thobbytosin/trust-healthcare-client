@@ -63,7 +63,9 @@ const Services = (props: Props) => {
                 className=" w-[221px] h-[201px] md:w-[271px] md:h-[251px] shadow shadow-black/20 rounded-4xl bg-white transition-all duration-700 hover:bg-primary text-primary hover:text-white flex flex-col justify-center items-center gap-8"
               >
                 {item.icon}
-                <p className=" md:text-base text-sm">{item.name}</p>
+                <p className=" md:text-base text-sm font-poppins">
+                  {item.name}
+                </p>
               </motion.div>
             ))}
           </div>

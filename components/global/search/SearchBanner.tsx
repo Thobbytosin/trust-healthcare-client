@@ -44,7 +44,7 @@ const SearchBanner = (props: Props) => {
     );
 
   return (
-    <div className=" my-8 w-[90%] lg:w-[80%] mx-auto">
+    <div className=" my-8 w-[90%] lg:w-[80%] mx-auto font-poppins">
       {/* for location results */}
       {!typingTrigger && currentSearch && location?.trim() !== "" ? (
         resultsLength >= 1 ? (

@@ -10,8 +10,10 @@ type Props = {
 const CookieOption = ({ label, active, description, onToggle }: Props) => {
   const [showTooltip, setShowTooltip] = useState(false);
   return (
-    <div key={label} className=" w-full mt-8 min-h-[150px]">
-      <p className="leading-6 text-xs lg:text-sm">{description}</p>
+    <div key={label} className=" w-full mt-8 min-h-[110px] ">
+      <p className="leading-6 text-[10px] md:text-xs font-comfortaa">
+        {description}
+      </p>
 
       <div className=" flex items-center gap-14 mt-6">
         <div
@@ -41,7 +43,7 @@ const CookieOption = ({ label, active, description, onToggle }: Props) => {
           {/* tooltip */}
           {showTooltip && (
             <div className="absolute bottom-full mb-2 left-1/2 -translate-x-10 z-50">
-              <div className="bg-black text-white text-xs px-3 py-1 rounded shadow-md relative whitespace-nowrap">
+              <div className="bg-black text-white text-xs px-3 py-1 rounded shadow-md relative whitespace-nowrap font-poppins">
                 {active
                   ? `Disable ${
                       label === "necessary"

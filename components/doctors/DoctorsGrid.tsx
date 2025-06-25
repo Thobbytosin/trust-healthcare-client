@@ -40,7 +40,7 @@ const DoctorsGrid: FC<Props> = () => {
   };
 
   return (
-    <section className=" w-[90%] lg:w-[80%] mx-auto flex flex-col md:flex-row gap-4 lg:gap-8 justify-between">
+    <section className=" w-[90%] lg:w-[80%] mx-auto flex flex-col md:flex-row gap-4 lg:gap-8 justify-between font-poppins">
       <div className=" w-full md:w-[70%] h-fit">
         {/* load doctors data */}
         {loading

@@ -1,11 +1,8 @@
 import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined";
 import ScienceOutlinedIcon from "@mui/icons-material/ScienceOutlined";
 import ElectricRickshawOutlinedIcon from "@mui/icons-material/ElectricRickshawOutlined";
-import ContactSupportOutlinedIcon from "@mui/icons-material/ContactSupportOutlined";
-import BookOnlineOutlinedIcon from "@mui/icons-material/BookOnlineOutlined";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import StarHalfIcon from "@mui/icons-material/StarHalf";
@@ -28,20 +25,28 @@ import SendIcon from "@mui/icons-material/Send";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import SettingsIcon from "@mui/icons-material/Settings";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
-import WbSunnyIcon from "@mui/icons-material/WbSunny";
-import WbTwilightIcon from "@mui/icons-material/WbTwilight";
 import GrainIcon from "@mui/icons-material/Grain";
 import EventBusyIcon from "@mui/icons-material/EventBusy";
+import HomeIcon from "@mui/icons-material/Home";
+import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
+import ContactSupportIcon from "@mui/icons-material/ContactSupport";
+import VaccinesIcon from "@mui/icons-material/Vaccines";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import MedicalServicesOutlinedIcon from "@mui/icons-material/MedicalServicesOutlined";
+import ContactSupportOutlinedIcon from "@mui/icons-material/ContactSupportOutlined";
+import VaccinesOutlinedIcon from "@mui/icons-material/VaccinesOutlined";
+import BookOnlineOutlinedIcon from "@mui/icons-material/BookOnlineOutlined";
+import CloseIcon from "@mui/icons-material/Close";
+import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
+import WbTwilightIcon from "@mui/icons-material/ExpandLessOutlined";
+import WbSunnyIcon from "@mui/icons-material/ExpandLessOutlined";
 
 export {
   MenuIcon,
-  CloseIcon,
   ArrowRightAltIcon,
   PlayArrowOutlinedIcon,
   ScienceOutlinedIcon,
   ElectricRickshawOutlinedIcon,
-  ContactSupportOutlinedIcon,
-  BookOnlineOutlinedIcon,
   StarHalfIcon,
   StarOutlineIcon,
   StarRateIcon,
@@ -64,8 +69,19 @@ export {
   NotificationsIcon,
   SettingsIcon,
   WorkspacePremiumIcon,
-  WbSunnyIcon,
-  WbTwilightIcon,
   GrainIcon,
   EventBusyIcon,
+  ContactSupportIcon,
+  HomeIcon,
+  MedicalServicesIcon,
+  VaccinesIcon,
+  ContactSupportOutlinedIcon,
+  HomeOutlinedIcon,
+  MedicalServicesOutlinedIcon,
+  VaccinesOutlinedIcon,
+  BookOnlineOutlinedIcon,
+  CloseIcon,
+  ExpandLessOutlinedIcon,
+  WbTwilightIcon,
+  WbSunnyIcon,
 };

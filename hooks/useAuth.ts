@@ -9,9 +9,11 @@ import { getCookie } from "@/utils/helpers";
 export const useAuth = ({ enabled }: { enabled: boolean }) => {
   const setUser = useAuthStore((state) => state.setUser);
   const setUserLoading = useAuthStore((state) => state.setUserLoading);
-
+  const consent = getCookie("cookie_consent");
   const { isOnline, isLoading: serverStatusLoading } = useServerStatus();
   const loggedInToken = getCookie("_XUR_CR_HOST");
+
+  // console.log("CONSENT", !!consent);
 
   const {
     data: userData,
@@ -22,7 +24,12 @@ export const useAuth = ({ enabled }: { enabled: boolean }) => {
     method: "GET",
     url: FETCHUSER,
     queryKey: ["user"],
-    enabled: enabled && !serverStatusLoading && isOnline && !!loggedInToken,
+    enabled:
+      enabled &&
+      !!consent &&
+      !serverStatusLoading &&
+      isOnline &&
+      !!loggedInToken,
   });
 
   useEffect(() => {

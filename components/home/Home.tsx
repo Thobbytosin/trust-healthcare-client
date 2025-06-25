@@ -40,7 +40,7 @@ const Home = ({ doctors }: Props) => {
       setShowConsent(true);
       return;
     }
-  }, [doctors]);
+  }, []);
 
   // for middleware error
   useEffect(() => {
@@ -64,9 +64,9 @@ const Home = ({ doctors }: Props) => {
     return <ServerStatusListener RETRY_INTERVAL={10000} attempts={attempts} />;
   }
 
-  if (!doctors) {
-    return <LandingPageLoader />;
-  }
+  // if (!doctors) {
+  //   return <LandingPageLoader />;
+  // }
 
   return (
     <main>

@@ -27,14 +27,14 @@ const Hero = (props: Props) => {
           className="md:w-[55%] w-full"
           role="presentation"
         >
-          <h1 className="text-[1.8rem] sm:text-[2rem] lg:text-[2.5rem] font-medium mb-4 lg:max-w-[80%] md:text-left text-center">
+          <h1 className="text-[1.8rem] sm:text-[2rem] lg:text-[2.5rem] font-medium mb-4 lg:max-w-[80%] md:text-left text-center font-poppins">
             <span className="text-primary">We care</span>
             <br />
             <span className="text-text-primary">about your health</span>
           </h1>
 
           <p
-            className="text-text-secondary leading-[1.6rem] sm:leading-[1.9rem] text-[12px] lg:text-[14px] md:text-left text-center"
+            className="text-text-secondary leading-[1.6rem] sm:leading-[1.9rem] text-[12px] lg:text-[14px] md:text-left text-center font-comfortaa"
             aria-label="Health description"
           >
             Good health is the state of mental, physical and social well-being
@@ -52,7 +52,7 @@ const Hero = (props: Props) => {
               type="button"
               title="Book an appointment"
               aria-label="Book an appointment"
-              className="cursor-pointer bg-primary px-6 py-2.5 rounded-md transition duration-300 hover:border hover:border-primary hover:text-primary hover:dark:text-white text-center text-white hover:bg-transparent lg:text-[14px] text-[12px]"
+              className="cursor-pointer  font-poppins bg-primary px-6 py-2.5 rounded-md transition duration-300 hover:border hover:border-primary hover:text-primary hover:dark:text-white text-center text-white hover:bg-transparent lg:text-[14px] text-[12px]"
               data-action="book-appointment"
             >
               <span className="hidden lg:inline-block mr-2">
@@ -89,14 +89,14 @@ const Hero = (props: Props) => {
                   </div>
                 </div>
               </div>
-              <h3 className="text-text-primary lg:text-base text-xs md:ml-0 ml-2">
+              <h3 className="text-text-primary lg:text-base text-xs md:ml-0 ml-2 font-poppins">
                 Watch Video
               </h3>
             </a>
           </div>
 
           <div className="mt-8 md:text-left text-center">
-            <h3 className="text-text-primary lg:text-base text-xs">
+            <h3 className="text-text-primary lg:text-base text-xs font-poppins">
               <span>Become member of our hospital community?</span>
               <span
                 className="text-primary ml-2 cursor-pointer hover:underline transition-all duration-500"

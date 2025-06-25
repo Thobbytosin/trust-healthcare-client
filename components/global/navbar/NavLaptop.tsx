@@ -98,14 +98,14 @@ const NavLaptop: FC<Props> = ({ setOpenModal, setMode, activeIndex }) => {
           width={30}
           height={30}
         />
-        <h1 className="text-[14px] md:text-[16px] lg:text-[18px] font-semibold">
+        <h1 className="text-[14px] lg:text-[18px] font-semibold">
           <span className=" text-primary ">Trust</span> HealthCare
         </h1>
       </Link>
 
       {/* nav links */}
       <ul
-        className=" hidden md:flex items-center gap-4 text-[14px] cursor-pointer font-medium"
+        className=" hidden md:flex items-center gap-4 text-[12px] lg:text-[14px] cursor-pointer font-medium"
         onKeyDown={handleKeyDown}
         ref={navRef}
       >
@@ -201,8 +201,8 @@ const NavLaptop: FC<Props> = ({ setOpenModal, setMode, activeIndex }) => {
           <div className="hidden md:block w-[100px] h-[30px] rounded-lg bg-gray-200 animate-pulse" />
         </div>
       ) : user && Object.keys(user).length > 0 ? (
-        <div className=" flex items-center gap-8">
-          <div className=" flex items-center gap-6">
+        <div className=" flex items-center gap-6 lg:gap-8">
+          <div className=" flex items-center gap-4 lg:gap-6">
             <div className=" text-gray-500 cursor-pointer relative">
               <span className=" absolute top-0.5 right-0.5 flex justify-center items-center bg-red-500 rounded-full w-2 h-2 border-1 border-white "></span>
               <NotificationsIcon fontSize="small" color="inherit" />

@@ -12,6 +12,8 @@ export const fetchDoctorsUnauth = async () => {
     const cookieStore = await cookies();
     const consent = cookieStore.get("cookie_consent")?.value;
 
+    if (!consent) return null;
+
     const res = await axios.get(
       `${SERVER_URI}/doctor/doctors-list-unauthenticated`,
       {

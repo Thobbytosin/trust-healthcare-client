@@ -104,7 +104,7 @@ const ChatPrompt = ({ setOpenChat }: Props) => {
   return (
     <div
       ref={containerRef}
-      className=" w-full h-full p-6 flex flex-col  rounded-b-3xl "
+      className=" w-full h-full p-6 flex flex-col  rounded-b-3xl font-comfortaa"
     >
       {/* chats */}
       <div className="  flex-1 pr-3 overflow-y-auto space-y-4 chat-scrollbar">

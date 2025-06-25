@@ -15,7 +15,7 @@ const NewsLetter = (props: Props) => {
           desc="Get latest news of our hospital"
         />
 
-        <div className=" mt-10 w-full md:w-[70%] mx-auto bg-[#F4F4F4] md:p-10 p-6 rounded-xl">
+        <div className=" mt-10 w-full md:w-[70%] mx-auto bg-[#F4F4F4] md:p-10 p-6 rounded-xl font-poppins">
           <h3 className=" text-sm text-text-primary">For Newsletter</h3>
           <form className=" w-full p-2 border border-[#CBCBCB] rounded-md flex justify-between items-center mt-2">
             <input

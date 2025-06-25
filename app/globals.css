@@ -12,7 +12,8 @@
   --color-text-light-gray: #b4b4b4;
   --color-grayey: #787887;
 
-  --font-poppins: Poppins, sans-serif;
+  --font-poppins: var(--font-poppins);
+  --font-comfortaa: var(--font-comfortaa);
 }
 
 * {
