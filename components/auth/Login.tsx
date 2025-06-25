@@ -1,7 +1,7 @@
 import { useMutateData } from "@/hooks/useApi";
 import React, { FC, FormEvent, useState } from "react";
 import { toast } from "sonner";
-import Loader from "../global/loaders/Loader";
+import Loader from "../loaders/Loader";
 import {
   VisibilityOffOutlinedIcon,
   VisibilityOutlinedIcon,

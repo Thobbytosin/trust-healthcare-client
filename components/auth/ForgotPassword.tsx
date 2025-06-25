@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Loader from "../global/loaders/Loader";
+import Loader from "../loaders/Loader";
 import { toast } from "sonner";
 import { useMutateData } from "@/hooks/useApi";
 import { FORGOTPASSWORD } from "@/config/user.endpoints";

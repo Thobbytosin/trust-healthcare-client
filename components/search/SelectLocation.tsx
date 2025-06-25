@@ -5,8 +5,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../ui/select";
-import ToolTip from "../../ui/Tooltip";
+} from "../ui/select";
+import ToolTip from "../ui/Tooltip";
 import { useSearch } from "@/hooks/useSearch";
 import useTooltip from "@/hooks/useTooltip";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -39,7 +39,7 @@ const SelectLocation: FC<Props> = () => {
   };
 
   return (
-    <div className=" relative w-full md:w-[190px] lg:w-[270px] h-fit  bg-gray-100  rounded-md">
+    <div className=" relative w-full md:w-[190px] lg:w-[270px] h-fit  bg-gray-100  rounded-md font-poppins">
       <Select
         value={searchForm.location}
         onValueChange={(value: string) => {
@@ -63,7 +63,7 @@ const SelectLocation: FC<Props> = () => {
         >
           <SelectValue placeholder="Search by Location" />
         </SelectTrigger>
-        <SelectContent className=" mt-3 bg-white border-none text-text-primary">
+        <SelectContent className=" mt-3 bg-white border-none text-text-primary font-poppins">
           <SelectItem
             value="Lagos"
             className=" transition-all duration-700 hover:bg-gray-200"

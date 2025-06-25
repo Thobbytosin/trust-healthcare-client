@@ -18,6 +18,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Modal from "@/components/ui/Modal";
+import { usePathname } from "next/navigation";
 
 type Props = {
   setOpenSidebar: (value: boolean) => void;
@@ -63,11 +64,16 @@ const NavSidebar = ({ openSidebar, setOpenSidebar }: Props) => {
   };
   const [openModal, setOpenModal] = useState(false);
   const [mode, setMode] = useState("login");
-  const setActivePageId = useSidebarStore((state) => state.setActivePageId);
-  const activePageId = useSidebarStore((state) => state.activePageId);
+  const setActivePage = useSidebarStore((state) => state.setActivePage);
+  const activePage = useSidebarStore((state) => state.activePage);
   const [expandedDropdownId, setExpandedDropdownId] = useState<number | null>(
     null
   );
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setActivePage(pathname);
+  }, [pathname]);
 
   useEffect(() => {
     if (openSidebar) {
@@ -134,7 +140,6 @@ const NavSidebar = ({ openSidebar, setOpenSidebar }: Props) => {
                 <React.Fragment key={index}>
                   <li
                     onClick={() => {
-                      setActivePageId(index);
                       if (item.dropdown) {
                         setExpandedDropdownId(
                           expandedDropdownId === index ? null : index
@@ -142,7 +147,7 @@ const NavSidebar = ({ openSidebar, setOpenSidebar }: Props) => {
                       }
                     }}
                     className={`font-comfortaa font-medium w-full text-sm p-3 rounded-lg cursor-pointer ${
-                      activePageId === index
+                      activePage === item?.link
                         ? "bg-primary text-white"
                         : "text-gray-900 hover:bg-gray-200 transition duration-500"
                     }`}
@@ -152,7 +157,9 @@ const NavSidebar = ({ openSidebar, setOpenSidebar }: Props) => {
                       className="flex items-center justify-between w-full"
                     >
                       <span className="flex items-center gap-2">
-                        {activePageId === index ? item.icon : item.iconOutline}
+                        {activePage === item?.link
+                          ? item.icon
+                          : item.iconOutline}
                         {item.name}
                       </span>
 

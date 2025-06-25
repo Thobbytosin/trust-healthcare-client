@@ -1,4 +1,4 @@
-import ToolTip from "../../ui/Tooltip";
+import ToolTip from "../ui/Tooltip";
 import { SearchOutlinedIcon } from "@/icons/icons";
 import React, { FC, FormEvent, useCallback, useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";

@@ -7,7 +7,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import RevealWrapper from "../ui/RevealWrapper";
 import { useRouter } from "next/navigation";
-import ButtonLoader from "../global/loaders/ButtonLoader";
+import ButtonLoader from "../loaders/ButtonLoader";
 import { IDoctor } from "@/types/doctor.types";
 
 type Props = {

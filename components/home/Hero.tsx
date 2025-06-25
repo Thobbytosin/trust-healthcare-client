@@ -12,8 +12,9 @@ type Props = {};
 const Hero = (props: Props) => {
   return (
     <RevealWrapper animate>
+      <div className=" w-screen h-[70px] mb-10 lg:mb-0" />
       <section
-        className={`w-screen md:h-screen flex md:flex-row flex-col md:justify-between lg:items-center overflow-x-hidden ${styles.paddingX} xl:mt-0 mt-30 md:gap-10`}
+        className={`w-screen   h-fit flex md:flex-row flex-col md:justify-between lg:items-center overflow-x-hidden ${styles.paddingX} ${styles.paddingY} md:gap-10`}
         role="region"
         aria-label="Hero section promoting health services"
         data-section="hero"
@@ -117,7 +118,7 @@ const Hero = (props: Props) => {
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           viewport={{ amount: 0.2 }}
-          className="md:w-[60%] w-full xl:mx-0 mx-auto lg:w-[45%] rounded-full xl:my-0"
+          className="md:w-[60%] w-full  xl:mx-0 mx-auto lg:w-[45%] rounded-full xl:my-0"
           role="img"
           aria-label="Banner image of healthy people"
         >

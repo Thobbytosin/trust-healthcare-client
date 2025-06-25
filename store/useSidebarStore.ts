@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
 interface SidebarState {
-  activePageId: number;
-  setActivePageId: (activePageId: number) => void;
+  activePage: string;
+  setActivePage: (activePage: string) => void;
 }
 
 export const useSidebarStore = create<SidebarState>((set) => ({
-  activePageId: 0,
-  setActivePageId: (activePageId) => set({ activePageId }),
+  activePage: "/",
+  setActivePage: (activePage) => set({ activePage }),
 }));

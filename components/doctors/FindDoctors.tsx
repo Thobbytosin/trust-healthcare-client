@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Header from "../global/header/Header";
+import Header from "../header/Header";
 import Doctors from "./Doctors";
-import LandingPageLoader from "../global/loaders/LandingPageLoader";
+import LandingPageLoader from "../loaders/LandingPageLoader";
 import { useFetchDoctors } from "@/hooks/useFetchDoctors";
 
 type Props = {};

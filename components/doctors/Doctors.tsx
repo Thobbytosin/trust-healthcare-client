@@ -3,8 +3,8 @@
 import React from "react";
 import DoctorsGrid from "./DoctorsGrid";
 import RevealWrapper, { fadeInDown } from "../ui/RevealWrapper";
-import SearchHeader from "../global/search/SearchHeader";
-import SearchBanner from "../global/search/SearchBanner";
+import SearchHeader from "../search/SearchHeader";
+import SearchBanner from "../search/SearchBanner";
 
 type Props = {};
 

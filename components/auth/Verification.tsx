@@ -2,7 +2,7 @@ import Image from "next/image";
 import React, { FC, useEffect, useRef, useState } from "react";
 import phoneIcon from "@/public/assets/phone.png";
 import { useMutateData } from "@/hooks/useApi";
-import Loader from "../global/loaders/Loader";
+import Loader from "../loaders/Loader";
 import { toast } from "sonner";
 import { RESENDVERIFICATIONCODE, VERIFICATION } from "@/config/auth.endpoints";
 

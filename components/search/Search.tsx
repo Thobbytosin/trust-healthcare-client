@@ -1,7 +1,7 @@
 "use client";
 import { styles } from "@/styles/styles";
 import React, { useState } from "react";
-import RevealWrapper from "../../ui/RevealWrapper";
+import RevealWrapper from "../ui/RevealWrapper";
 
 type Props = {};
 
@@ -23,7 +23,7 @@ const Search = (props: Props) => {
   return (
     <RevealWrapper>
       <section
-        className={`${styles.marginX} font-poppins xl:-mt-20 md:-mt-40 z-5 mb-10 w-[90%] mx-auto md:w-[70%] lg:w-[75%] xl:w-[70%] bg-white shadow shadow-black/20  rounded-4xl px-4 py-10 lg:p-8  `}
+        className={`${styles.marginX} ${styles.marginY} font-poppins z-5 mb-10 w-[90%] mx-auto md:w-[70%] lg:w-[75%] xl:w-[70%] bg-white shadow shadow-black/20  rounded-4xl px-4 py-10 lg:p-8  `}
       >
         <h3 className="lg:text-base md:text-sm text-xs mb-2 text-text-primary">
           Find a doctor

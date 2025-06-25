@@ -3,9 +3,9 @@ import Image from "next/image";
 import RevealWrapper from "../ui/RevealWrapper";
 import ErrorIcon from "@/public/assets/404.png";
 import ErrorIcon2 from "@/public/assets/4042.png";
-import Header from "../global/header/Header";
+import Header from "../header/Header";
 import { useEffect, useState } from "react";
-import LandingPageLoader from "../global/loaders/LandingPageLoader";
+import LandingPageLoader from "../loaders/LandingPageLoader";
 
 type Props = {};
 const NotFound = (props: Props) => {

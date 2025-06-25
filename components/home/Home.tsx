@@ -1,19 +1,19 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Header from "../global/header/Header";
+import Header from "../header/Header";
 import Hero from "./Hero";
-import Search from "../global/search/Search";
+import Search from "../search/Search";
 import CookiesConsent from "../cookieconsent/CookiesConsent";
-import Footer from "../global/footer/Footer";
-import LandingPageLoader from "../global/loaders/LandingPageLoader";
+import Footer from "../footer/Footer";
+import LandingPageLoader from "../loaders/LandingPageLoader";
 import { usePathname, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { getCookie } from "@/utils/helpers";
-import LazyLoad from "../global/lazyLoad/LazyLoad";
+import LazyLoad from "../lazyLoad/LazyLoad";
 import Services from "./Services";
 import AiChatWidget from "../ai/AiChatWidget";
-import SectionLoader from "../global/loaders/SectionLoader";
+import SectionLoader from "../loaders/SectionLoader";
 import NewsLetter from "./NewsLetter";
 import { useServerStatus } from "@/hooks/useServerStatus";
 import ServerStatusListener from "@/components/ui/ServerStatusListener";

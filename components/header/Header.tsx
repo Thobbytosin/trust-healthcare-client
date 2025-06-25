@@ -2,7 +2,7 @@
 import React, { FC, useEffect, useState } from "react";
 import NavLaptop from "../navbar/NavLaptop";
 import NavMobile from "../navbar/NavMobile";
-import Modal from "../../ui/Modal";
+import Modal from "../ui/Modal";
 
 type Props = {
   activeIndex?: number;

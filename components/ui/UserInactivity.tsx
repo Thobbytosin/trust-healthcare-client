@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 import Expired from "@/public/assets/expired.png";
 import Expired2 from "@/public/assets/expired2.png";
-import ButtonLoader from "../global/loaders/ButtonLoader";
+import ButtonLoader from "../loaders/ButtonLoader";
 import { toast } from "sonner";
 
 type Props = {

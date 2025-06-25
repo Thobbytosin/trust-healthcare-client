@@ -7,7 +7,7 @@ import {
 } from "@/icons/icons";
 import React, { useState } from "react";
 import { toast } from "sonner";
-import Loader from "../global/loaders/Loader";
+import Loader from "../loaders/Loader";
 import { RESETPASSWORD } from "@/config/user.endpoints";
 
 type Props = {

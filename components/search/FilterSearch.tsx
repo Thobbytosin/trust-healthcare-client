@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../ui/select";
+} from "../ui/select";
 import { useSearch } from "@/hooks/useSearch";
 import useTooltip from "@/hooks/useTooltip";
 import ToolTip from "@/components/ui/Tooltip";
@@ -64,11 +64,11 @@ const FilterSearch = (props: Props) => {
             aria-label="filter"
             data-testid="filter-doctors"
             disabled={filterValue?.trim() === ""}
-            className="w-fit h-full border-none py-5 focus:outline-0 focus:border-0 outline-none text-text-primary focus:outline-none ring-0 focus:ring-0 text-xs "
+            className="w-fit h-full border-none py-5 focus:outline-0 focus:border-0 outline-none text-text-primary focus:outline-none ring-0 focus:ring-0 text-[10px] md:text-xs "
           >
-            <SelectValue placeholder="Choose option" />
+            <SelectValue placeholder="Choose" />
           </SelectTrigger>
-          <SelectContent className=" mt-3 bg-white border-none text-text-primary ">
+          <SelectContent className=" mt-3 bg-white border-none text-text-primary text-[10px] md:text-xs font-poppins">
             <SelectItem
               value="all"
               className=" transition-all duration-700 hover:bg-gray-200"

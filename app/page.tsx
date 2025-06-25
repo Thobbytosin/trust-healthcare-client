@@ -1,4 +1,4 @@
-import LandingPageLoader from "@/components/global/loaders/LandingPageLoader";
+import LandingPageLoader from "@/components/loaders/LandingPageLoader";
 import Home from "@/components/home/Home";
 import { fetchDoctorsUnauth } from "@/lib/fetchDoctorsUnauth";
 import { IDoctor } from "@/types/doctor.types";

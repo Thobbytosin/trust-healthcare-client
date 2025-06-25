@@ -38,8 +38,8 @@ import VaccinesOutlinedIcon from "@mui/icons-material/VaccinesOutlined";
 import BookOnlineOutlinedIcon from "@mui/icons-material/BookOnlineOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
-import WbTwilightIcon from "@mui/icons-material/ExpandLessOutlined";
-import WbSunnyIcon from "@mui/icons-material/ExpandLessOutlined";
+import WbTwilightIcon from "@mui/icons-material/WbTwilight";
+import WbSunnyIcon from "@mui/icons-material/WbSunny";
 
 export {
   MenuIcon,

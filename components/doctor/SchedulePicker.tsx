@@ -17,7 +17,7 @@ import {
 } from "@/icons/icons";
 import { useDoctorsStore } from "@/store/useDoctorsStore";
 import { useFetchAvailableDaySlots } from "@/hooks/useFetchAvailableSlots";
-import ButtonLoader from "../global/loaders/ButtonLoader";
+import ButtonLoader from "../loaders/ButtonLoader";
 import { SeletectedSlotsType } from "@/types/booking.types";
 
 const monthsIndex: { [key: string]: number } = {

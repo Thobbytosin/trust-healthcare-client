@@ -2,8 +2,8 @@
 
 import React, { useEffect, useRef } from "react";
 import RevealWrapper, { fadeInDown } from "../ui/RevealWrapper";
-import Header from "../global/header/Header";
-import LandingPageLoader from "../global/loaders/LandingPageLoader";
+import Header from "../header/Header";
+import LandingPageLoader from "../loaders/LandingPageLoader";
 import { styles } from "@/styles/styles";
 import { useDoctorsStore } from "@/store/useDoctorsStore";
 import Image from "next/image";

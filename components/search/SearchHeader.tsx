@@ -19,7 +19,7 @@ const SearchHeader = (props: Props) => {
       </div>
 
       {/* SORT/FILTER */}
-      <div className=" mt-8 flex gap-10 md:gap-20 items-center">
+      <div className=" mt-8 flex md:flex-row flex-row md:gap-20 items-center">
         {/* filter */}
         <FilterSearch key={"filter-search"} />
 

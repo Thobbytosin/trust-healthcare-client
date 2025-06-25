@@ -7,7 +7,7 @@ import { styles } from "@/styles/styles";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import RevealWrapper from "../../ui/RevealWrapper";
+import RevealWrapper from "../ui/RevealWrapper";
 
 type Props = {};
 

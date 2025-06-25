@@ -1,7 +1,7 @@
 "use client";
 
 import React, { FC } from "react";
-import SearchUserLocation from "../global/search/SearchUserLocation";
+import SearchUserLocation from "../search/SearchUserLocation";
 
 type Props = {};
 
