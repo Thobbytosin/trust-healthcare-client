@@ -2,7 +2,7 @@ export const styles = {
   paddingX: "sm:px-10 px-8",
   bookingPadding: "p-6",
   paddingLeft: "sm:pl-0 pl-6",
-  paddingY: "sm:py-10  py-8",
+  paddingY: "md:py-4  py-6",
   paddingBottom: "pb-10 ",
   marginY: "sm:my-10 my-8",
   newSection: "my-20 sm:mx-10 mx-6",

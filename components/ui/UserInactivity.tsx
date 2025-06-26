@@ -13,7 +13,7 @@ type Props = {
 
 const UserInactivity = ({ handleClick, loading, setLoading }: Props) => {
   return (
-    <div className=" py-10 relative w-full h-full flex flex-col justify-center items-center">
+    <div className=" py-10 relative w-full h-full flex flex-col justify-center items-center font-poppins">
       <div className=" w-[50%] h-[50%] flex justify-center items-center ">
         <Image
           src={Expired}
@@ -27,7 +27,7 @@ const UserInactivity = ({ handleClick, loading, setLoading }: Props) => {
         <h1 className=" text-center text-primary font-bold text-2xl md:text-3xl  ">
           Timed Out
         </h1>
-        <p className=" text-center text-xs md:text-sm   text-text-light-gray my-3 md:my-6">
+        <p className=" text-center text-xs md:text-sm   text-text-light-gray my-3 md:my-6 font-comfortaa">
           You are being timed-out due to inactivity. Please choose to stay
           signed in or to logoff. Otherwise, you will log off automatically.
         </p>

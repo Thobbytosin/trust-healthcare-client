@@ -40,6 +40,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import ExpandLessOutlinedIcon from "@mui/icons-material/ExpandLessOutlined";
 import WbTwilightIcon from "@mui/icons-material/WbTwilight";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
+import PersonIcon from "@mui/icons-material/Person";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 export {
   MenuIcon,
@@ -84,4 +86,6 @@ export {
   ExpandLessOutlinedIcon,
   WbTwilightIcon,
   WbSunnyIcon,
+  LogoutIcon,
+  PersonIcon,
 };

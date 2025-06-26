@@ -3,8 +3,13 @@ import { styles } from "@/styles/styles";
 import React, { FC, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { getInitials } from "@/utils/helpers";
-import { NotificationsIcon, SettingsIcon } from "@/icons/icons";
+import {
+  ExpandMoreOutlinedIcon,
+  NotificationsIcon,
+  SettingsIcon,
+} from "@/icons/icons";
 import { useAuthStore } from "@/store/useAuthStore";
+import { menuItems } from "@/constants";
 
 type Props = {
   setOpenModal: (value: boolean) => void;
@@ -12,74 +17,72 @@ type Props = {
   activeIndex?: number;
 };
 
-const menuItems = [
-  { name: "Home", link: "/" },
-  {
-    name: "Services",
-    submenu: [
-      { name: "Consultation", link: "/services/consultation" },
-      { name: "Medical Checkup", link: "/services/medical-check-up" },
-    ],
-  },
-
-  { name: "Find Doctors", link: "/find-doctors" },
-  { name: "Contact", link: "/contact" },
-];
-
 const NavLaptop: FC<Props> = ({ setOpenModal, setMode, activeIndex }) => {
   const { user, userLoading } = useAuthStore((state) => state);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const dropDownRef = useRef<HTMLUListElement>(null);
   const navRef = useRef<HTMLUListElement>(null);
   const [activeFocusedIndex, setActiveFocusedIndex] = useState<any>(0);
 
   // handle keyboard navigation
-  const handleKeyDown = (
-    event: React.KeyboardEvent<HTMLUListElement | HTMLButtonElement>
-  ) => {
-    if (event.key === "ArrowRight") {
-      event.preventDefault();
-      setActiveFocusedIndex((prev: any) =>
-        prev < menuItems.length - 1 ? prev + 1 : 0
-      );
-    } else if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      setActiveFocusedIndex((prev: any) =>
-        prev > 0 ? prev - 1 : menuItems.length - 1
-      );
-    } else if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      if (menuItems[activeFocusedIndex].submenu) {
-        setDropDownOpen(true);
-      } else {
-        window.location.href = menuItems[activeFocusedIndex].link as string;
-      }
-    } else if (event.key === "ArrowDown" && dropDownOpen) {
-      event.preventDefault();
-      dropDownRef.current?.querySelector("a")?.focus();
-    } else if (event.key === "Escape") {
-      event.preventDefault();
-      setDropDownOpen(false);
+  // const handleKeyDown = (
+  //   event: React.KeyboardEvent<HTMLUListElement | HTMLButtonElement>
+  // ) => {
+  //   if (event.key === "ArrowRight") {
+  //     event.preventDefault();
+  //     setActiveFocusedIndex((prev: any) =>
+  //       prev < menuItems.length - 1 ? prev + 1 : 0
+  //     );
+  //   } else if (event.key === "ArrowLeft") {
+  //     event.preventDefault();
+  //     setActiveFocusedIndex((prev: any) =>
+  //       prev > 0 ? prev - 1 : menuItems.length - 1
+  //     );
+  //   } else if (event.key === "Enter" || event.key === " ") {
+  //     event.preventDefault();
+  //     if (menuItems[activeFocusedIndex].submenu) {
+  //       setDropDownOpen(true);
+  //     } else {
+  //       window.location.href = menuItems[activeFocusedIndex].link as string;
+  //     }
+  //   } else if (event.key === "ArrowDown" && dropDownOpen) {
+  //     event.preventDefault();
+  //     dropDownRef.current?.querySelector("a")?.focus();
+  //   } else if (event.key === "Escape") {
+  //     event.preventDefault();
+  //     setDropDownOpen(false);
+  //   }
+  // };
+
+  const handleMouseEnter = (name: string) => {
+    const item = menuItems.find((item) => item.name === name);
+    if (item?.dropdown) {
+      setActiveDropdown(name);
     }
   };
 
+  const handleMouseLeave = () => {
+    setActiveDropdown(null);
+  };
+
   //   close the drop down when clicking anywhere
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        navRef.current &&
-        !navRef.current.contains(event.target as Node) &&
-        dropDownRef.current &&
-        !dropDownRef.current.contains(event.target as Node)
-      ) {
-        setDropDownOpen(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = (event: MouseEvent) => {
+  //     if (
+  //       navRef.current &&
+  //       !navRef.current.contains(event.target as Node) &&
+  //       dropDownRef.current &&
+  //       !dropDownRef.current.contains(event.target as Node)
+  //     ) {
+  //       setDropDownOpen(false);
+  //     }
+  //   };
 
-    document.addEventListener("mousedown", handleClickOutside);
+  //   document.addEventListener("mousedown", handleClickOutside);
 
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, []);
 
   return (
     <nav
@@ -105,92 +108,45 @@ const NavLaptop: FC<Props> = ({ setOpenModal, setMode, activeIndex }) => {
 
       {/* nav links */}
       <ul
-        className=" hidden md:flex items-center gap-4 text-[12px] lg:text-[14px] cursor-pointer font-medium"
-        onKeyDown={handleKeyDown}
+        className=" hidden md:flex items-center gap-4 text-[12px] md:text-[14px] cursor-pointer font-medium font-poppins"
         ref={navRef}
       >
-        {menuItems.map((item, index) =>
-          item.submenu ? (
-            <li key={index} className={`focus:outline-none relative`}>
-              <button
-                title="Services"
-                aria-haspopup="true"
-                aria-expanded={dropDownOpen}
-                onClick={() => setDropDownOpen(true)}
-                onMouseEnter={() => {
-                  setDropDownOpen(!dropDownOpen);
-                  setActiveFocusedIndex(index);
-                }}
-                onMouseLeave={() => {
-                  setActiveFocusedIndex(undefined);
-                }}
-                className={`flex items-center cursor-pointer hover:text-primary ${
-                  (!activeIndex && activeFocusedIndex === index) ||
-                  activeIndex === index
-                    ? "border-b-2 border-primary"
-                    : ""
-                } duration-300 transition-all`}
-              >
-                Services
-                <svg
-                  className="w-4 h-4 ml-1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-
-              {dropDownOpen && (
-                <ul
-                  ref={dropDownRef}
-                  role="menu"
-                  onMouseLeave={() => setDropDownOpen(!dropDownOpen)}
-                  className=" absolute left-0 bg-gray-200 rounded-md w-40 shadow-lg shadow-black/10 text-text-primary mt-2 cursor-pointer transition-all duration-700"
-                >
-                  {item.submenu.map((subitem, i) => (
-                    <li
-                      key={i}
-                      role="menuitem"
-                      title={subitem.name}
-                      className={`p-2.5 transition-all duration-700 hover:bg-white hover:text-black w-full text-sm font-light ${
-                        i === item.submenu.length - 1
-                          ? "border-none"
-                          : "border-b border-white"
-                      }`}
-                    >
-                      <Link href={subitem.link}>{subitem.name}</Link>
-                    </li>
-                  ))}
-                </ul>
+        {menuItems.map((item, index) => (
+          <li
+            key={item.name}
+            onMouseEnter={() => handleMouseEnter(item.name)}
+            className="relative font-semibold"
+          >
+            <Link
+              href={item.link || "#"}
+              className=" text-[#1F2533]  hover:text-primary transition flex items-end"
+            >
+              <span>{item.name}</span>
+              {item.name && item.dropdown && (
+                <ExpandMoreOutlinedIcon fontSize="small" color="inherit" />
               )}
-            </li>
-          ) : (
-            <li key={index} className="">
-              <Link
-                href={item.link}
-                title={item.name}
-                onClick={() => {
-                  setDropDownOpen(false);
-                  setActiveFocusedIndex(index);
-                }}
-                className={`focus:outline-none hover:text-primary transition-all ${
-                  (!activeIndex && activeFocusedIndex === index) ||
-                  activeIndex === index
-                    ? "border-b-2 border-primary"
-                    : ""
-                }`}
+            </Link>
+
+            {/* Dropdown */}
+            {activeDropdown === item.name && item.dropdown && (
+              <ul
+                onMouseLeave={handleMouseLeave}
+                className="absolute top-full mt-2 bg-white shadow-gray-500 rounded shadow-sm py-2 w-48 z-10"
               >
-                {item.name}
-              </Link>
-            </li>
-          )
-        )}
+                {item.dropdown.map((subItem) => (
+                  <li key={subItem}>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 font-medium text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      {subItem}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
       </ul>
 
       {/* check if user has logged in */}
@@ -200,7 +156,7 @@ const NavLaptop: FC<Props> = ({ setOpenModal, setMode, activeIndex }) => {
           <div className="hidden md:block w-[100px] h-[30px] rounded-lg bg-gray-200 animate-pulse" />
           <div className="hidden md:block w-[100px] h-[30px] rounded-lg bg-gray-200 animate-pulse" />
         </div>
-      ) : user && Object.keys(user).length > 0 ? (
+      ) : user ? (
         <div className=" flex items-center gap-6 lg:gap-8">
           <div className=" flex items-center gap-4 lg:gap-6">
             <div className=" text-gray-500 cursor-pointer relative">
