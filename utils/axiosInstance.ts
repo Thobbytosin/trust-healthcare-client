@@ -71,6 +71,9 @@ axiosInstance.interceptors.request.use(
 
         // 3. Update expiry tracking
         localStorage.setItem("access_token_expiry", expiresAt);
+
+        // 4. force reload
+        window.location.reload();
       } catch (error) {
         console.error("Failed to refresh token proactively", error);
       }
@@ -132,6 +135,9 @@ axiosInstance.interceptors.response.use(
 
           // 3. Optionally update expiry tracking in localStorage
           localStorage.setItem("access_token_expiry", expiresAt);
+
+          // force reload
+          window.location.reload();
 
           // 4. Retry original request
           return axiosInstance(originalRequest);

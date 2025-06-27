@@ -59,6 +59,9 @@ const Login: FC<Props> = ({ setMode, setOpenModal }) => {
         setOpenModal(false);
 
         queryClient.invalidateQueries({ queryKey: ["user"] });
+
+        // force reload
+        window.location.reload();
       },
       onError: (error: any) => {
         toast.error(`${error.response.data.message}`, {
