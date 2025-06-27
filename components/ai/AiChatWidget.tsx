@@ -8,6 +8,7 @@ type Props = {};
 
 const AiChatWidget = (props: Props) => {
   const [open, setOpen] = useState(false);
+  const [hide, setHide] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -27,10 +28,10 @@ const AiChatWidget = (props: Props) => {
           />
 
           {/* card */}
-          <div className=" fixed top-[5%] left-[5%] w-[90%] md:left-[30%] md:w-[40%] h-[90%] bg-white shadow-lg shadow-black/30 z-60 rounded-3xl flex flex-col ">
+          <div className=" fixed top-[15%] lg:top-[10%] left-[15%] w-[70%] lg:h-[80%] h-[70%] bg-white shadow-lg shadow-black/30 z-60 rounded-3xl flex flex-col ">
             {/* chat header */}
             <div className=" w-full h-[80px] bg-primary rounded-t-3xl p-6 flex items-center gap-3">
-              <h2 className="text-white text-lg font-bold font-poppins">
+              <h2 className="text-white text-base md:text-lg font-bold font-poppins">
                 MediGuide
               </h2>
               <Image src={AiIcon} alt="MediGuide_icon" width={30} height={30} />
@@ -43,17 +44,22 @@ const AiChatWidget = (props: Props) => {
         </>
       )}
 
-      <div className="fixed bottom-5 right-10">
-        <button
-          onClick={() => setOpen(true)}
-          className=" rounded-full cursor-pointer text-base md:text-lg px-6 py-2 bg-slate-900  text-white spinning-border font-poppins"
-        >
-          Interact with AI Assistant
-          <span className="absolute  -top-6  text-slate-500 text-[1px] rounded-full  -right-6 ">
+      {!hide && (
+        <div className="fixed bottom-5 right-10">
+          <button
+            onClick={() => setOpen(true)}
+            className=" rounded-full cursor-pointer text-base md:text-lg px-6 py-2 bg-slate-900  text-white spinning-border font-poppins"
+          >
+            Interact with AI Assistant
+          </button>
+          <span
+            onClick={() => setHide(true)}
+            className="absolute cursor-pointer -top-6  text-slate-500 text-[1px] rounded-full  -right-6 "
+          >
             <CloseIcon />
           </span>
-        </button>
-      </div>
+        </div>
+      )}
     </>
   );
 };

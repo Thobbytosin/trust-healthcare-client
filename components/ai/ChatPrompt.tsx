@@ -116,12 +116,12 @@ const ChatPrompt = ({ setOpenChat }: Props) => {
             }`}
           >
             {msg.role === "assistant" ? (
-              <div className=" w-10 h-10 bg-primary rounded-full flex justify-center items-center">
+              <div className="md:w-10 md:h-10 w-6 h-6 bg-primary rounded-full flex justify-center items-center relative">
                 <Image
                   src={AiIcon}
                   alt="MediGuide_icon"
-                  width={30}
-                  height={30}
+                  fill
+                  className="object-contain"
                 />
               </div>
             ) : (
@@ -136,11 +136,11 @@ const ChatPrompt = ({ setOpenChat }: Props) => {
                   : "bg-gray-100 text-black"
               } p-4`}
             >
-              <p className=" text-sm w-full text-wrap">
+              <p className=" text-[10px] md:text-xs w-full text-wrap">
                 {msg.content}
 
                 {msg.role === "assistant" && i === 0 && (
-                  <span className="block text-xs text-primary justify-self-end mt-1">
+                  <span className="block text-[8px] md:text-xs text-primary justify-self-end mt-1">
                     Powered by AI
                   </span>
                 )}
@@ -150,7 +150,7 @@ const ChatPrompt = ({ setOpenChat }: Props) => {
         ))}
 
         {isTyping && (
-          <div className="text-gray-500 text-sm animate-pulse">
+          <div className="text-gray-500 text-xs md:text-sm animate-pulse">
             MediGuide is typing...
           </div>
         )}
@@ -159,10 +159,7 @@ const ChatPrompt = ({ setOpenChat }: Props) => {
       </div>
 
       {/* submit form */}
-      <form
-        onSubmit={handleSubmit}
-        className=" w-full mt-8  bg-gray-100 rounded-xl flex gap-4  justify-between"
-      >
+      <form onSubmit={handleSubmit} className=" w-full mt-8   flex gap-4">
         <textarea
           ref={textareaRef}
           placeholder="Ask MediGuide anything.."
@@ -174,10 +171,10 @@ const ChatPrompt = ({ setOpenChat }: Props) => {
               sendMessage();
             }
           }}
-          className="textarea-scrollbar w-full pt-8 pb-3 pl-6  focus:outline-0 focus:border-0 min-h-[40px] leading-tight  max-h-[150px] resize-none "
+          className="textarea-scrollbar w-full md:w-[70%] pt-4 px-4 text-[10px] md:text-xs  focus:outline-0 focus:border-0  leading-tight resize-none flex bg-gray-100 rounded-xl "
         />
         <button type="submit" className="pr-6 text-primary cursor-pointer">
-          <SendIcon />
+          <SendIcon fontSize="small" />
         </button>
       </form>
     </div>

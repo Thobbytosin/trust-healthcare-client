@@ -1,61 +1,62 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const VALID_LOCATIONS = ["lagos", "abuja", "port harcourt"];
-  const { messages }: { messages: { role: string; content: string }[] } =
-    await req.json();
+  try {
+    const VALID_LOCATIONS = ["lagos", "abuja", "port harcourt"];
+    const { messages }: { messages: { role: string; content: string }[] } =
+      await req.json();
 
-  // MANUALLY
-  // last message  will be usermessage
-  const userMessage = messages[messages.length - 1].content.toLowerCase();
+    // MANUALLY
+    // last message  will be usermessage
+    const userMessage = messages[messages.length - 1].content.toLowerCase();
 
-  // check if message contains these
-  if (
-    userMessage.includes("tell me about ") ||
-    userMessage.includes("what is this") ||
-    userMessage.includes("about is website")
-  ) {
-    return NextResponse.json({
-      reply:
-        "Trust HealthCare is an online healthcare platform designed to help Nigerians easily find and connect with licensed doctors. You can search by specialty, location, or availability, and even book appointments right from your device.",
-    });
-  }
-
-  // check if message contains show doctors by location
-  const matchedLocation = VALID_LOCATIONS.find((loc) =>
-    userMessage.includes(loc.toLowerCase())
-  );
-
-  if (
-    userMessage.includes("find doctors from") ||
-    matchedLocation ||
-    userMessage.includes("show me doctors from") ||
-    userMessage.includes("search doctors from")
-  ) {
-    if (matchedLocation) {
+    // check if message contains these
+    if (
+      userMessage.includes("tell me about ") ||
+      userMessage.includes("what is this") ||
+      userMessage.includes("about is website")
+    ) {
       return NextResponse.json({
-        function_call: "navigateToDoctors",
-        args: { search: matchedLocation },
-      });
-    } else {
-      return NextResponse.json({
-        reply: `Sorry, we don't have doctors listed in this area yet`,
+        reply:
+          "Trust HealthCare is an online healthcare platform designed to help Nigerians easily find and connect with licensed doctors. You can search by specialty, location, or availability, and even book appointments right from your device.",
       });
     }
-  }
 
-  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "nousresearch/deephermes-3-mistral-24b-preview:free",
-      messages: [
-        {
-          role: "system",
-          content: `You are MediGuide, a smart and friendly AI assistant on a Nigerian healthcare website. Greet users, answer questions about the platform, and help them navigate to doctor listings or services. 
+    // check if message contains show doctors by location
+    const matchedLocation = VALID_LOCATIONS.find((loc) =>
+      userMessage.includes(loc.toLowerCase())
+    );
+
+    if (
+      userMessage.includes("find doctors from") ||
+      matchedLocation ||
+      userMessage.includes("show me doctors from") ||
+      userMessage.includes("search doctors from")
+    ) {
+      if (matchedLocation) {
+        return NextResponse.json({
+          function_call: "navigateToDoctors",
+          args: { search: matchedLocation },
+        });
+      } else {
+        return NextResponse.json({
+          reply: `Sorry, we don't have doctors listed in this area yet`,
+        });
+      }
+    }
+
+    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "mistralai/mistral-small-3.2-24b-instruct:free",
+        messages: [
+          {
+            role: "system",
+            content: `You are MediGuide, a smart and friendly AI assistant on a Nigerian healthcare website. Greet users, answer questions about the platform, and help them navigate to doctor listings or services. 
 
           Trust HealthCare is an online healthcare platform designed to help Nigerians easily find and connect with licensed doctors. You can search by specialty, location, or availability, and even book appointments right from your device.
           
@@ -69,22 +70,29 @@ export async function POST(req: NextRequest) {
           - "Find doctors in Abuja" => call navigateToDoctors("abuja")
                   
           `,
-        },
-        ...messages,
-      ],
-    }),
-  });
+          },
+          ...messages,
+        ],
+      }),
+    });
 
-  if (!res.ok) {
-    const error = await res.text();
-    return NextResponse.json({ error }, { status: res.status });
+    if (!res.ok) {
+      const errorText = await res.text(); // get full error content
+      console.error("OpenRouter Error:", errorText); // more useful logging
+      return NextResponse.json(
+        { error: "Failed to connect to OpenRouter", detail: errorText },
+        { status: 500 }
+      );
+    }
+
+    const data = await res.json();
+    const choice = data.choices?.[0];
+
+    // DEFAULT RESPONSE
+    return NextResponse.json({
+      reply: choice.message.content,
+    });
+  } catch (error) {
+    console.log("ERROR AT THIS TIME:", error);
   }
-
-  const data = await res.json();
-  const choice = data.choices?.[0];
-
-  // DEFAULT RESPONSE
-  return NextResponse.json({
-    reply: choice.message.content,
-  });
 }
