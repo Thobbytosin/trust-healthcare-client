@@ -3,7 +3,7 @@ import DoctorCard from "./DoctorCard";
 import Sidebar from "./Sidebar";
 import DoctorCardSkeleton from "./DoctorsCardSkeleton";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { IDoctor } from "@/types/doctor.types";
+import { TDoctor } from "@/types/doctor.types";
 import { useSearch } from "@/hooks/useSearch";
 import { useFetchDoctors } from "@/hooks/useFetchDoctors";
 import Pagination from "./Pagination";
@@ -14,7 +14,7 @@ const DoctorsGrid: FC<Props> = () => {
   const queryParams = useSearchParams();
   const { data, isLoading: loading } = useFetchDoctors(queryParams);
 
-  const doctorsData: IDoctor[] = data?.doctors || [];
+  const doctorsData: TDoctor[] = data?.doctors || [];
   const { actions } = useSearch();
   const { resetAll } = actions;
 

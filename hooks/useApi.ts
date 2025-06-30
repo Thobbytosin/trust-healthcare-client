@@ -1,8 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import axiosInstance from "@/utils/axiosInstance";
 import { SERVER_URI } from "@/config/api";
 import { getCookie } from "@/utils/helpers";
+import { ApiError, ApiSuccess } from "@/types/api.types";
 
 const consent = getCookie("cookie_consent");
 
@@ -25,8 +26,8 @@ export function useFetchData<T>({
   enabled = false,
   skipAuthRefresh = false,
 }: FetchOptions) {
-  return useQuery<T, any>({
-    queryKey: queryKey,
+  return useQuery<ApiSuccess<T>, ApiError>({
+    queryKey: [...queryKey],
     queryFn: async () => {
       try {
         const config: any = {
@@ -45,15 +46,33 @@ export function useFetchData<T>({
         }
 
         const response = await axiosInstance(config);
-        if (response) {
-          return response.data;
+
+        // validate response structure
+        if (!response.data || typeof response.data.success !== "boolean") {
+          throw {
+            success: false,
+            message: "Invalid API response structure",
+            statusCode: 500,
+          } satisfies ApiError;
         }
+
+        return response.data;
       } catch (error: any) {
-        if (axios?.isAxiosError(error) && error.response) {
-          console.log(
-            "Error Message:",
-            error.response.data?.message || "API request failed"
-          );
+        const fallbackError: ApiError = {
+          success: false,
+          message: "Unexpected error",
+          statusCode: 500,
+        };
+
+        if (axios.isAxiosError(error) && error.response?.data) {
+          const data = error.response.data;
+          throw {
+            success: false,
+            message: data.message,
+            statusCode: data.statusCode,
+          } satisfies ApiError;
+        } else {
+          throw fallbackError satisfies ApiError;
         }
       }
     },
@@ -64,51 +83,68 @@ export function useFetchData<T>({
 }
 
 // FOR POST, PUT, DELETE requests
-interface MutationOptions {
+interface MutationOptions<TResponse, TRequest = unknown> {
   mutationKey: (string | number)[];
   url: string;
   method: "POST" | "PUT" | "DELETE";
   headers?: Record<string, string>;
   skipAuthRefresh?: boolean;
+  onSuccess: (data: ApiSuccess<TResponse>) => void;
+  onError: (error: ApiError) => void;
 }
 
-export function useMutateData<T>({
+export function useMutateData<TResponse, TRequest = unknown>({
   url,
   method,
   headers,
   mutationKey,
   skipAuthRefresh = true,
-}: MutationOptions) {
-  return useMutation<T, any, any>({
+  onError,
+  onSuccess,
+}: MutationOptions<TResponse, TRequest>) {
+  return useMutation<ApiSuccess<TResponse>, ApiError, TRequest>({
     mutationKey: mutationKey,
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: TRequest) => {
       const config: any = {
         method,
         url: `${SERVER_URI}${url}`,
         data,
         withCredentials: true,
+        headers: headers || {},
         skipAuthRefresh,
       };
 
-      // Optionally add custom headers if needed
-      if (headers) {
-        config.headers = {
-          ...(headers || {}),
-          "x-cookie-consent": consent,
-        };
-      }
+      const response = await axiosInstance<ApiSuccess<TResponse>>(config);
 
-      const response = await axiosInstance(config);
+      // check if response structure is correct
+      if (!response.data || typeof response.data.success !== "boolean") {
+        throw {
+          success: false,
+          message: "Invalid API response structure",
+          statusCode: 500,
+        } satisfies ApiError;
+      }
 
       return response.data;
     },
-    onError: (error: any) => {
-      if (axios.isAxiosError(error) && error.response) {
-        console.log(
-          "Backend Error Details:",
-          error.response.data || "No error message from server"
-        );
+    onSuccess: (data) => {
+      if (!data.success) {
+        onError(data as ApiError);
+        return;
       }
+
+      onSuccess(data);
+    },
+    onError: (error: AxiosError<ApiError> | ApiError) => {
+      const apiError = axios.isAxiosError(error)
+        ? error?.response?.data || {
+            success: false,
+            message: error.message,
+            statusCode: error.response?.status || 500,
+          }
+        : error;
+
+      onError(apiError);
     },
   });
 }

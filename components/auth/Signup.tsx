@@ -1,14 +1,12 @@
-import { useMutateData } from "@/hooks/useApi";
 import {
   CloseOutlinedIcon,
   DoneOutlinedIcon,
   VisibilityOffOutlinedIcon,
   VisibilityOutlinedIcon,
 } from "@/icons/icons";
-import React, { FC, useState } from "react";
-import { toast } from "sonner";
+import React, { FC, useEffect, useState } from "react";
 import Loader from "../loaders/Loader";
-import { SIGNUP } from "@/config/auth.endpoints";
+import { useAuthMutations } from "@/hooks/api/auth.api";
 
 type Props = {
   setMode: (value: string) => void;
@@ -20,11 +18,9 @@ const Signup: FC<Props> = ({ setMode }) => {
   const [form, setForm] = useState<any>({});
   const [isPasswordChanging, setIsPasswordChanging] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const { mutate: registerUser, isPending } = useMutateData<any>({
-    mutationKey: ["registerUser"],
-    method: "POST",
-    url: SIGNUP,
-  });
+  const { registerDomain } = useAuthMutations();
+  const { registerUser, registerUserSuccess, registerUserLoading } =
+    registerDomain;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsPasswordChanging(false);
@@ -41,34 +37,22 @@ const Signup: FC<Props> = ({ setMode }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    registerUser(
-      {
-        name: form.firstName.trim() + " " + form.lastName.trim(),
-        email: form.email,
-        password: form.password,
-      },
-      {
-        onSuccess: async (data: any) => {
-          toast.success("Welcome to Trust Healthcare!", {
-            description: data.message,
-            duration: 4000,
-          });
-
-          setMode("verification");
-        },
-        onError: (error: any) => {
-          toast.error(`${error.response.data.message}`, {
-            description: "Something went wrong. Try again",
-            duration: 4000,
-          });
-        },
-      }
-    );
+    registerUser({
+      name: form.firstName.trim() + " " + form.lastName.trim(),
+      email: form.email,
+      password: form.password,
+    });
   };
+
+  useEffect(() => {
+    if (registerUserSuccess) {
+      setMode("verification");
+    }
+  }, [registerUserSuccess]);
 
   return (
     <section className=" w-full h-full md:overflow-hidden px-8 py-8 md:py-12 relative font-poppins">
-      {isPending && <Loader />}
+      {registerUserLoading && <Loader />}
 
       <h2 className=" text-text-primary text-lg md:text-2xl font-medium">
         Register Your Account

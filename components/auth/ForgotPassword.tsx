@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Loader from "../loaders/Loader";
-import { toast } from "sonner";
-import { useMutateData } from "@/hooks/useApi";
-import { FORGOTPASSWORD } from "@/config/user.endpoints";
+import { useAuthMutations } from "@/hooks/api/auth.api";
 
 type Props = {
   setMode: (value: string) => void;
@@ -13,11 +11,9 @@ type ForgotForm = {
 };
 
 const ForgotPassword = ({ setMode }: Props) => {
-  const { mutate: forgotPassword, isPending } = useMutateData({
-    method: "POST",
-    mutationKey: ["forgotPassword"],
-    url: FORGOTPASSWORD,
-  });
+  const { forgotPasswordDomain } = useAuthMutations();
+  const { forgotPassword, forgotPasswordLoading, forgotPasswordSuccess } =
+    forgotPasswordDomain;
   const [form, setForm] = useState<ForgotForm>({ email: "" });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,27 +23,18 @@ const ForgotPassword = ({ setMode }: Props) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    forgotPassword(form, {
-      onSuccess: (data: any) => {
-        toast.success("Password Reset Token Sent", {
-          description: data.message,
-          duration: 4000,
-        });
-
-        setMode("reset-password");
-      },
-      onError: (error: any) => {
-        toast.error(`${error.response.data.message}`, {
-          description: "Something went wrong. Try again",
-          duration: 4000,
-        });
-      },
-    });
+    forgotPassword(form);
   };
+
+  useEffect(() => {
+    if (forgotPasswordSuccess) {
+      setMode("reset-password");
+    }
+  }, [forgotPasswordSuccess]);
 
   return (
     <section className=" w-full md:w-[80%] mx-auto p-8 flex flex-col justify-center items-center overflow-clip relative font-poppins">
-      {isPending && <Loader />}
+      {forgotPasswordLoading && <Loader />}
 
       <h2 className=" text-text-primary text-center text-2xl font-medium ">
         Forgot Password

@@ -1,6 +1,7 @@
 // lib/fetchUser.ts
 import { SERVER_URI } from "@/config/api";
 import { useServerStatusUniversal } from "@/hooks/useServerStausUniversal";
+import { IUserResponse } from "@/types/user.types";
 import axios from "axios";
 import { cookies } from "next/headers";
 
@@ -25,7 +26,9 @@ export const fetchUser = async () => {
       withCredentials: true,
     });
 
-    return res.data.user;
+    const formattedRes: IUserResponse = res.data;
+
+    return formattedRes.data;
   } catch (err: any) {
     console.log("Error fetching user:", err.response?.data || err.message);
     return null; // fallback to avoid crashing layout

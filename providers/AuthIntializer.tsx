@@ -1,12 +1,11 @@
 "use client";
 
 import { useAuth } from "@/hooks/useAuth";
-// import { useAuth } from "@/hooks/useAuth";
 import { useAuthStore } from "@/store/useAuthStore";
-import { User } from "@/types/user.types";
+import { TUser } from "@/types/user.types";
 import { useEffect } from "react";
 
-const AuthIntializer = ({ user }: { user: User | null }) => {
+const AuthIntializer = ({ user }: { user: TUser | null }) => {
   const setUser = useAuthStore((state) => state.setUser);
   const setUserLoading = useAuthStore((state) => state.setUserLoading);
 

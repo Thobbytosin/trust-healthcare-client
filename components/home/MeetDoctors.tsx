@@ -8,10 +8,10 @@ import { motion } from "framer-motion";
 import RevealWrapper from "../ui/RevealWrapper";
 import { useRouter } from "next/navigation";
 import ButtonLoader from "../loaders/ButtonLoader";
-import { IDoctor } from "@/types/doctor.types";
+import { TDoctor } from "@/types/doctor.types";
 
 type Props = {
-  doctors: IDoctor[];
+  doctors: TDoctor[];
 };
 
 const MeetDoctors = ({ doctors }: Props) => {

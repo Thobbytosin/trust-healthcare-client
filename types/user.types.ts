@@ -1,15 +1,22 @@
-export interface User {
+export type TUser = {
+  id: string;
   name: string;
   email: string;
   verified: boolean;
   lastLogin: Date;
-  lastPasswordReset: Date;
+  lastPasswordReset: Date | null;
   role: [string];
-}
+  doctorId: string | null;
+  signedInAs: string;
+  expiresAt?: number;
+  accessToken?: string;
+  refreshToken?: string;
+  loggedInToken?: string;
+};
 
-// user backend response type
-export interface UserBackendResponse {
-  success: boolean;
+export interface IUserResponse {
+  success: true;
   message: string;
-  user: User;
+  data: TUser;
+  statusCode: number;
 }

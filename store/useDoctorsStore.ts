@@ -1,16 +1,14 @@
-import { IDoctor } from "@/types/doctor.types";
+import { TDoctor } from "@/types/doctor.types";
 import { create } from "zustand";
 
 interface DoctorsState {
-  doctors: IDoctor[];
-  doctor: IDoctor;
-  setDoctors: (doctors: IDoctor[]) => void;
-  setDoctor: (doctor: IDoctor) => void;
+  doctors: TDoctor[];
+  doctor: TDoctor;
+  setDoctor: (doctor: TDoctor) => void;
 }
 
 export const useDoctorsStore = create<DoctorsState>((set) => ({
   doctors: [],
-  doctor: {} as IDoctor,
-  setDoctors: (doctors) => set({ doctors }),
+  doctor: {} as TDoctor,
   setDoctor: (doctor) => set({ doctor }),
 }));

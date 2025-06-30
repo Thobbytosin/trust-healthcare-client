@@ -16,10 +16,10 @@ import {
 } from "@/icons/icons";
 import Ratings from "../ui/Ratings";
 import BookingForm from "./BookingForm";
-import { IDoctor } from "@/types/doctor.types";
+import { TDoctor } from "@/types/doctor.types";
 
 type Props = {
-  doctor: IDoctor | null;
+  doctor: TDoctor | null;
 };
 
 const Doctor = ({ doctor }: Props) => {

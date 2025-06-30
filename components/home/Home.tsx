@@ -6,7 +6,6 @@ import Hero from "./Hero";
 import Search from "../search/Search";
 import CookiesConsent from "../cookieconsent/CookiesConsent";
 import Footer from "../footer/Footer";
-import LandingPageLoader from "../loaders/LandingPageLoader";
 import { usePathname, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { getCookie } from "@/utils/helpers";
@@ -17,10 +16,10 @@ import SectionLoader from "../loaders/SectionLoader";
 import NewsLetter from "./NewsLetter";
 import { useServerStatus } from "@/hooks/useServerStatus";
 import ServerStatusListener from "@/components/ui/ServerStatusListener";
-import { IDoctor } from "@/types/doctor.types";
+import { TDoctor } from "@/types/doctor.types";
 
 type Props = {
-  doctors: IDoctor[] | null;
+  doctors: TDoctor[] | null;
 };
 
 const Home = ({ doctors }: Props) => {
@@ -71,7 +70,7 @@ const Home = ({ doctors }: Props) => {
   return (
     <main>
       {/* Don't render Header until data is loaded */}
-      <Header />
+      <Header activeIndex={0} />
 
       <Hero />
 

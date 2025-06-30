@@ -1,15 +1,10 @@
-import { useMutateData } from "@/hooks/useApi";
-import React, { FC, FormEvent, useState } from "react";
-import { toast } from "sonner";
+import React, { FC, FormEvent, useEffect, useState } from "react";
 import Loader from "../loaders/Loader";
 import {
   VisibilityOffOutlinedIcon,
   VisibilityOutlinedIcon,
 } from "@/icons/icons";
-import { LOGIN } from "@/config/auth.endpoints";
-import { LoginResponse } from "@/types/auth.types";
-import { useQueryClient } from "@tanstack/react-query";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useAuthMutations } from "@/hooks/api/auth.api";
 
 type Props = {
   setMode: (value: string) => void;
@@ -17,16 +12,13 @@ type Props = {
 };
 
 const Login: FC<Props> = ({ setMode, setOpenModal }) => {
-  const setUser = useAuthStore((state) => state.setUser);
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState<any>({});
-  const { mutate: loginUser, isPending } = useMutateData<LoginResponse>({
-    method: "POST",
-    mutationKey: ["loginUser"],
-    url: LOGIN,
-    skipAuthRefresh: true,
+  const [form, setForm] = useState<{ email: string; password: string }>({
+    email: "",
+    password: "",
   });
-  const queryClient = useQueryClient();
+  const { loginDomain } = useAuthMutations();
+  const { loginUser, loginUserLoading, loginSuccess } = loginDomain;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -34,47 +26,18 @@ const Login: FC<Props> = ({ setMode, setOpenModal }) => {
 
   const handleLogin = (e: FormEvent) => {
     e.preventDefault();
-
-    loginUser(form, {
-      onSuccess: async (data) => {
-        toast.success("Welcome to Trust HealthCare!", {
-          description: data.message,
-          duration: 4000,
-        });
-
-        const { accessToken, refreshToken, loggedInToken, expiresAt, user } =
-          data;
-
-        setUser(user);
-
-        await fetch("/api/set-cookies", {
-          method: "POST",
-          body: JSON.stringify({ accessToken, refreshToken, loggedInToken }),
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        });
-
-        localStorage.setItem("access_token_expiry", expiresAt);
-
-        setOpenModal(false);
-
-        queryClient.invalidateQueries({ queryKey: ["user"] });
-
-        // force reload
-        window.location.reload();
-      },
-      onError: (error: any) => {
-        toast.error(`${error.response.data.message}`, {
-          description: "Something went wrong. Try again",
-          duration: 4000,
-        });
-      },
-    });
+    loginUser(form);
   };
+
+  useEffect(() => {
+    if (loginSuccess) {
+      setOpenModal(false);
+    }
+  }, [loginSuccess]);
 
   return (
     <section className=" w-full p-8 relative font-poppins">
-      {isPending && <Loader />}
+      {loginUserLoading && <Loader />}
       <h2 className=" text-text-primary text-lg md:text-2xl font-medium font-poppins">
         Welcome Back
       </h2>

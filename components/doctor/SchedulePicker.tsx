@@ -489,10 +489,9 @@ const SchedulePicker = ({ selectedSlots, setSelectedSlots }: Props) => {
                   {/* daily 3 sessions */}
                   {dailySessions?.map((session, i) => {
                     // find the doctor session per label (object) {label: morning, availableSlots: [9AM-9.30AM, 9.30AM-10AM.....]}
-                    const doctorSession =
-                      availableSlotsData?.availableSlots?.slots.find(
-                        (s: any) => s.label === session.label
-                      );
+                    const doctorSession = availableSlotsData?.slots.find(
+                      (s: any) => s.label === session.label
+                    );
 
                     return (
                       <div

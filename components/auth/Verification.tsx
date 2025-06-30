@@ -1,10 +1,8 @@
 import Image from "next/image";
 import React, { FC, useEffect, useRef, useState } from "react";
 import phoneIcon from "@/public/assets/phone.png";
-import { useMutateData } from "@/hooks/useApi";
 import Loader from "../loaders/Loader";
-import { toast } from "sonner";
-import { RESENDVERIFICATIONCODE, VERIFICATION } from "@/config/auth.endpoints";
+import { useAuthMutations } from "@/hooks/api/auth.api";
 
 type Props = {
   setMode: (value: string) => void;
@@ -20,6 +18,11 @@ type VerificationNumbers = {
 };
 
 const Verification: FC<Props> = ({ setMode }) => {
+  const { verifyAccountDomain, resendCodeDomain } = useAuthMutations();
+  const { verifyAccount, verifyAccountLoading, verifyAccountSuccess } =
+    verifyAccountDomain;
+  const { resendCode, resendCodeLoading } = resendCodeDomain;
+
   const inputRefs = [
     useRef<HTMLInputElement>(null),
     useRef<HTMLInputElement>(null),
@@ -81,68 +84,27 @@ const Verification: FC<Props> = ({ setMode }) => {
     setVerificationLength(verificationCode.length);
   }, [verificationLength, verificationNumbers]);
 
-  const { mutate: verifyAccount, isPending } = useMutateData({
-    method: "POST",
-    mutationKey: ["verification"],
-    url: VERIFICATION,
-  });
-
   // handle submit
   const handleSubmit = () => {
     const verificationCode = Object.values(verificationNumbers).join("");
 
-    verifyAccount(
-      { verificationCode },
-      {
-        onSuccess: (data: any) => {
-          toast.success(data.message, {
-            description: "You can proceed to sign in.",
-            duration: 4000,
-          });
-
-          setMode("verification-success");
-        },
-        onError: (error: any) => {
-          toast.error(`${error.response.data.message}`, {
-            description: "Something went wrong. Try again",
-            duration: 4000,
-          });
-        },
-      }
-    );
+    verifyAccount({ verificationCode });
   };
-
-  const { mutate: resendCode, isPending: resendPending } = useMutateData({
-    method: "POST",
-    mutationKey: ["resendCode"],
-    url: RESENDVERIFICATIONCODE,
-  });
 
   // handle resend code
   const handleResend = () => {
-    resendCode(
-      {},
-      {
-        onSuccess: (data: any) => {
-          toast.success(data.message, {
-            description: "Enter the code to proceed.",
-            duration: 4000,
-          });
-        },
-        onError: (error: any) => {
-          toast.error(`${error.response.data.message}`, {
-            description: "Something went wrong. Try again",
-            duration: 4000,
-          });
-        },
-      }
-    );
+    resendCode(null);
   };
+
+  useEffect(() => {
+    if (verifyAccountSuccess) {
+      setMode("login");
+    }
+  }, [verifyAccountSuccess]);
 
   return (
     <section className=" w-full md:w-[80%] mx-auto p-8 flex flex-col justify-center items-center overflow-clip relative font-poppins">
-      {isPending && <Loader />}
-      {resendPending && <Loader />}
+      {(verifyAccountLoading || resendCodeLoading) && <Loader />}
 
       <h2 className=" text-text-primary text-center text-2xl font-medium mb-4 ">
         Account Verification

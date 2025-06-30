@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import "./globals.css";
-import { Toaster } from "sonner";
 import AppProvider from "@/providers/AppProvider";
 import AuthIntializer from "@/providers/AuthIntializer";
 import UserInactivityTracker from "@/providers/UserInactivityTracker";
@@ -79,7 +78,6 @@ export default async function RootLayout({
           <UserInactivityTracker />
           {children}
         </AppProvider>
-        <Toaster richColors />
       </body>
     </html>
   );

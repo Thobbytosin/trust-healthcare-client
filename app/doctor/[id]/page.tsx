@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { SERVER_URI } from "@/config/api";
 import Doctor from "@/components/doctor/Doctor";
 import { fetchDoctor } from "@/lib/fetchDoctor";
-import { IDoctor } from "@/types/doctor.types";
+import { TDoctor } from "@/types/doctor.types";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -109,7 +109,7 @@ export async function generateMetadata(
 
 export default async function DoctorPage({ params }: PageProps) {
   const { id } = await params;
-  const doctor: IDoctor | null = await fetchDoctor(id);
+  const doctor: TDoctor | null = await fetchDoctor(id);
 
   // return <div>Doctor Page</div>;
   return <Doctor doctor={doctor} />;

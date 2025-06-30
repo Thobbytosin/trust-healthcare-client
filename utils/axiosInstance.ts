@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 import { getCookie } from "./helpers";
 import { SERVER_URI } from "@/config/api";
 import { isServerOnline } from "./isServerOnline";
+import { RefreshTokenResponse } from "@/types/auth.types";
 
 const axiosInstance = axios.create({
   baseURL: SERVER_URI,
@@ -58,8 +59,9 @@ axiosInstance.interceptors.request.use(
           } as CustomAxiosRequestConfig
         );
 
+        const formattedRes: RefreshTokenResponse = refreshResponse.data;
         const { accessToken, refreshToken, loggedInToken, expiresAt } =
-          refreshResponse.data;
+          formattedRes.data;
 
         // 2. Send tokens to your cookie API route
         await fetch("/api/set-cookies", {
@@ -118,8 +120,9 @@ axiosInstance.interceptors.response.use(
             } as CustomAxiosRequestConfig
           );
 
+          const formattedRes: RefreshTokenResponse = refreshResponse.data;
           const { accessToken, refreshToken, loggedInToken, expiresAt } =
-            refreshResponse.data;
+            formattedRes.data;
 
           // 2. Set new cookies via your API route
           await fetch("/api/set-cookies", {
@@ -153,9 +156,3 @@ axiosInstance.interceptors.response.use(
 );
 
 export default axiosInstance;
-
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiZDM2NWM2YWItMDI4Ni00NjdhLWI5NmUtODI0NDRkYTA1YTcyIiwibmFtZSI6IkZhbG9kZSBUb2JpIiwiZW1haWwiOiJnYWJyaWVsdG9iaWxvYmExMUBnbWFpbC5jb20iLCJhdmF0YXIiOm51bGwsInJvbGUiOlsidXNlciJdLCJ2ZXJpZmllZCI6dHJ1ZSwibGFzdExvZ2luIjoiMjAyNS0wNi0yMlQyMjoxMjozMy4xNjRaIiwibGFzdFBhc3N3b3JkUmVzZXQiOm51bGwsImRvY3RvcklkIjpudWxsLCJzaWduZWRJbkFzIjoidXNlciJ9LCJpYXQiOjE3NTA2MzIxOTQsImV4cCI6MTc1MTA2NDE5NH0.kyLx7s9atz0pgzVxIu3Yrrm4dA6SAP9qrwfsk6h7HhE
-
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiZDM2NWM2YWItMDI4Ni00NjdhLWI5NmUtODI0NDRkYTA1YTcyIiwibmFtZSI6IkZhbG9kZSBUb2JpIiwiZW1haWwiOiJnYWJyaWVsdG9iaWxvYmExMUBnbWFpbC5jb20iLCJhdmF0YXIiOm51bGwsInJvbGUiOlsidXNlciJdLCJ2ZXJpZmllZCI6dHJ1ZSwibGFzdExvZ2luIjoiMjAyNS0wNi0yMlQyMjoxMjozMy4xNjRaIiwibGFzdFBhc3N3b3JkUmVzZXQiOm51bGwsImRvY3RvcklkIjpudWxsLCJzaWduZWRJbkFzIjoidXNlciJ9LCJpYXQiOjE3NTA2MzIyNjAsImV4cCI6MTc1MTA2NDI2MH0.nDg9DmfVdn71GG4FSJcwfZXWCyPETOBZWGudzWxYVWQ
-
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiZDM2NWM2YWItMDI4Ni00NjdhLWI5NmUtODI0NDRkYTA1YTcyIiwibmFtZSI6IkZhbG9kZSBUb2JpIiwiZW1haWwiOiJnYWJyaWVsdG9iaWxvYmExMUBnbWFpbC5jb20iLCJhdmF0YXIiOm51bGwsInJvbGUiOlsidXNlciJdLCJ2ZXJpZmllZCI6dHJ1ZSwibGFzdExvZ2luIjoiMjAyNS0wNi0yMlQyMjoxMjozMy4xNjRaIiwibGFzdFBhc3N3b3JkUmVzZXQiOm51bGwsImRvY3RvcklkIjpudWxsLCJzaWduZWRJbkFzIjoidXNlciJ9LCJpYXQiOjE3NTA2MzIzMDcsImV4cCI6MTc1MTA2NDMwN30.yP_Gig9lX3s-TLkZmIkZGD2IClPWYvjl6tw8H60dY_w

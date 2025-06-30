@@ -1,6 +1,7 @@
 // lib/fetchUser.ts
 import { SERVER_URI } from "@/config/api";
 import { useServerStatusUniversal } from "@/hooks/useServerStausUniversal";
+import { IDoctorsUnauthResponse } from "@/types/doctor.types";
 import axios from "axios";
 import { cookies } from "next/headers";
 
@@ -24,8 +25,9 @@ export const fetchDoctorsUnauth = async () => {
         withCredentials: true,
       }
     );
+    const formattedRes: IDoctorsUnauthResponse = res.data;
 
-    return res.data.doctors;
+    return formattedRes.data;
   } catch (err: any) {
     console.log(
       "Error fetching doctors unauth:",

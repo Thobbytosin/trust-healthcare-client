@@ -5,12 +5,12 @@ import {
   KeyboardDoubleArrowLeftOutlinedIcon,
   KeyboardDoubleArrowRightOutlinedIcon,
 } from "@/icons/icons";
-import { DoctorsBackendResponse } from "@/types/doctor.types";
+import { TDoctorsData } from "@/types/doctor.types";
 import React, { useState } from "react";
 
 type Props = {
   currentPage: string | null;
-  data: DoctorsBackendResponse | undefined;
+  data: TDoctorsData | undefined;
   handlePageChange: (value: number) => void;
 };
 

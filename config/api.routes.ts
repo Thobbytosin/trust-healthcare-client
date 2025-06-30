@@ -1,6 +1,7 @@
 export const API_AUTH_PATHS = {
   SIGNUP: "/auth/signup",
   LOGIN: "/auth/login",
+  SIGNOUT: "/auth/signout",
   REFRESHTOKEN: "/auth/refresh-tokens",
   VERIFICATION: "/auth/account-verification",
   RESENDVERIFICATIONCODE: "/auth/resend-verification-code",

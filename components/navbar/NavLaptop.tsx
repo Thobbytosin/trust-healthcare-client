@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { styles } from "@/styles/styles";
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useRef, useState } from "react";
 import Image from "next/image";
 import { getInitials } from "@/utils/helpers";
 import {
@@ -20,40 +20,7 @@ type Props = {
 const NavLaptop: FC<Props> = ({ setOpenModal, setMode, activeIndex }) => {
   const { user, userLoading } = useAuthStore((state) => state);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [dropDownOpen, setDropDownOpen] = useState(false);
-  const dropDownRef = useRef<HTMLUListElement>(null);
   const navRef = useRef<HTMLUListElement>(null);
-  const [activeFocusedIndex, setActiveFocusedIndex] = useState<any>(0);
-
-  // handle keyboard navigation
-  // const handleKeyDown = (
-  //   event: React.KeyboardEvent<HTMLUListElement | HTMLButtonElement>
-  // ) => {
-  //   if (event.key === "ArrowRight") {
-  //     event.preventDefault();
-  //     setActiveFocusedIndex((prev: any) =>
-  //       prev < menuItems.length - 1 ? prev + 1 : 0
-  //     );
-  //   } else if (event.key === "ArrowLeft") {
-  //     event.preventDefault();
-  //     setActiveFocusedIndex((prev: any) =>
-  //       prev > 0 ? prev - 1 : menuItems.length - 1
-  //     );
-  //   } else if (event.key === "Enter" || event.key === " ") {
-  //     event.preventDefault();
-  //     if (menuItems[activeFocusedIndex].submenu) {
-  //       setDropDownOpen(true);
-  //     } else {
-  //       window.location.href = menuItems[activeFocusedIndex].link as string;
-  //     }
-  //   } else if (event.key === "ArrowDown" && dropDownOpen) {
-  //     event.preventDefault();
-  //     dropDownRef.current?.querySelector("a")?.focus();
-  //   } else if (event.key === "Escape") {
-  //     event.preventDefault();
-  //     setDropDownOpen(false);
-  //   }
-  // };
 
   const handleMouseEnter = (name: string) => {
     const item = menuItems.find((item) => item.name === name);
@@ -119,7 +86,9 @@ const NavLaptop: FC<Props> = ({ setOpenModal, setMode, activeIndex }) => {
           >
             <Link
               href={item.link || "#"}
-              className=" text-[#1F2533]  hover:text-primary transition flex items-end"
+              className={`text-[#1F2533]  hover:text-primary transition flex items-end ${
+                activeIndex === index ? " text-primary" : ""
+              }`}
             >
               <span>{item.name}</span>
               {item.name && item.dropdown && (

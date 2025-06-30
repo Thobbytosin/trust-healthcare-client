@@ -1,14 +1,12 @@
-import { useMutateData } from "@/hooks/useApi";
 import {
   CloseOutlinedIcon,
   DoneOutlinedIcon,
   VisibilityOffOutlinedIcon,
   VisibilityOutlinedIcon,
 } from "@/icons/icons";
-import React, { useState } from "react";
-import { toast } from "sonner";
+import React, { useEffect, useState } from "react";
 import Loader from "../loaders/Loader";
-import { RESETPASSWORD } from "@/config/user.endpoints";
+import { useAuthMutations } from "@/hooks/api/auth.api";
 
 type Props = {
   setMode: (value: string) => void;
@@ -29,6 +27,9 @@ const ResetPassword = ({ setMode }: Props) => {
     confirmPassword: "",
   });
   const [isPasswordChanging, setIsPasswordChanging] = useState(false);
+  const { resetPasswordDomain } = useAuthMutations();
+  const { resetPassword, resetPasswordLoading, resetPasswordSuccess } =
+    resetPasswordDomain;
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsPasswordChanging(true);
@@ -40,39 +41,21 @@ const ResetPassword = ({ setMode }: Props) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const { mutate: resetPassword, isPending } = useMutateData({
-    method: "POST",
-    mutationKey: ["resetPassword"],
-    url: RESETPASSWORD,
-  });
-
   const handleReset = (e: React.FormEvent) => {
     e.preventDefault();
 
-    resetPassword(
-      { resetCode: form.resetCode, password: form.password },
-      {
-        onSuccess: (data: any) => {
-          toast.success("Password Reset Successful", {
-            description: data.message,
-            duration: 4000,
-          });
-
-          setMode("login");
-        },
-        onError: (error: any) => {
-          toast.error(`Oops! ${error.response.data.message}`, {
-            description: "Something went wrong. Try again",
-            // duration: 20000,
-          });
-        },
-      }
-    );
+    resetPassword({ resetCode: form.resetCode, password: form.password });
   };
+
+  useEffect(() => {
+    if (resetPasswordSuccess) {
+      setMode("login");
+    }
+  }, [resetPasswordSuccess]);
 
   return (
     <section className=" w-full  mx-auto p-8 flex flex-col justify-center items-center overflow-clip relative font-poppins">
-      {isPending && <Loader />}
+      {resetPasswordLoading && <Loader />}
       <h2 className=" text-text-primary text-center text-2xl font-medium font-poppins ">
         Reset Password
       </h2>

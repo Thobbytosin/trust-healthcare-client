@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { useFetchData } from "./useApi";
 import { useAuthStore } from "@/store/useAuthStore";
 import { FETCHUSER } from "@/config/user.endpoints";
-import { UserBackendResponse } from "@/types/user.types";
 import { useServerStatus } from "./useServerStatus";
 import { getCookie } from "@/utils/helpers";
+import { TUser } from "@/types/user.types";
 
 export const useAuth = ({ enabled }: { enabled: boolean }) => {
   const setUser = useAuthStore((state) => state.setUser);
@@ -13,14 +13,12 @@ export const useAuth = ({ enabled }: { enabled: boolean }) => {
   const { isOnline, isLoading: serverStatusLoading } = useServerStatus();
   const loggedInToken = getCookie("_XUR_CR_HOST");
 
-  // console.log("CONSENT", !!consent);
-
   const {
     data: userData,
     error,
     isSuccess,
     isLoading,
-  } = useFetchData<UserBackendResponse>({
+  } = useFetchData<TUser>({
     method: "GET",
     url: FETCHUSER,
     queryKey: ["user"],
@@ -40,7 +38,7 @@ export const useAuth = ({ enabled }: { enabled: boolean }) => {
   useEffect(() => {
     if (!enabled) return;
     if (isSuccess && userData) {
-      setUser(userData.user);
+      setUser(userData.data);
     }
   }, [enabled, isSuccess, userData]);
 

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useFetchData } from "./useApi";
-import { DoctorsBackendResponse } from "@/types/doctor.types";
+import { TDoctorsData } from "@/types/doctor.types";
 import { GETALLDOCTORS } from "@/config/doctor.endpoints";
 import { useServerStatus } from "./useServerStatus";
 
@@ -11,13 +11,12 @@ export const useFetchDoctors = (queryParams: URLSearchParams | null) => {
 
   const queryKey = useMemo(() => ["doctors", queryString], [queryString]);
 
-  const { data, error, isLoading, isSuccess } =
-    useFetchData<DoctorsBackendResponse>({
-      method: "GET",
-      url: `${GETALLDOCTORS}?${queryString}`,
-      queryKey: [`doctors, ${queryKey}`],
-      enabled: !serverStatusLoading && isOnline,
-    });
+  const { data, error, isLoading, isSuccess } = useFetchData<TDoctorsData>({
+    method: "GET",
+    url: `${GETALLDOCTORS}?${queryString}`,
+    queryKey: [`doctors, ${queryKey}`],
+    enabled: !serverStatusLoading && isOnline,
+  });
 
-  return { data, error, isLoading, isSuccess };
+  return { data: data?.data, error, isLoading, isSuccess };
 };
