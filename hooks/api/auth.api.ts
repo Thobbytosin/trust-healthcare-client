@@ -40,11 +40,6 @@ export const useAuthMutations = () => {
     onSuccess: async (response) => {
       if (!response.success) return;
 
-      toast.success("Welcome to Trust HealthCare!", {
-        description: response.message,
-        duration: 4000,
-      });
-
       const { accessToken, refreshToken, loggedInToken, expiresAt, user } =
         response?.data;
 
@@ -68,6 +63,11 @@ export const useAuthMutations = () => {
       localStorage.setItem("access_token_expiry", String(expiresAt));
 
       queryClient.invalidateQueries({ queryKey: ["user"] });
+
+      toast.success("Welcome to Trust HealthCare!", {
+        description: response.message,
+        duration: 4000,
+      });
     },
     onError: (error) => {
       toast.error(error.message, {
