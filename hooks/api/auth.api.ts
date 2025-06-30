@@ -48,14 +48,22 @@ export const useAuthMutations = () => {
       const { accessToken, refreshToken, loggedInToken, expiresAt, user } =
         response?.data;
 
-      setUser(user);
-
-      await fetch("/api/set-cookies", {
+      const res = await fetch("/api/set-cookies", {
         method: "POST",
         body: JSON.stringify({ accessToken, refreshToken, loggedInToken }),
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
+
+      if (!res.ok) {
+        toast.error("Failed to set login cookie", {
+          description: "Something went wrong",
+          duration: 4000,
+        });
+        return;
+      }
+
+      setUser(user);
 
       localStorage.setItem("access_token_expiry", String(expiresAt));
 
