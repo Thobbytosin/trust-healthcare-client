@@ -30,7 +30,7 @@ export const fetchUser = async () => {
 
     return formattedRes.data;
   } catch (err: any) {
-    console.log("Error fetching user:", err.response?.data || err.message);
+    // console.log("Error fetching user:", err.response?.data || err.message);
     return null; // fallback to avoid crashing layout
   }
 };

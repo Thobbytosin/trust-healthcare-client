@@ -1,4 +1,4 @@
-import { DoctorsBackendResponse } from "@/types/doctor.types";
+import { TDoctorsData } from "@/types/doctor.types";
 
 export function getInitials(name: string) {
   if (!name) return "";
@@ -48,7 +48,7 @@ export function getAccessToken(name: string): string | undefined {
 }
 
 export function fetchMatchedSpecialization(
-  data: DoctorsBackendResponse | undefined,
+  data: TDoctorsData | undefined,
   currentSpecialization: string | null
 ) {
   // compare specialization values

@@ -30,7 +30,7 @@ export const fetchDoctor = async (doctorId: string) => {
 
     return formattedRes.data;
   } catch (err: any) {
-    console.log("Error fetching doctor:", err.response?.data || err.message);
+    // console.log("Error fetching doctor:", err.response?.data || err.message);
     return null; // fallback to avoid crashing layout
   }
 };

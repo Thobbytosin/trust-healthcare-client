@@ -1,4 +1,3 @@
-import { DoctorsBackendResponse } from "@/types/doctor.types";
 import { useSearch } from "@/hooks/useSearch";
 import { DoneOutlinedIcon } from "@/icons/icons";
 import { useSearchParams } from "next/navigation";

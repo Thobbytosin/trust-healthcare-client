@@ -1,11 +1,11 @@
 import LandingPageLoader from "@/components/loaders/LandingPageLoader";
 import Home from "@/components/home/Home";
 import { fetchDoctorsUnauth } from "@/lib/fetchDoctorsUnauth";
-import { IDoctor } from "@/types/doctor.types";
 import { Suspense } from "react";
+import { TDoctor } from "@/types/doctor.types";
 
 export default async function LandingPage() {
-  const doctors: IDoctor[] | null = await fetchDoctorsUnauth();
+  const doctors: TDoctor[] | null = await fetchDoctorsUnauth();
 
   return (
     <Suspense fallback={<LandingPageLoader />}>
