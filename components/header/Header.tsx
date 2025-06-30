@@ -15,13 +15,7 @@ const Header: FC<Props> = ({ activeIndex }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) return null;
-
-  if (isMounted && typeof window !== "undefined") {
-    window.addEventListener("scroll", () => {
+    const handleScroll = () => {
       if (window.scrollY > 220) {
         setSticky("show");
       } else if (window.scrollY > 0 && window.scrollY < 220) {
@@ -29,8 +23,17 @@ const Header: FC<Props> = ({ activeIndex }) => {
       } else if (window.scrollY === 0) {
         setSticky("top");
       }
-    });
-  }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Call once in case the user reloads at a scrollY > 0
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <header

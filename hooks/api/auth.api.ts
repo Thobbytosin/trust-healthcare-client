@@ -64,10 +64,9 @@ export const useAuthMutations = () => {
 
       queryClient.invalidateQueries({ queryKey: ["user"] });
 
-      toast.success("Welcome to Trust HealthCare!", {
-        description: response.message,
-        duration: 4000,
-      });
+      localStorage.setItem("showLoginSuccessToast", response.message);
+
+      window.location.reload();
     },
     onError: (error) => {
       toast.error(error.message, {
